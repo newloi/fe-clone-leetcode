@@ -1,0 +1,63 @@
+.signup-action {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: #546e7a;
+    margin-top: 20px;
+}
+
+.signup-action span {
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.reset-form {
+    width: 320px;
+    padding: 35px 30px 80px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 30px auto;
+    background-color: #fff;
+}
+
+.message {
+    border: 1px solid #e6db55;
+    background-color: #ffffe0;
+    padding: 15px 30px 15px 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.input-feedback {
+    display: none;
+    height: 21px;
+    margin-top: 0.25rem;
+    color: #d9534f;
+    font-weight: 400;
+}
+
+.reset-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+.reset-btn:active {
+    background-color: #449d44;
+    border-color: #398439;
+}
+
+.reset-btn:focus {
+    background-color: #449d44;
+    border-color: #255625;
+}

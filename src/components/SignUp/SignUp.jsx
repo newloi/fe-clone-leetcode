@@ -1,5 +1,5 @@
 import "./SignUp.css";
-import logo from "../assets/logo.svg";
+import logo from "../../assets/logo.svg";
 
 function SignUp() {
     return (
@@ -52,9 +52,8 @@ function SignUp() {
                     </div>
                 </form>
                 <button className="signup-btn">Sign Up</button>
-                <div className="action">
-                    Have an account?{" "}
-                    <span className="signin-action">Sign In</span>
+                <div className="signin-action">
+                    Have an account? <span>Sign In</span>
                 </div>
                 <div className="container-another">
                     <p className="tips">or you can sign in with</p>

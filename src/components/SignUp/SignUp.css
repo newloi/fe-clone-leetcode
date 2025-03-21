@@ -116,7 +116,7 @@
     border: none;
 }
 
-.action {
+.signin-action {
     display: flex;
     align-items: center;
     margin-top: 20px;
@@ -126,7 +126,7 @@
     font-weight: 400;
 }
 
-.signin-action {
+.signin-action span {
     margin-left: 0.5em;
     line-height: 20px;
     cursor: pointer;

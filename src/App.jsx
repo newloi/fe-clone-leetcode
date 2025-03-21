@@ -1,12 +1,13 @@
-import SignUp from './components/SignUp'
-import './App.css'
+import SignUp from "./components/SignUp/SignUp";
+import { SignIn, PasswordReset } from "./components/SignIn/SignIn";
+import "./App.css";
 
 function App() {
-  return (
-    <>
-      <SignUp />
-    </>
-  )
+    return (
+        <>
+            <SignUp />
+        </>
+    );
 }
 
-export default App
+export default App;
