@@ -1,0 +1,159 @@
+import { useState, useEffect } from "react";
+import "./VerifyEmail.css";
+
+function VerifyEmail({ emailAddress }) {
+    const [code, setCode] = useState("");
+    const [error, setError] = useState("");
+    const [countdown, setCountdown] = useState("60");
+    const [isActive, setIsActive] = useState(false);
+
+    const handleChange = (e) => {
+        setCode(e.target.value);
+        setError("");
+        e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+    };
+
+    const handleVerify = () => {
+        if (code.length !== 8) {
+            setError("Wrong code!");
+        } else {
+            getVerifyStatus().then((status) => {
+                if (status === 400) setError("Wrong code!");
+                else if (status === 200) {
+                    console.log("Code: ", code);
+                    /** Navigate to home page */
+                } else {
+                    setError("Something is wrong!");
+                    console.error("Something is wrong!");
+                }
+            });
+        }
+    };
+
+    const handleResendCode = () => {
+        if (!isActive) {
+            fetch("https://leetclone-be.onrender.com/v1/auth/resend-email", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: "luungocloi24052004@gmail.com",
+                    action: "verify",
+                }),
+            })
+                .then((response) => {
+                    console.log("Status ResendEmail: ", response.status);
+                })
+                .catch((error) => console.error("Error: ", error));
+            setIsActive(true);
+            setCountdown(60);
+        }
+    };
+
+    useEffect(() => {
+        if (isActive && countdown > 0) {
+            const timer = setTimeout(() => {
+                setCountdown((prevState) => prevState - 1);
+            }, 1000);
+            return () => clearTimeout(timer);
+        } else if (isActive && countdown === 0) setIsActive(false);
+    }, [isActive, countdown]);
+
+    const getVerifyStatus = () => {
+        return fetch("https://leetclone-be.onrender.com/v1/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: "luungocloi24052004@gmail.com",
+                pin: code,
+            }),
+        })
+            .then((response) => {
+                console.log("Status: ", response.status);
+                console.log("Code: ", code);
+
+                return response.status;
+            })
+            .catch((error) => console.error("Error: ", error));
+    };
+
+    return (
+        <div className="verify-box">
+            <h3 className="title-verify">Verify Your Email</h3>
+            <p className="description-verify">
+                Please enter the code that has been sent to {emailAddress}
+            </p>
+            <div className="verify-container">
+                <input
+                    className="input input-without-icon input-code"
+                    type="text"
+                    maxLength="8"
+                    placeholder="Enter your code"
+                    onInput={handleChange}
+                />
+                {/* <div className="letters-group">
+                    <input
+                        className="input input-without-icon input-letter"
+                        type="text"
+                        maxLength="1"
+                        onInput={handleInput}
+                    />
+                    <input
+                        className="input input-without-icon input-letter"
+                        type="text"
+                        maxLength="1"
+                        onInput={handleInput}
+                    />
+                    <input
+                        className="input input-without-icon input-letter"
+                        type="text"
+                        maxLength="1"
+                        onInput={handleInput}
+                    />
+                    <input
+                        className="input input-without-icon input-letter"
+                        type="text"
+                        maxLength="1"
+                        onInput={handleInput}
+                    />
+                    <input
+                        className="input input-without-icon input-letter"
+                        type="text"
+                        maxLength="1"
+                        onInput={handleInput}
+                    />
+                    <input
+                        className="input input-without-icon input-letter"
+                        type="text"
+                        maxLength="1"
+                        onInput={handleInput}
+                    />
+                    <input
+                        className="input input-without-icon input-letter"
+                        type="text"
+                        maxLength="1"
+                        onInput={handleInput}
+                    />
+                    <input
+                        className="input input-without-icon input-letter"
+                        type="text"
+                        maxLength="1"
+                        onInput={handleInput}
+                    />
+                </div> */}
+                <p className="error-message">{error}</p>
+            </div>
+            <button className="resend-code" onClick={handleResendCode}>
+                Resend Code {isActive && <span>({countdown})</span>}
+            </button>
+            <button className="verify-btn signup-btn" onClick={handleVerify}>
+                Verify
+            </button>
+        </div>
+    );
+}
+
+export default VerifyEmail;

@@ -48,7 +48,8 @@
     font-weight: inherit;
     text-overflow: ellipsis;
     transition: 0.4s all;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
+    /* margin-top: 20px; */
 }
 
 .input:hover {
@@ -87,12 +88,13 @@
 }
 
 .error-message {
-    display: none;
+    /* display: none; */
     font-family: inherit;
     color: #c62928;
     font-size: 12px;
+    font-weight: 400;
     line-height: 18px;
-    margin: 10px 0 20px;
+    margin: 5px 0 20px;
 }
 
 .signup-btn {
@@ -146,6 +148,7 @@
 .fa-regular {
     color: #546e7a;
     margin-top: 5px;
+    cursor: pointer;
     /* background-color: #000; */
 }
 

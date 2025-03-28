@@ -1,7 +1,18 @@
+import { useState } from "react";
+
 import "./SignIn.css";
 import logo from "../../assets/logo.svg";
 
 export function SignIn() {
+    const [account, setAccount] = useState({
+        username: "",
+        password: "",
+    });
+    const [error, setError] = useState({
+        username: "",
+        password: "",
+    });
+
     return (
         <div className="signin-box">
             <div className="container">
@@ -12,6 +23,9 @@ export function SignIn() {
                         className="input input-without-icon"
                         placeholder="Username or E-mail"
                     />
+                    <div className="error-message-container">
+                        <p className="error-message"></p>
+                    </div>
                     <label className="input input-with-icon">
                         <input
                             type="password"
@@ -21,10 +35,7 @@ export function SignIn() {
                         <i className="fa-regular fa-eye-slash" />
                     </label>
                     <div className="error-message-container">
-                        <p className="error-message">
-                            The username and/or password you specified are not
-                            correct.
-                        </p>
+                        <p className="error-message"></p>
                     </div>
                 </form>
                 <button className="signup-btn">Sign In</button>
@@ -60,7 +71,7 @@ export function PasswordReset() {
                     placeholder="E-mail address"
                     // style={{ marginBottom: "0" }}
                 />
-                <div className="input-feedback">Required</div>
+                <div className="input-feedback"></div>
             </div>
             <button className="reset-btn" type="submit">
                 Reset My Password
