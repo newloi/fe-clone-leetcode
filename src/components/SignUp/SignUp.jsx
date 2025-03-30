@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./SignUp.css";
 import logo from "../../assets/logo.svg";
@@ -25,6 +26,8 @@ function SignUp() {
 
     // show password or not
     const [showPassword, setShowPassword] = useState(false);
+
+    const navigate = useNavigate();
 
     // update account when user is typing...
     const handleChange = (e) => {
@@ -75,7 +78,7 @@ function SignUp() {
     };
 
     // clear error when user is typing...
-    const handleErrorInput = (e) => {
+    const handleInput = (e) => {
         const { name } = e.target;
         setErrors({ ...errors, [name]: "" });
     };
@@ -101,16 +104,26 @@ function SignUp() {
         }
         if (isValid) {
             getStatusSignUp().then((status) => {
-                if (status === 409) console.error("username or email is used!");
-                else if (status === 201) {
+                if (status === 409) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        username: "Username is used",
+                    }));
+                    console.error("username is used!");
+                } else if (status === 418) {
+                    setErrors((prevState) => ({
+                        ...prevState,
+                        email: "Email is used",
+                    }));
+                } else if (status === 201) {
+                    navigate(`/sign-up/verify-email/${account.email}`);
                     console.log("account is created");
-                    /** Navigate to verify email */
                 } else console.error("another error!");
             });
         }
     };
 
-    // check account's status when submit
+    // check account's status when sign up
     const getStatusSignUp = () => {
         return fetch("https://leetclone-be.onrender.com/v1/auth/register", {
             method: "POST",
@@ -124,10 +137,10 @@ function SignUp() {
             }),
         })
             .then((response) => {
-                console.log("Status: ", response.status);
+                console.log("Sign up status: ", response.status);
                 return response.status;
             })
-            .catch((error) => console.error("Error: ", error));
+            .catch((error) => console.error("Sign up error: ", error));
     };
 
     return (
@@ -142,11 +155,9 @@ function SignUp() {
                         placeholder="Username"
                         onChange={handleChange}
                         onBlur={handleInvalidation}
-                        onInput={handleErrorInput}
+                        onInput={handleInput}
                     />
-                    <div className="error-message-container">
-                        <p className="error-message">{errors.username}</p>
-                    </div>
+                    <p className="error-message">{errors.username}</p>
                     <label className="input input-with-icon">
                         <input
                             type={showPassword ? "text" : "password"}
@@ -155,7 +166,7 @@ function SignUp() {
                             placeholder="Password"
                             onChange={handleChange}
                             onBlur={handleInvalidation}
-                            onInput={handleErrorInput}
+                            onInput={handleInput}
                         />
                         <i
                             className={
@@ -166,9 +177,7 @@ function SignUp() {
                             onClick={handleShowPassword}
                         />
                     </label>
-                    <div className="error-message-container">
-                        <p className="error-message">{errors.password}</p>
-                    </div>
+                    <p className="error-message">{errors.password}</p>
                     <label className="input input-with-icon">
                         <input
                             type={showPassword ? "text" : "password"}
@@ -177,7 +186,7 @@ function SignUp() {
                             placeholder="Confirm password"
                             onChange={handleChange}
                             onBlur={handleInvalidation}
-                            onInput={handleErrorInput}
+                            onInput={handleInput}
                         />
                         <i
                             className={
@@ -188,11 +197,7 @@ function SignUp() {
                             onClick={handleShowPassword}
                         />
                     </label>
-                    <div className="error-message-container">
-                        <p className="error-message">
-                            {errors.confirmPassword}
-                        </p>
-                    </div>
+                    <p className="error-message">{errors.confirmPassword}</p>
                     <input
                         type="email"
                         className="input input-without-icon"
@@ -200,17 +205,18 @@ function SignUp() {
                         placeholder="E-mail address"
                         onChange={handleChange}
                         onBlur={handleInvalidation}
-                        onInput={handleErrorInput}
+                        onInput={handleInput}
                     />
-                    <div className="error-message-container">
-                        <p className="error-message">{errors.email}</p>
-                    </div>
+                    <p className="error-message">{errors.email}</p>
                 </form>
                 <button className="signup-btn" onClick={handleSubmit}>
                     Sign Up
                 </button>
                 <div className="signin-action">
-                    Have an account? <span>Sign In</span>
+                    Have an account?{" "}
+                    <span>
+                        <Link to="/">Sign In</Link>
+                    </span>
                 </div>
                 <div className="container-another">
                     <p className="tips">or you can sign in with</p>

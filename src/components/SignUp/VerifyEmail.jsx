@@ -1,27 +1,35 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 import "./VerifyEmail.css";
 
-function VerifyEmail({ emailAddress }) {
+function VerifyEmail() {
+    const { emailAddress } = useParams();
+
+    // const navigate = useNavigate();
+
     const [code, setCode] = useState("");
     const [error, setError] = useState("");
     const [countdown, setCountdown] = useState("60");
     const [isActive, setIsActive] = useState(false);
 
+    // update values when user is typing...
     const handleChange = (e) => {
         setCode(e.target.value);
         setError("");
         e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
     };
 
+    // handle when user clicks verify button
     const handleVerify = () => {
         if (code.length !== 8) {
-            setError("Wrong code!");
+            setError("Code is too short!");
         } else {
             getVerifyStatus().then((status) => {
                 if (status === 400) setError("Wrong code!");
                 else if (status === 200) {
                     console.log("Code: ", code);
-                    /** Navigate to home page */
+                    // navigate to home page
                 } else {
                     setError("Something is wrong!");
                     console.error("Something is wrong!");
@@ -30,6 +38,7 @@ function VerifyEmail({ emailAddress }) {
         }
     };
 
+    // handle resend code verify
     const handleResendCode = () => {
         if (!isActive) {
             fetch("https://leetclone-be.onrender.com/v1/auth/resend-email", {
@@ -60,8 +69,9 @@ function VerifyEmail({ emailAddress }) {
         } else if (isActive && countdown === 0) setIsActive(false);
     }, [isActive, countdown]);
 
+    // get status verify
     const getVerifyStatus = () => {
-        return fetch("https://leetclone-be.onrender.com/v1/auth/register", {
+        return fetch("https://leetclone-be.onrender.com/v1/auth/verify-email", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -84,7 +94,8 @@ function VerifyEmail({ emailAddress }) {
         <div className="verify-box">
             <h3 className="title-verify">Verify Your Email</h3>
             <p className="description-verify">
-                Please enter the code that has been sent to {emailAddress}
+                Please enter the code that has been sent to{" "}
+                <span className="target-email">{emailAddress}</span>
             </p>
             <div className="verify-container">
                 <input
