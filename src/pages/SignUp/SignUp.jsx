@@ -143,6 +143,12 @@ function SignUp() {
             .catch((error) => console.error("Sign up error: ", error));
     };
 
+    // sign in with github
+    const handleSignInWithGithub = () => {
+        window.location.href =
+            "https://leetclone-be.onrender.com/v1/auth/github";
+    };
+
     return (
         <div className="signin-box">
             <div className="container">
@@ -222,7 +228,10 @@ function SignUp() {
                     <p className="tips">or you can sign in with</p>
                     <div className="another">
                         <i className="fab fa-google" />
-                        <i className="fab fa-github" />
+                        <i
+                            className="fab fa-github"
+                            onClick={handleSignInWithGithub}
+                        />
                         <i className="fab fa-facebook" />
                     </div>
                 </div>

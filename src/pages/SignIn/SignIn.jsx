@@ -89,17 +89,8 @@ function SignIn() {
 
     // sign in with github
     const handleSignInWithGithub = () => {
-        fetch("https://leetclone-be.onrender.com/v1/auth/github")
-            .then((response) => {
-                console.log("Sign Up with Github status: ", response.status);
-                if (response.status === 200) {
-                    console.log("Sign In with Github successful");
-                    // navigate to home page
-                }
-            })
-            .catch((error) => {
-                console.error("Another error: ", error);
-            });
+        window.location.href =
+            "https://leetclone-be.onrender.com/v1/auth/github";
     };
 
     return (
