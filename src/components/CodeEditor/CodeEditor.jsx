@@ -6,7 +6,6 @@ function CodeEditor() {
 
     return (
         <div className="code-editor-container">
-            <div className="tabbar">Code</div>
             <div className="language-selected-container">
                 <select className="language-selected">
                     <option value="cpp">C++</option>

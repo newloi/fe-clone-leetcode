@@ -1,13 +1,11 @@
 .code-editor-container {
     height: 100%;
     width: 100%;
-    border-radius: 10px;
-    border: 2px solid #494949;
-    overflow: hidden;
+    background-color: #262626;
 }
 
 .language-selected-container {
-    background-color: #1E1E1E;
+    background-color: #262626;
 }
 
 .language-selected {
@@ -19,16 +17,4 @@
     padding: 7px;
     width: fit-content;
     color: #B1B1B1;
-}
-
-/* .light-line {
-    height: 0;
-    margin: 0;
-    border: 1px solid #333333;
-} */
-
-.tabbar {
-    background-color: #333333;
-    padding: 4px;
-    color: white;
 }

@@ -1,4 +1,6 @@
-function Output() {
+import "./Testcase.css";
+
+function Testcase() {
     return (
         <div className="code-editor-container scrollable">
             <p>Dòng 1</p>
@@ -36,4 +38,4 @@ function Output() {
     );
 }
 
-export default Output;
+export default Testcase;

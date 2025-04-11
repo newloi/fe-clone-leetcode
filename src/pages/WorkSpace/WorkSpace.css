@@ -1,6 +1,18 @@
+.workspace-container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0f0f0f;
+    padding: 8px;
+}
+
 .split {
     display: flex;
     flex-direction: row;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .split-vertical {
@@ -8,7 +20,7 @@
 }
 
 .gutter {
-    background-color: #eee;
+    background-color: #0f0f0f;
     background-repeat: no-repeat;
     background-position: 50%;
 }
@@ -25,5 +37,30 @@
 
 .left-side,
 .right-side {
-    height: 100vh;
+    height: 100%;
+}
+
+.tabbar {
+    display: flex;
+    background-color: #333333;
+    padding-left: 10px;
+    color: white;
+    height: 36px;
+    flex-direction: row;
+    font-weight: 500;
+    align-items: center;
+}
+
+.block {
+    border-radius: 10px;
+    /* border: 1px solid #606060; */
+    overflow: hidden;
+}
+
+.green-icon {
+    color: #02b128;
+}
+
+.blue-icon {
+    color: #007bff;
 }

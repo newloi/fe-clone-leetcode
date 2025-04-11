@@ -1,30 +1,54 @@
 import Split from "react-split";
+import HeaderWorkspace from "../../components/Header/HeaderWorkspace";
 import CodeEditor from "../../components/CodeEditor/CodeEditor";
 import Problem from "../../components/Problem/Problem";
-import Output from "../../components/Output/Output";
+import Testcase from "../../components/Testcase/Testcase";
 import "./WorkSpace.css";
 
 function WorkSpace() {
     return (
-        <Split className="split">
-            <div className="left-side">
-                <Problem />
+        <div className="workspace-container">
+            <div className="header-workspace">
+                <HeaderWorkspace />
             </div>
-            <div className="right-side">
-                <Split
-                    className="split-vertical"
-                    direction="vertical"
-                    sizes={[65, 35]}
-                >
-                    <div className="top-side">
-                        <CodeEditor />
+            <Split className="split" sizes={[50, 50]}>
+                <div className="left-side block">
+                    <div className="tabbar">
+                        <div className="tab">
+                            <i className="fa-regular fa-pen-to-square blue-icon" />{" "}
+                            Description
+                        </div>
                     </div>
-                    <div className="bottom-side">
-                        <Output />
-                    </div>
-                </Split>
-            </div>
-        </Split>
+                    <Problem />
+                </div>
+                <div className="right-side">
+                    <Split
+                        className="split-vertical"
+                        direction="vertical"
+                        sizes={[65, 35]}
+                    >
+                        <div className="top-side block">
+                            <div className="tabbar">
+                                <div className="tab">
+                                    <i className="fa-solid fa-code green-icon" />{" "}
+                                    Code
+                                </div>
+                            </div>
+                            <CodeEditor />
+                        </div>
+                        <div className="bottom-side block">
+                            <div className="tabbar">
+                                <div className="tab">
+                                    <i className="fa-regular fa-square-check green-icon" />{" "}
+                                    Testcase
+                                </div>
+                            </div>
+                            <Testcase />
+                        </div>
+                    </Split>
+                </div>
+            </Split>
+        </div>
     );
 }
 
