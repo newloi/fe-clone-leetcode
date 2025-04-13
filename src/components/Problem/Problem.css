@@ -1,0 +1,64 @@
+.description {
+    white-space: pre-line;
+}
+
+.content-example {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-top: 16px;
+    padding-left: 16px;
+    color: #a8a8a8;
+    border-left: 2px solid #454545;
+}
+
+.title-problem h1 {
+    font-weight: 500;
+}
+
+.tags {
+    margin: 20px;
+    margin-left: 0;
+}
+
+.tags span {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 4px 10px;
+    background-color: #3c3c3c;
+    border-radius: 99px;
+    margin-right: 10px;
+}
+
+.problem-container strong {
+    color: white;
+    font-weight: 700;
+}
+
+.constraints ul {
+    list-style-position: inside;
+}
+
+.constraints ul li code {
+    background-color: #3c3c3c;
+    padding: 2px;
+    border-radius: 3px;
+    border: 0.1px solid #535353;
+    color: #a8a8a8;
+    font-size: 12px;
+}
+
+.constraints ul li {
+    margin: 10px;
+}
+
+.easy-tag {
+    color: #46c6c2;
+}
+
+.medium-tag {
+    color: #fac31d;
+}
+
+.hard-tag {
+    color: #f8615c;
+}

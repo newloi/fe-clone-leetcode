@@ -5,7 +5,7 @@ function CodeEditor() {
     // const handleChange = () => {};
 
     return (
-        <div className="code-editor-container">
+        <div className="code-editor-container" style={{ padding: 0 }}>
             <div className="language-selected-container">
                 <select className="language-selected">
                     <option value="cpp">C++</option>

@@ -91,3 +91,20 @@ hr {
 .scrollable {
   overflow: auto;
 }
+
+.scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background: #2c2c2c;
+  /* Màu nền thanh cuộn */
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background-color: #9f9f9f;
+  /* Màu chính của thanh kéo */
+  border-radius: 10px;
+  border: 2px solid #1e1e1e;
+  /* Tạo khoảng cách */
+}

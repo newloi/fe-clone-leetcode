@@ -80,9 +80,16 @@ function SignIn() {
                 password: account.password,
             }),
         })
-            .then((response) => {
-                console.log("Sign in status: ", response.status);
-                return response.status;
+            .then(async (response) => {
+                const status = response.status;
+                const data = await response.json();
+
+                console.log("Sign in status: ", status);
+                console.log("Login response:", data);
+
+                sessionStorage.setItem("accessToken", data.accessToken);
+
+                return status;
             })
             .catch((error) => console.error("Sign in error: ", error));
     };
