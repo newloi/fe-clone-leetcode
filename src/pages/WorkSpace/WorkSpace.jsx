@@ -4,8 +4,12 @@ import CodeEditor from "../../components/CodeEditor/CodeEditor";
 import Problem from "../../components/Problem/Problem";
 import Testcase from "../../components/Testcase/Testcase";
 import "./WorkSpace.css";
+import { useParams } from "react-router-dom";
 
 function WorkSpace() {
+    // const { problemId } = useParams();
+    const problemId = "67fa1dd828c4fae7214739d0";
+
     return (
         <div className="workspace-container">
             <div className="header-workspace">
@@ -19,7 +23,7 @@ function WorkSpace() {
                             Description
                         </div>
                     </div>
-                    <Problem />
+                    <Problem problemId={problemId} />
                 </div>
                 <div className="right-side">
                     <Split
@@ -34,7 +38,7 @@ function WorkSpace() {
                                     Code
                                 </div>
                             </div>
-                            <CodeEditor />
+                            <CodeEditor problemId={problemId} />
                         </div>
                         <div className="bottom-side block">
                             <div className="tabbar">
@@ -43,7 +47,7 @@ function WorkSpace() {
                                     Testcase
                                 </div>
                             </div>
-                            <Testcase />
+                            <Testcase problemId={problemId} />
                         </div>
                     </Split>
                 </div>
