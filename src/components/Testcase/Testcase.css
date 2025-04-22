@@ -25,11 +25,11 @@
     color: white !important;
 }
 
-.hidden-testcase {
+.hidden {
     display: none;
 }
 
-.body-testcase span {
+.body-testcase pre {
     display: block;
     width: 100%;
     background-color: #ffffff1a;

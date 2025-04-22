@@ -13,11 +13,12 @@
 
 .title-problem h1 {
     font-weight: 500;
+    margin-bottom: 20px;
 }
 
 .tags {
-    margin: 20px;
-    margin-left: 0;
+    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 .tags span {
@@ -26,7 +27,8 @@
     padding: 4px 10px;
     background-color: #3c3c3c;
     border-radius: 99px;
-    margin-right: 10px;
+    margin-right: 5px;
+    white-space: nowrap;
 }
 
 .problem-container strong {

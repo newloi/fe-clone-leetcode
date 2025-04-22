@@ -3,55 +3,90 @@ import HeaderWorkspace from "../../components/Header/HeaderWorkspace";
 import CodeEditor from "../../components/CodeEditor/CodeEditor";
 import Problem from "../../components/Problem/Problem";
 import Testcase from "../../components/Testcase/Testcase";
+import Solutions from "../../components/Solutions/Solutions";
+import Sidebar from "../../components/SideBar/Sidebar";
 import "./WorkSpace.css";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+// import { useParams } from "react-router-dom";
 
 function WorkSpace() {
     // const { problemId } = useParams();
-    const problemId = "67fa1dd828c4fae7214739d0";
+    const [problemId, setProblemId] = useState("67fa1dd828c4fae7214739d0");
+
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen((prev) => !prev);
+    };
+
+    const changeProblem = (newProblemId) => {
+        setProblemId(newProblemId);
+    };
 
     return (
-        <div className="workspace-container">
-            <div className="header-workspace">
-                <HeaderWorkspace />
+        <div>
+            <div className={`sidebar ${isSidebarOpen ? "" : "close"}`}>
+                <Sidebar
+                    toggleSidebar={toggleSidebar}
+                    changeProblem={changeProblem}
+                />
             </div>
-            <Split className="split" sizes={[50, 50]}>
-                <div className="left-side block">
-                    <div className="tabbar">
-                        <div className="tab">
-                            <i className="fa-regular fa-pen-to-square blue-icon" />{" "}
-                            Description
+            <div className="workspace-container">
+                <div
+                    className={`overlay ${isSidebarOpen ? "" : "hidden"}`}
+                    onClick={toggleSidebar}
+                />
+                <div className="header-workspace">
+                    <HeaderWorkspace toggleSidebar={toggleSidebar} />
+                </div>
+                <Split className="split" sizes={[50, 50]}>
+                    <div className="left-side block">
+                        <div className="tabbar">
+                            <div className="tab">
+                                <i className="fa-regular fa-pen-to-square blue-icon" />{" "}
+                                Description
+                            </div>
+                            {/* <div className="tab">
+                                <i class="fa-solid fa-flask" /> Solutions
+                            </div> */}
+                        </div>
+                        <div className="container-tab">
+                            <Problem problemId={problemId} />
+                        </div>
+                        <div className="hidden-tab container-tab">
+                            <Solutions />
                         </div>
                     </div>
-                    <Problem problemId={problemId} />
-                </div>
-                <div className="right-side">
-                    <Split
-                        className="split-vertical"
-                        direction="vertical"
-                        sizes={[65, 35]}
-                    >
-                        <div className="top-side block">
-                            <div className="tabbar">
-                                <div className="tab">
-                                    <i className="fa-solid fa-code green-icon" />{" "}
-                                    Code
+                    <div className="right-side">
+                        <Split
+                            className="split-vertical"
+                            direction="vertical"
+                            sizes={[65, 35]}
+                        >
+                            <div className="top-side block">
+                                <div className="tabbar">
+                                    <div className="tab">
+                                        <i className="fa-solid fa-code green-icon" />{" "}
+                                        Code
+                                    </div>
+                                </div>
+                                <CodeEditor problemId={problemId} />
+                            </div>
+                            <div className="bottom-side block">
+                                <div className="tabbar">
+                                    <div className="tab">
+                                        <i className="fa-regular fa-square-check green-icon" />{" "}
+                                        Testcase
+                                    </div>
+                                </div>
+                                <div className="container-tab">
+                                    <Testcase problemId={problemId} />
                                 </div>
                             </div>
-                            <CodeEditor problemId={problemId} />
-                        </div>
-                        <div className="bottom-side block">
-                            <div className="tabbar">
-                                <div className="tab">
-                                    <i className="fa-regular fa-square-check green-icon" />{" "}
-                                    Testcase
-                                </div>
-                            </div>
-                            <Testcase problemId={problemId} />
-                        </div>
-                    </Split>
-                </div>
-            </Split>
+                        </Split>
+                    </div>
+                </Split>
+            </div>
         </div>
     );
 }

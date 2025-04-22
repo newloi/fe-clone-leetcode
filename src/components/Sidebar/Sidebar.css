@@ -1,0 +1,63 @@
+.container-sidebar {
+    display: flex;
+    flex-direction: column;
+    color: #f5f5f5;
+    font-weight: 500;
+    height: 100%;
+    width: 100%;
+    background-color: #1a1a1a;
+}
+
+.header-sidebar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid #ffffff14;
+    font-size: 20px;
+}
+
+/* .header-sidebar span {
+} */
+
+.header-sidebar button {
+    background-color: inherit;
+    color: rgb(138 138 138);
+    cursor: pointer;
+    border: none;
+}
+
+.header-sidebar button i {
+    font-size: 24px;
+}
+
+.problems {
+    padding: 20px;
+    flex: 1;
+}
+
+.problem-card {
+    display: flex;
+    flex-direction: row;
+    align-items: first baseline;
+    border: 1px solid #ffffff1f;
+    padding: 10px 20px 0;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.problem-card:hover {
+    background-color: #413f3f52;
+}
+
+.solved-icon {
+    color: #3fca7d;
+    font-size: 16px;
+}
+
+.problem {
+    flex: 1;
+    margin-left: 10px;
+}

@@ -1,13 +1,16 @@
 import "./HeaderWorkspace.css";
-import logo from "../../../public/logo-dark.png";
+import logo from "/logo-dark.png";
 
-function HeaderWorkspace() {
+function HeaderWorkspace({ toggleSidebar }) {
     return (
         <div className="header-container">
             <div className="group-left-header">
-                <img src={logo} alt="logo" className="avatar" />
-                <button className="list-problem no-background-btn action-btn">
-                    Problems
+                {/* <img src={logo} alt="logo" className="avatar" /> */}
+                <button
+                    className="no-background-btn action-btn"
+                    onClick={toggleSidebar}
+                >
+                    <i className="fa-solid fa-bars big-icon" />
                 </button>
                 <button className="no-background-btn action-btn">
                     <i className="fa-solid fa-chevron-left header-icon" />
@@ -27,7 +30,7 @@ function HeaderWorkspace() {
             </div>
             <div className="group-right-header">
                 <button className="action-btn no-background-btn">
-                    <i className="fa-solid fa-gear" />
+                    <i className="fa-solid fa-gear big-icon" />
                 </button>
                 <img src={logo} alt="Avatar" className="avatar" />
             </div>

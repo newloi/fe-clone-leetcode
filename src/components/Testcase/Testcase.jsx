@@ -59,9 +59,7 @@ function Testcase({ problemId }) {
                             <div
                                 key={index}
                                 className={
-                                    testCase === index + 1
-                                        ? ""
-                                        : "hidden-testcase"
+                                    testCase === index + 1 ? "" : "hidden"
                                 }
                             >
                                 {Object.entries(input).map(
@@ -69,7 +67,7 @@ function Testcase({ problemId }) {
                                         return (
                                             <div key={index}>
                                                 <p>{key} = </p>
-                                                <span>{value}</span>
+                                                <pre>{value}</pre>
                                             </div>
                                         );
                                     }

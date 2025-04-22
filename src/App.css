@@ -108,3 +108,7 @@ hr {
   border: 2px solid #1e1e1e;
   /* Tạo khoảng cách */
 }
+
+.container-tab {
+  height: 100%;
+}
