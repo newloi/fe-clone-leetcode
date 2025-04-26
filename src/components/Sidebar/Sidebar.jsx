@@ -34,7 +34,15 @@ function Sidebar({ toggleSidebar, changeProblem }) {
                                 toggleSidebar();
                             }}
                         >
-                            <i className="fa-regular fa-circle-check solved-icon" />
+                            <i
+                                className={
+                                    problem.status == "SOLVED"
+                                        ? "fa-regular fa-circle-check solved-icon"
+                                        : problem.status == "ATTEMPTED"
+                                        ? "fa-solid fa-circle-half-stroke attempted-icon"
+                                        : "fa-regular fa-circle unsolved-icon"
+                                }
+                            />
                             <div className="problem">
                                 <p>{problem.title}</p>
                                 <div className="tags">

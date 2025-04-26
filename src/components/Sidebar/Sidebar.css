@@ -54,7 +54,14 @@
 
 .solved-icon {
     color: #3fca7d;
-    font-size: 16px;
+}
+
+.attempted-icon {
+    color: rgb(255 201 38);
+}
+
+.unsolved-icon {
+    color: hsl(0deg 0% 100% / 10%);
 }
 
 .problem {
