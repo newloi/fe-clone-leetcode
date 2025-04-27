@@ -1,6 +1,7 @@
 import Editor from "@monaco-editor/react";
 import "./CodeEditor.css";
 import { useEffect, useState } from "react";
+import apiUrl from "../../config/api";
 
 function CodeEditor({ problemId }) {
     const [code, setCode] = useState("");
@@ -12,7 +13,7 @@ function CodeEditor({ problemId }) {
 
     useEffect(() => {
         fetch(
-            `https://leetclone-be.onrender.com/v1/problems/${problemId}/functions?language=${language}`
+            `${apiUrl}/v1/problems/${problemId}/functions?language=${language}`
         )
             .then((res) => res.json())
             .then((data) => {

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import WorkSpace from "../../pages/WorkSpace/WorkSpace";
 import "./Sidebar.css";
+import apiUrl from "../../config/api";
 
-function Sidebar({ toggleSidebar, changeProblem }) {
+function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
     const [problems, setProblems] = useState([]);
 
     useEffect(() => {
-        fetch("https://leetclone-be.onrender.com/v1/problems")
+        fetch(`${apiUrl}/v1/problems`)
             .then((res) => res.json())
             .then((res) => {
                 console.log("problems: ", res.data);
@@ -14,6 +14,17 @@ function Sidebar({ toggleSidebar, changeProblem }) {
             })
             .catch((error) => console.error("Sidebar api error: ", error));
     }, []);
+
+    useEffect(() => {
+        const size = problems.length;
+
+        if (size > 0) {
+            const currProblemId = ((selectedProblemIndex % size) + size) % size;
+            console.log(currProblemId, selectedProblemIndex);
+            changeProblem(problems[currProblemId]._id, currProblemId);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedProblemIndex, problems]);
 
     return (
         <div className="container-sidebar">
@@ -28,17 +39,19 @@ function Sidebar({ toggleSidebar, changeProblem }) {
                     return (
                         <div
                             key={index}
-                            className="problem-card"
+                            className={`problem-card ${
+                                selectedProblemIndex === index ? "selected" : ""
+                            }`}
                             onClick={() => {
-                                changeProblem(problem._id);
+                                changeProblem(problem._id, index);
                                 toggleSidebar();
                             }}
                         >
                             <i
                                 className={
-                                    problem.status == "SOLVED"
+                                    problem.status === "SOLVED"
                                         ? "fa-regular fa-circle-check solved-icon"
-                                        : problem.status == "ATTEMPTED"
+                                        : problem.status === "ATTEMPTED"
                                         ? "fa-solid fa-circle-half-stroke attempted-icon"
                                         : "fa-regular fa-circle unsolved-icon"
                                 }
@@ -52,13 +65,13 @@ function Sidebar({ toggleSidebar, changeProblem }) {
                                 </div>
                             </div>
                             <span
-                                className={
+                                className={`small-tag ${
                                     problem.difficulty === "EASY"
                                         ? "easy-tag"
                                         : problem.difficulty === "MEDIUM"
                                         ? "medium-tag"
                                         : "hard-tag"
-                                }
+                                }`}
                             >
                                 {problem.difficulty}
                             </span>

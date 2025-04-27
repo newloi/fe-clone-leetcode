@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import "./SignUp.css";
 import logo from "../../assets/logo.svg";
+import apiUrl from "../../config/api";
 
 function SignUp() {
     const passwordRegex = /^[A-Za-z0-9]{8,}$/;
@@ -145,8 +146,7 @@ function SignUp() {
 
     // sign in with github
     const handleSignInWithGithub = () => {
-        window.location.href =
-            "https://leetclone-be.onrender.com/v1/auth/github";
+        window.location.href = `${apiUrl}/v1/auth/github`;
     };
 
     return (

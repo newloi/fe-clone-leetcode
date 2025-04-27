@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import "./SignIn.css";
 import logo from "../../assets/logo.svg";
+import apiUrl from "../../config/api";
 
 function SignIn() {
     // user input values
@@ -70,7 +71,7 @@ function SignIn() {
 
     // check account's status when sign in
     const getStatusSignIn = () => {
-        return fetch("https://leetclone-be.onrender.com/v1/auth/login", {
+        return fetch(`${apiUrl}/v1/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -96,8 +97,7 @@ function SignIn() {
 
     // sign in with github
     const handleSignInWithGithub = () => {
-        window.location.href =
-            "https://leetclone-be.onrender.com/v1/auth/github";
+        window.location.href = `${apiUrl}/v1/auth/github`;
     };
 
     return (

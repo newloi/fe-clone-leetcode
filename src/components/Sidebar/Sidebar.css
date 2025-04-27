@@ -52,6 +52,10 @@
     background-color: #413f3f52;
 }
 
+.problem-card.selected {
+    background-color: #413f3f91;
+}
+
 .solved-icon {
     color: #3fca7d;
 }
@@ -67,4 +71,9 @@
 .problem {
     flex: 1;
     margin-left: 10px;
+}
+
+.small-tag {
+    font-size: 12px;
+    font-weight: 400;
 }

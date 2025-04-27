@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import "./Problem.css";
+import apiUrl from "../../config/api";
 
 function Problem({ problemId }) {
     const [problem, setProblem] = useState({});
     useEffect(() => {
-        fetch(`https://leetclone-be.onrender.com/v1/problems/${problemId}`)
+        fetch(`${apiUrl}/v1/problems/${problemId}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("problem: ", data);
+                console.log("problem: ", data.title);
                 setProblem(data);
             })
             .catch((error) => {

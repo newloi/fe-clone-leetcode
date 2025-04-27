@@ -11,7 +11,10 @@ import { useState } from "react";
 
 function WorkSpace() {
     // const { problemId } = useParams();
-    const [problemId, setProblemId] = useState("67fa1dd828c4fae7214739d0");
+    const [problem, setProblem] = useState({
+        id: "67fa1dd828c4fae7214739d0",
+        index: 3,
+    });
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -19,8 +22,16 @@ function WorkSpace() {
         setIsSidebarOpen((prev) => !prev);
     };
 
-    const changeProblem = (newProblemId) => {
-        setProblemId(newProblemId);
+    const changeProblem = (newId, newIndex) => {
+        setProblem({ id: newId, index: newIndex });
+    };
+
+    const preProblem = () => {
+        setProblem((prev) => ({ id: prev.id, index: prev.index - 1 }));
+    };
+
+    const nextProblem = () => {
+        setProblem((prev) => ({ id: prev.id, index: prev.index + 1 }));
     };
 
     return (
@@ -29,6 +40,7 @@ function WorkSpace() {
                 <Sidebar
                     toggleSidebar={toggleSidebar}
                     changeProblem={changeProblem}
+                    selectedProblemIndex={problem.index}
                 />
             </div>
             <div className="workspace-container">
@@ -37,7 +49,11 @@ function WorkSpace() {
                     onClick={toggleSidebar}
                 />
                 <div className="header-workspace">
-                    <HeaderWorkspace toggleSidebar={toggleSidebar} />
+                    <HeaderWorkspace
+                        toggleSidebar={toggleSidebar}
+                        preProblem={preProblem}
+                        nextProblem={nextProblem}
+                    />
                 </div>
                 <Split className="split" sizes={[50, 50]}>
                     <div className="left-side block">
@@ -51,7 +67,7 @@ function WorkSpace() {
                             </div> */}
                         </div>
                         <div className="container-tab">
-                            <Problem problemId={problemId} />
+                            <Problem problemId={problem.id} />
                         </div>
                         <div className="hidden-tab container-tab">
                             <Solutions />
@@ -70,7 +86,7 @@ function WorkSpace() {
                                         Code
                                     </div>
                                 </div>
-                                <CodeEditor problemId={problemId} />
+                                <CodeEditor problemId={problem.id} />
                             </div>
                             <div className="bottom-side block">
                                 <div className="tabbar">
@@ -80,7 +96,7 @@ function WorkSpace() {
                                     </div>
                                 </div>
                                 <div className="container-tab">
-                                    <Testcase problemId={problemId} />
+                                    <Testcase problemId={problem.id} />
                                 </div>
                             </div>
                         </Split>

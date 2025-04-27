@@ -1,10 +1,11 @@
 import { useMemo, useState, useEffect } from "react";
 import "./Testcase.css";
+import apiUrl from "../../config/api";
 
 function Testcase({ problemId }) {
     const [examples, setExamples] = useState([]);
     useEffect(() => {
-        fetch(`https://leetclone-be.onrender.com/v1/problems/${problemId}`)
+        fetch(`${apiUrl}/v1/problems/${problemId}`)
             .then((res) => res.json())
             .then((data) => {
                 console.log("test case: ", data.description.examples);

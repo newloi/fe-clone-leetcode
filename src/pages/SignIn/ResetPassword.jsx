@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import apiUrl from "../../config/api";
 
 export function ResetPassword() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,18 +48,15 @@ export function ResetPassword() {
 
     // get status submission
     const getStatusPasswordReset = () => {
-        return fetch(
-            "https://leetclone-be.onrender.com/v1/auth/forgot-password",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: email,
-                }),
-            }
-        )
+        return fetch(`${apiUrl}/v1/auth/forgot-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+            }),
+        })
             .then((response) => {
                 console.log("Password reset status: ", response.status);
                 return response.status;

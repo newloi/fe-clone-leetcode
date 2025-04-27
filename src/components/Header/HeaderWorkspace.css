@@ -73,6 +73,14 @@
     justify-content: center;
 }
 
-.big-icon {
+.medium-icon {
     font-size: 20px;
+}
+
+.big-icon {
+    font-size: 30px;
+}
+
+.fa-circle-user {
+    color: #949494;
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import "./VerifyEmail.css";
+import apiUrl from "../../config/api";
 
 function VerifyEmail() {
     const { emailAddress } = useParams();
@@ -41,7 +42,7 @@ function VerifyEmail() {
     // handle resend code verify
     const handleResendCode = () => {
         if (!isActive) {
-            fetch("https://leetclone-be.onrender.com/v1/auth/resend-email", {
+            fetch(`${apiUrl}/v1/auth/resend-email`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -71,7 +72,7 @@ function VerifyEmail() {
 
     // get status verify
     const getVerifyStatus = () => {
-        return fetch("https://leetclone-be.onrender.com/v1/auth/verify-email", {
+        return fetch(`${apiUrl}/v1/auth/verify-email`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
