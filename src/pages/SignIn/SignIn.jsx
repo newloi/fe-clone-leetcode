@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./SignIn.css";
 import logo from "../../assets/logo.svg";
@@ -17,6 +17,8 @@ function SignIn() {
         username: "",
         password: "",
     });
+
+    const navigate = useNavigate();
 
     // show password or not
     const [showPassword, setShowPassword] = useState(false);
@@ -63,7 +65,7 @@ function SignIn() {
                     console.error("Wrong account!");
                 } else if (status === 200) {
                     console.log("Sign in successful!");
-                    /** Navigate to home page */
+                    navigate("/");
                 } else console.error("another error!");
             });
         }
@@ -88,7 +90,12 @@ function SignIn() {
                 console.log("Sign in status: ", status);
                 console.log("Login response:", data);
 
-                sessionStorage.setItem("accessToken", data.accessToken);
+                if (data.accessToken !== undefined) {
+                    console.log("accessToken: ", data.accessToken);
+                    sessionStorage.setItem("accessToken", data.accessToken);
+                    console.log("csrfToken: ", data.csrfToken);
+                    sessionStorage.setItem("csrfToken", data.csrfToken);
+                }
 
                 return status;
             })

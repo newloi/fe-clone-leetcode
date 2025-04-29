@@ -1,49 +1,49 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import "./Problem.css";
-import apiUrl from "../../config/api";
+// import apiUrl from "../../config/api";
 
-function Problem({ problemId }) {
-    const [problem, setProblem] = useState({});
-    useEffect(() => {
-        fetch(`${apiUrl}/v1/problems/${problemId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("problem: ", data.title);
-                setProblem(data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, [problemId]);
+function Problem({ problem }) {
+    // const [problem, setProblem] = useState({});
+    // useEffect(() => {
+    //     fetch(`${apiUrl}/v1/problems/${problemId}`)
+    //         .then((res) => res.json())
+    //         .then((data) => {
+    //             console.log("problem: ", data);
+    //             setProblem(data);
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         });
+    // }, [problemId]);
 
     return (
         <div className="code-editor-container scrollable">
             <div className="problem-container">
                 <div className="title-problem">
-                    <h1>{problem.title}</h1>
+                    <h1>{problem?.title}</h1>
                     <div className="tags">
                         <span
                             className={
-                                problem.difficulty === "EASY"
+                                problem?.difficulty === "EASY"
                                     ? "easy-tag"
-                                    : problem.difficulty === "MEDIUM"
+                                    : problem?.difficulty === "MEDIUM"
                                     ? "medium-tag"
                                     : "hard-tag"
                             }
                         >
-                            {problem.difficulty}
+                            {problem?.difficulty}
                         </span>
-                        {problem.tags?.map((tag, index) => {
+                        {problem?.tags?.map((tag, index) => {
                             return <span key={index}>{tag}</span>;
                         })}
                     </div>
                 </div>
                 <div className="description">
-                    <p className="text">{problem.description?.text}</p>
+                    <p className="text">{problem?.description?.text}</p>
                     <br />
                     <br />
                     <div className="examples">
-                        {problem.description?.examples?.map(
+                        {problem?.description?.examples?.map(
                             (example, index) => {
                                 return (
                                     <div key={index} className="example">
@@ -68,7 +68,7 @@ function Problem({ problemId }) {
                     <div className="constraints">
                         <strong>Constraints:</strong>
                         <ul>
-                            {problem.description?.constraints?.map(
+                            {problem?.description?.constraints?.map(
                                 (constraint, index) => {
                                     return (
                                         <li key={index}>
@@ -80,10 +80,10 @@ function Problem({ problemId }) {
                         </ul>
                     </div>
                     <br />
-                    {problem.description?.extra && (
+                    {problem?.description?.extra && (
                         <div className="follow-up">
                             <strong>Follow up: </strong>{" "}
-                            {problem.description?.extra}
+                            {problem?.description?.extra}
                         </div>
                     )}
                     <br />

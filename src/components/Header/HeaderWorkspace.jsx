@@ -1,7 +1,12 @@
 import "./HeaderWorkspace.css";
 // import logo from "/logo-dark.png";
 
-function HeaderWorkspace({ toggleSidebar, preProblem, nextProblem }) {
+function HeaderWorkspace({
+    toggleSidebar,
+    preProblem,
+    nextProblem,
+    handleSubmitCode,
+}) {
     return (
         <div className="header-container">
             <div className="group-left-header">
@@ -29,7 +34,10 @@ function HeaderWorkspace({ toggleSidebar, preProblem, nextProblem }) {
                 <button className="action-btn middle-btn run-header-btn">
                     <i className="fa-solid fa-play middle-icon" /> Run
                 </button>
-                <button className="action-btn middle-btn green-icon">
+                <button
+                    className="action-btn middle-btn green-icon"
+                    onClick={handleSubmitCode}
+                >
                     <i className="fa-solid fa-cloud-arrow-up middle-icon" />{" "}
                     Submit
                 </button>

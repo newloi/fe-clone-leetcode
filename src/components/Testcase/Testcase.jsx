@@ -1,20 +1,20 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import "./Testcase.css";
-import apiUrl from "../../config/api";
+// import apiUrl from "../../config/api";
 
-function Testcase({ problemId }) {
-    const [examples, setExamples] = useState([]);
-    useEffect(() => {
-        fetch(`${apiUrl}/v1/problems/${problemId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("test case: ", data.description.examples);
-                setExamples(data.description.examples);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, [problemId]);
+function Testcase({ examples }) {
+    // const [examples, setExamples] = useState([]);
+    // useEffect(() => {
+    //     fetch(`${apiUrl}/v1/problems/${problemId}`)
+    //         .then((res) => res.json())
+    //         .then((data) => {
+    //             console.log("test case: ", data.description.examples);
+    //             setExamples(data.description.examples);
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         });
+    // }, [problemId]);
     const inputs = useMemo(() => {
         return examples?.map((example) => {
             const input = {};

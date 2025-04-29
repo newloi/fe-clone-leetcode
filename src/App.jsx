@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 import { SignUp, VerifyEmail } from "./pages/SignUp";
 import { SignIn, ResetPassword, ChangePassword } from "./pages/SignIn";
@@ -10,6 +11,7 @@ import "./App.css";
 function App() {
     return (
         <Router>
+            <ToastContainer />
             <Routes>
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/sign-up" element={<SignUp />} />
@@ -22,8 +24,11 @@ function App() {
                     path="/forgot-password/change-password/:emailAddress"
                     element={<ChangePassword />}
                 />
-                <Route path="/home" element={<Home />} />
-                <Route path="/" element={<WorkSpace />} />
+                <Route path="/" element={<Home />} />
+                <Route
+                    path="/problem/:problemId/:problemIndex"
+                    element={<WorkSpace />}
+                />
             </Routes>
         </Router>
     );

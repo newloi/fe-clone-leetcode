@@ -1,0 +1,50 @@
+.container-home {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}
+
+.greeting {
+    height: 300px;
+    background-size: 20px 20px;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-color: rgb(12, 31, 40);
+
+    -webkit-mask-image:
+        linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.8) 10%, rgba(0, 0, 0, 1) 15%, rgba(0, 0, 0, 1) 85%, rgba(0, 0, 0, 0.8) 90%, transparent 100%),
+        linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.8) 60%, transparent 100%);
+    -webkit-mask-composite: destination-in;
+    mask-image:
+        linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.8) 10%, rgba(0, 0, 0, 1) 15%, rgba(0, 0, 0, 1) 85%, rgba(0, 0, 0, 0.8) 90%, transparent 100%),
+        linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.8) 60%, transparent 100%);
+    mask-composite: intersect;
+
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    padding-top: 70px
+}
+
+.greeting h1 {
+    font-size: 50px;
+    text-align: center;
+}
+
+.body-home {
+    margin-top: 50px;
+    color: #f5f5f5;
+    font-weight: 500;
+    background-color: #1a1a1a;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+.problems-home {
+    width: 50%;
+    margin: 0 auto;
+}

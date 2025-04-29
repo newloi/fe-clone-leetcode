@@ -137,9 +137,19 @@ function SignUp() {
                 email: account.email,
             }),
         })
-            .then((response) => {
-                console.log("Sign up status: ", response.status);
-                return response.status;
+            .then(async (response) => {
+                const status = response.status;
+                const data = await response.json();
+
+                console.log("Sign in status: ", status);
+                console.log("Login response:", data);
+
+                if (data.accessToken !== undefined) {
+                    console.log("accessToken: ", data.accessToken);
+                    sessionStorage.setItem("accessToken", data.accessToken);
+                }
+
+                return status;
             })
             .catch((error) => console.error("Sign up error: ", error));
     };

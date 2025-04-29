@@ -25,10 +25,6 @@
     color: white !important;
 }
 
-.hidden {
-    display: none;
-}
-
 .body-testcase pre {
     display: block;
     width: 100%;

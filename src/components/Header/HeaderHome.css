@@ -1,0 +1,28 @@
+.header-home {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    background-color: hsl(0deg 0% 15.69%);
+    color: #ffffff99;
+}
+
+.header-home img {
+    width: 30px;
+    height: auto;
+}
+
+.header-home span {
+    font-weight: 400;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.header-home span:hover {
+    color: white;
+}
+
+.header-home div {
+    /* display: none; */
+}

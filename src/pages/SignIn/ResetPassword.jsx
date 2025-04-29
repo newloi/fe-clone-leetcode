@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import apiUrl from "../../config/api";
 
 export function ResetPassword() {
@@ -181,7 +182,10 @@ export function ChangePassword() {
                 if (status === 200) {
                     alert("Password change successful!");
                     console.log("Successful! Navigate to home page");
-                    // navigate to home page
+                    toast.success(
+                        "Your password has been changed successfully.",
+                        { autoClose: 3000 }
+                    );
                 } else if (status === 400) {
                     setErrors({
                         ...errors,

@@ -6,17 +6,33 @@ import Testcase from "../../components/Testcase/Testcase";
 import Solutions from "../../components/Solutions/Solutions";
 import Sidebar from "../../components/SideBar/Sidebar";
 import "./WorkSpace.css";
-import { useState } from "react";
-// import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import apiUrl from "../../config/api";
 
 function WorkSpace() {
-    // const { problemId } = useParams();
+    const { problemId, problemIndex } = useParams();
     const [problem, setProblem] = useState({
-        id: "67fa1dd828c4fae7214739d0",
-        index: 3,
+        id: problemId,
+        index: problemIndex,
     });
-
+    const [data, setData] = useState();
+    const [code, setCode] = useState("");
+    const [language, setLanguage] = useState("javascript");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [result, setResult] = useState({});
+
+    useEffect(() => {
+        fetch(`${apiUrl}/v1/problems/${problem.id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("problem: ", data);
+                setData(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, [problem.id]);
 
     const toggleSidebar = () => {
         setIsSidebarOpen((prev) => !prev);
@@ -32,6 +48,33 @@ function WorkSpace() {
 
     const nextProblem = () => {
         setProblem((prev) => ({ id: prev.id, index: prev.index + 1 }));
+    };
+
+    const handleSubmitCode = () => {
+        fetch(`${apiUrl}/v1/submissions`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${sessionStorage.getItem(
+                    "accessToken"
+                )}`,
+                "X-CSRF-Token": `${sessionStorage.getItem("csrfToken")}`,
+            },
+            body: JSON.stringify({
+                problemId: problem.id,
+                language: code.language,
+                code: code.content,
+            }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                setResult(data);
+                console.log("result submit: ", data);
+                console.log(sessionStorage.getItem("csrfToken"));
+            })
+            .catch((error) => {
+                console.error("submit error: ", error);
+            });
     };
 
     return (
@@ -53,6 +96,7 @@ function WorkSpace() {
                         toggleSidebar={toggleSidebar}
                         preProblem={preProblem}
                         nextProblem={nextProblem}
+                        handleSubmitCode={handleSubmitCode}
                     />
                 </div>
                 <Split className="split" sizes={[50, 50]}>
@@ -67,7 +111,7 @@ function WorkSpace() {
                             </div> */}
                         </div>
                         <div className="container-tab">
-                            <Problem problemId={problem.id} />
+                            <Problem problem={data} />
                         </div>
                         <div className="hidden-tab container-tab">
                             <Solutions />
@@ -86,7 +130,14 @@ function WorkSpace() {
                                         Code
                                     </div>
                                 </div>
-                                <CodeEditor problemId={problem.id} />
+                                <CodeEditor
+                                    problemId={problem.id}
+                                    languages={data?.supports}
+                                    setCode={setCode}
+                                    code={code}
+                                    setLanguage={setLanguage}
+                                    language={language}
+                                />
                             </div>
                             <div className="bottom-side block">
                                 <div className="tabbar">
@@ -96,7 +147,9 @@ function WorkSpace() {
                                     </div>
                                 </div>
                                 <div className="container-tab">
-                                    <Testcase problemId={problem.id} />
+                                    <Testcase
+                                        examples={data?.description?.examples}
+                                    />
                                 </div>
                             </div>
                         </Split>

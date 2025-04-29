@@ -1,15 +1,18 @@
 import Editor from "@monaco-editor/react";
 import "./CodeEditor.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import apiUrl from "../../config/api";
 
-function CodeEditor({ problemId }) {
-    const [code, setCode] = useState("");
-    const [language, setLanguage] = useState("javascript");
-    const handleChangeLanguage = (e) => {
-        setLanguage(e.target.value);
-        console.log(code);
-    };
+function CodeEditor({
+    problemId,
+    languages,
+    setCode,
+    code,
+    setLanguage,
+    language,
+}) {
+    // const [code, setCode] = useState("");
+    // const [language, setLanguage] = useState("javascript");
 
     useEffect(() => {
         fetch(
@@ -17,12 +20,19 @@ function CodeEditor({ problemId }) {
         )
             .then((res) => res.json())
             .then((data) => {
+                console.log("function: ", data.function);
                 setCode(data.function);
             })
             .catch((error) => {
                 console.error("error get function declaration: ", error);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [language, problemId]);
+
+    const handleChangeLanguage = (e) => {
+        setLanguage(e.target.value);
+        console.log(code);
+    };
 
     return (
         <div className="code-editor-container" style={{ padding: 0 }}>
@@ -31,17 +41,29 @@ function CodeEditor({ problemId }) {
                     className="language-selected"
                     onChange={handleChangeLanguage}
                 >
-                    <option value="javascript">JavaScript</option>
-                    <option value="cpp">C++</option>
-                    <option value="python">Python</option>
-                    <option value="java">Java</option>
+                    {languages?.map((language, index) => {
+                        return (
+                            <option key={index} value={language}>
+                                {language === "javascript"
+                                    ? "JavaScript"
+                                    : language === "python"
+                                    ? "Python"
+                                    : language === "cpp"
+                                    ? "C++"
+                                    : "Java"}
+                            </option>
+                        );
+                    })}
                 </select>
             </div>
             {/* <hr className="light-line" /> */}
             <Editor
                 height="100%"
-                defaultLanguage="cpp"
-                defaultValue={code}
+                defaultLanguage={language}
+                value={code}
+                onChange={(newCode) => {
+                    setCode(newCode);
+                }}
                 theme="vs-dark"
             />
         </div>

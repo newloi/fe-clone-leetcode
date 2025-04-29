@@ -20,7 +20,6 @@ function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
 
         if (size > 0) {
             const currProblemId = ((selectedProblemIndex % size) + size) % size;
-            console.log(currProblemId, selectedProblemIndex);
             changeProblem(problems[currProblemId]._id, currProblemId);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

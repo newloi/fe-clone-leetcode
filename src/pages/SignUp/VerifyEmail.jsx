@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import "./VerifyEmail.css";
 import apiUrl from "../../config/api";
@@ -7,7 +8,7 @@ import apiUrl from "../../config/api";
 function VerifyEmail() {
     const { emailAddress } = useParams();
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [code, setCode] = useState("");
     const [error, setError] = useState("");
@@ -30,7 +31,13 @@ function VerifyEmail() {
                 if (status === 400) setError("Wrong code!");
                 else if (status === 200) {
                     console.log("Code: ", code);
-                    // navigate to home page
+                    toast.success(
+                        "Welcome! Your account has been successfully registered.",
+                        {
+                            autoClose: 3000,
+                        }
+                    );
+                    navigate("/");
                 } else {
                     setError("Something is wrong!");
                     console.error("Something is wrong!");
