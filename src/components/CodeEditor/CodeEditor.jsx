@@ -31,7 +31,6 @@ function CodeEditor({
 
     const handleChangeLanguage = (e) => {
         setLanguage(e.target.value);
-        console.log(code);
     };
 
     return (
@@ -59,7 +58,7 @@ function CodeEditor({
             {/* <hr className="light-line" /> */}
             <Editor
                 height="100%"
-                defaultLanguage={language}
+                language={language}
                 value={code}
                 onChange={(newCode) => {
                     setCode(newCode);

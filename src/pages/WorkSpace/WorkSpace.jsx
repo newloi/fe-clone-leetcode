@@ -18,7 +18,7 @@ function WorkSpace() {
     });
     const [data, setData] = useState();
     const [code, setCode] = useState("");
-    const [language, setLanguage] = useState("javascript");
+    const [language, setLanguage] = useState("");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [result, setResult] = useState({});
 
@@ -28,6 +28,7 @@ function WorkSpace() {
             .then((data) => {
                 console.log("problem: ", data);
                 setData(data);
+                setLanguage(data.supports[0]);
             })
             .catch((error) => {
                 console.error(error);
@@ -63,15 +64,14 @@ function WorkSpace() {
             },
             body: JSON.stringify({
                 problemId: problem.id,
-                language: code.language,
-                code: code.content,
+                language: language,
+                code: code,
             }),
         })
             .then((res) => res.json())
             .then((data) => {
                 setResult(data);
                 console.log("result submit: ", data);
-                console.log(sessionStorage.getItem("csrfToken"));
             })
             .catch((error) => {
                 console.error("submit error: ", error);
