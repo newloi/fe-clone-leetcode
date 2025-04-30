@@ -51,6 +51,7 @@ export function ResetPassword() {
     const getStatusPasswordReset = () => {
         return fetch(`${apiUrl}/v1/auth/forgot-password`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -199,9 +200,10 @@ export function ChangePassword() {
 
     const getStatusChangePassword = () => {
         return fetch(
-            "https://leetclone-be.onrender.com/v1/auth/reset-password",
+            `${apiUrl}/v1/auth/reset-password`,
             {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
