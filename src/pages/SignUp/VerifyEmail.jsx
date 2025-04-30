@@ -51,6 +51,7 @@ function VerifyEmail() {
         if (!isActive) {
             fetch(`${apiUrl}/v1/auth/resend-email`, {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -81,6 +82,7 @@ function VerifyEmail() {
     const getVerifyStatus = () => {
         return fetch(`${apiUrl}/v1/auth/verify-email`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

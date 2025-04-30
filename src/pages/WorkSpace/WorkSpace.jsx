@@ -53,6 +53,7 @@ function WorkSpace() {
     const handleSubmitCode = () => {
         fetch(`${apiUrl}/v1/submissions`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${sessionStorage.getItem(

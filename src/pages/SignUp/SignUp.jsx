@@ -126,7 +126,7 @@ function SignUp() {
 
     // check account's status when sign up
     const getStatusSignUp = () => {
-        return fetch("https://leetclone-be.onrender.com/v1/auth/register", {
+        return fetch(`${apiUrl}/v1/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

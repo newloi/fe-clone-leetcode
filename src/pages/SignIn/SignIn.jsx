@@ -75,6 +75,7 @@ function SignIn() {
     const getStatusSignIn = () => {
         return fetch(`${apiUrl}/v1/auth/login`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
