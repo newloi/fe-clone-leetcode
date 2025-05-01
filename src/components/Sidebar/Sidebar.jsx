@@ -6,7 +6,15 @@ function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
     const [problems, setProblems] = useState([]);
 
     useEffect(() => {
-        fetch(`${apiUrl}/v1/problems`)
+        const token = sessionStorage.getItem("accessToken");
+        fetch(`${apiUrl}/v1/problems`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Cache-Control": "no-cache",
+                ...(token && { Authorization: `Bearer ${token}` }),
+            },
+        })
             .then((res) => res.json())
             .then((res) => {
                 console.log("problems: ", res.data);
