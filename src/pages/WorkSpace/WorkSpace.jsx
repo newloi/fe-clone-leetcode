@@ -1,14 +1,14 @@
 import Split from "react-split";
-import HeaderWorkspace from "../../components/Header/HeaderWorkspace";
-import CodeEditor from "../../components/CodeEditor/CodeEditor";
-import Problem from "../../components/Problem/Problem";
-import Testcase from "../../components/Testcase/Testcase";
-import Solutions from "../../components/Solutions/Solutions";
-import Sidebar from "../../components/SideBar/Sidebar";
+import HeaderWorkspace from "@/components/Header/HeaderWorkspace";
+import CodeEditor from "@/components/CodeEditor/CodeEditor";
+import Problem from "@/components/Problem/Problem";
+import Testcase from "@/components/Testcase/Testcase";
+import Solutions from "@/components/Solutions/Solutions";
+import Sidebar from "@/components/SideBar/Sidebar";
 import "./WorkSpace.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 function WorkSpace() {
     const { problemId, problemIndex } = useParams();

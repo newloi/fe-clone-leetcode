@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Sidebar.css";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
     const [problems, setProblems] = useState([]);
@@ -38,9 +38,8 @@ function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
                     return (
                         <div
                             key={index}
-                            className={`problem-card ${
-                                selectedProblemIndex === index ? "selected" : ""
-                            }`}
+                            className={`problem-card ${selectedProblemIndex === index ? "selected" : ""
+                                }`}
                             onClick={() => {
                                 changeProblem(problem._id, index);
                                 toggleSidebar();
@@ -51,8 +50,8 @@ function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
                                     problem.status === "SOLVED"
                                         ? "fa-regular fa-circle-check solved-icon"
                                         : problem.status === "ATTEMPTED"
-                                        ? "fa-solid fa-circle-half-stroke attempted-icon"
-                                        : "fa-regular fa-circle unsolved-icon"
+                                            ? "fa-solid fa-circle-half-stroke attempted-icon"
+                                            : "fa-regular fa-circle unsolved-icon"
                                 }
                             />
                             <div className="problem">
@@ -64,13 +63,12 @@ function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
                                 </div>
                             </div>
                             <span
-                                className={`small-tag ${
-                                    problem.difficulty === "EASY"
+                                className={`small-tag ${problem.difficulty === "EASY"
                                         ? "easy-tag"
                                         : problem.difficulty === "MEDIUM"
-                                        ? "medium-tag"
-                                        : "hard-tag"
-                                }`}
+                                            ? "medium-tag"
+                                            : "hard-tag"
+                                    }`}
                             >
                                 {problem.difficulty}
                             </span>

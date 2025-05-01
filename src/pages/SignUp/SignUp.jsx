@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import "./SignUp.css";
-import logo from "../../assets/logo.svg";
-import apiUrl from "../../config/api";
+import logo from "@/assets/logo.svg";
+import apiUrl from "@/config/api";
 
 function SignUp() {
     const passwordRegex = /^[A-Za-z0-9]{8,}$/;

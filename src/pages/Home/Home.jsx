@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import HeaderHome from "../../components/Header/HeaderHome";
+import HeaderHome from "@/components/Header/HeaderHome";
 import "./Home.css";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 function Home() {
     const [problems, setProblems] = useState([]);
@@ -37,8 +37,8 @@ function Home() {
                                             problem.status === "SOLVED"
                                                 ? "fa-regular fa-circle-check solved-icon"
                                                 : problem.status === "ATTEMPTED"
-                                                ? "fa-solid fa-circle-half-stroke attempted-icon"
-                                                : "fa-regular fa-circle unsolved-icon"
+                                                    ? "fa-solid fa-circle-half-stroke attempted-icon"
+                                                    : "fa-regular fa-circle unsolved-icon"
                                         }
                                     />
                                     <div className="problem">
@@ -54,14 +54,13 @@ function Home() {
                                         </div>
                                     </div>
                                     <span
-                                        className={`small-tag ${
-                                            problem.difficulty === "EASY"
-                                                ? "easy-tag"
-                                                : problem.difficulty ===
-                                                  "MEDIUM"
+                                        className={`small-tag ${problem.difficulty === "EASY"
+                                            ? "easy-tag"
+                                            : problem.difficulty ===
+                                                "MEDIUM"
                                                 ? "medium-tag"
                                                 : "hard-tag"
-                                        }`}
+                                            }`}
                                     >
                                         {problem.difficulty}
                                     </span>

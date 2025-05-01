@@ -1,7 +1,7 @@
 import Editor from "@monaco-editor/react";
 import "./CodeEditor.css";
 import { useEffect } from "react";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 function CodeEditor({
     problemId,
@@ -46,10 +46,10 @@ function CodeEditor({
                                 {language === "javascript"
                                     ? "JavaScript"
                                     : language === "python"
-                                    ? "Python"
-                                    : language === "cpp"
-                                    ? "C++"
-                                    : "Java"}
+                                        ? "Python"
+                                        : language === "cpp"
+                                            ? "C++"
+                                            : "Java"}
                             </option>
                         );
                     })}

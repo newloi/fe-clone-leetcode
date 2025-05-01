@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { SignUp, VerifyEmail } from "./pages/SignUp";
-import { SignIn, ResetPassword, ChangePassword } from "./pages/SignIn";
+import { SignUp, VerifyEmail } from "@/pages/SignUp";
+import { SignIn, ResetPassword, ChangePassword } from "@/pages/SignIn";
 // import CodeEditor from "./components/CodeEditor/CodeEditor";
-import WorkSpace from "./pages/WorkSpace/WorkSpace";
-import Home from "./pages/Home/Home";
+import WorkSpace from "@/pages/WorkSpace/WorkSpace";
+import Home from "@/pages/Home/Home";
 import "./App.css";
 
 function App() {
