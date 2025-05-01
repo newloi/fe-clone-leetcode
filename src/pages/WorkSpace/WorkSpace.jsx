@@ -5,6 +5,8 @@ import Problem from "../../components/Problem/Problem";
 import Testcase from "../../components/Testcase/Testcase";
 import Solutions from "../../components/Solutions/Solutions";
 import Sidebar from "../../components/SideBar/Sidebar";
+import Result from "../../components/Result/Result";
+import Submissions from "../../components/Submissions/Submissions";
 import "./WorkSpace.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -20,7 +22,8 @@ function WorkSpace() {
     const [code, setCode] = useState("");
     const [language, setLanguage] = useState("");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [result, setResult] = useState({});
+    const [resultId, setResultId] = useState("");
+    const [tab, setTab] = useState("description");
 
     useEffect(() => {
         fetch(`${apiUrl}/v1/problems/${problem.id}`)
@@ -70,7 +73,8 @@ function WorkSpace() {
         })
             .then((res) => res.json())
             .then((data) => {
-                setResult(data);
+                setResultId(data._id);
+                setTab("result");
                 console.log("result submit: ", data);
             })
             .catch((error) => {
@@ -104,18 +108,96 @@ function WorkSpace() {
                     <div className="left-side block">
                         <div className="tabbar">
                             <div className="tab">
-                                <i className="fa-regular fa-pen-to-square blue-icon" />{" "}
-                                Description
+                                <button
+                                    className={
+                                        tab === "description"
+                                            ? "active-tab"
+                                            : ""
+                                    }
+                                    onClick={() => {
+                                        setTab("description");
+                                    }}
+                                >
+                                    <i className="fa-regular fa-pen-to-square blue-icon" />{" "}
+                                    Description
+                                </button>
                             </div>
-                            {/* <div className="tab">
-                                <i class="fa-solid fa-flask" /> Solutions
-                            </div> */}
+                            <div className="tab">
+                                <span>|</span>
+                                <button
+                                    className={`${
+                                        tab === "solutions" ? "active-tab" : ""
+                                    }`}
+                                    onClick={() => {
+                                        setTab("solutions");
+                                    }}
+                                >
+                                    <i className="fa-solid fa-flask yellow-icon" />{" "}
+                                    Solutions
+                                </button>
+                            </div>
+                            <div className="tab">
+                                <span>|</span>
+                                <button
+                                    className={
+                                        tab === "submissions"
+                                            ? "active-tab"
+                                            : ""
+                                    }
+                                    onClick={() => {
+                                        setTab("submissions");
+                                    }}
+                                >
+                                    <i className="fa-solid fa-clock-rotate-left blue-icon" />{" "}
+                                    Submissions
+                                </button>
+                            </div>
+                            <div className={`tab ${resultId ? "" : "hidden"}`}>
+                                <span>|</span>
+                                <button
+                                    className={`${
+                                        tab === "result" ? "active-tab" : ""
+                                    }`}
+                                    onClick={() => {
+                                        setTab("result");
+                                    }}
+                                >
+                                    <i className="fa-solid fa-square-poll-vertical green-icon" />{" "}
+                                    Result
+                                </button>
+                            </div>
                         </div>
-                        <div className="container-tab">
+                        <div
+                            className={`container-tab ${
+                                tab === "description" ? "" : "hidden"
+                            }`}
+                        >
                             <Problem problem={data} />
                         </div>
-                        <div className="hidden-tab container-tab">
+                        <div
+                            className={`container-tab ${
+                                tab === "solutions" ? "" : "hidden"
+                            }`}
+                        >
                             <Solutions />
+                        </div>
+                        <div
+                            className={`container-tab ${
+                                tab === "submissions" ? "" : "hidden"
+                            }`}
+                        >
+                            <Submissions
+                                problemId={problem.id}
+                                setResultId={setResultId}
+                                setTabResult={setTab}
+                            />
+                        </div>
+                        <div
+                            className={`container-tab ${
+                                tab === "result" ? "" : "hidden"
+                            }`}
+                        >
+                            <Result resultId={resultId} />
                         </div>
                     </div>
                     <div className="right-side">

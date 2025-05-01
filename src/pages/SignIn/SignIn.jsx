@@ -59,13 +59,17 @@ function SignIn() {
                 if (status === 404) {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
-                        password:
-                            "The username and/or password you specified are not correct.",
+                        username: "The username you specified are not correct.",
                     }));
                     console.error("Wrong account!");
                 } else if (status === 200) {
                     console.log("Sign in successful!");
                     navigate("/");
+                } else if (status === 401) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        password: "The password you specified are not correct.",
+                    }));
                 } else console.error("another error!");
             });
         }
