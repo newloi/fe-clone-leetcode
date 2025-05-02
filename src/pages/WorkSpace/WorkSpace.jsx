@@ -8,6 +8,7 @@ import Sidebar from "../../components/SideBar/Sidebar";
 import Result from "../../components/Result/Result";
 import Submissions from "../../components/Submissions/Submissions";
 import refreshAccessToken from "../../api/refreshAccessToken";
+import Solution from "../../components/Solutions/Solution";
 import "./WorkSpace.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,6 +27,7 @@ function WorkSpace() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [resultId, setResultId] = useState("");
     const [tab, setTab] = useState("description");
+    const [solutionId, setSolutionId] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -152,7 +154,10 @@ function WorkSpace() {
                                 <span>|</span>
                                 <button
                                     className={`${
-                                        tab === "solutions" ? "active-tab" : ""
+                                        tab === "solutions" ||
+                                        tab === "solution"
+                                            ? "active-tab"
+                                            : ""
                                     }`}
                                     onClick={() => {
                                         setTab("solutions");
@@ -205,7 +210,17 @@ function WorkSpace() {
                                 tab === "solutions" ? "" : "hidden"
                             }`}
                         >
-                            <Solutions />
+                            <Solutions
+                                setTabSolution={setTab}
+                                setSolutionId={setSolutionId}
+                            />
+                        </div>
+                        <div
+                            className={`container-tab ${
+                                tab === "solution" ? "" : "hidden"
+                            }`}
+                        >
+                            <Solution solutionId={solutionId} setTab={setTab} />
                         </div>
                         <div
                             className={`container-tab ${
