@@ -1,28 +1,59 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import refreshAccessToken from "../../api/refreshAccessToken";
 import "./Result.css";
 import apiUrl from "../../config/api";
 
 function Result({ resultId }) {
     const [result, setResult] = useState();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${apiUrl}/v1/submissions/${resultId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${sessionStorage.getItem(
-                    "accessToken"
-                )}`,
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => {
+        const getResult = async () => {
+            const sendRequest = async (token) => {
+                return await fetch(`${apiUrl}/v1/submissions/${resultId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            };
+
+            try {
+                let accessToken = sessionStorage.getItem("accessToken");
+                let res = await sendRequest(accessToken);
+
+                if (res.status === 401) {
+                    console.warn("Token expired, attempting to refresh...");
+
+                    const refreshed = await refreshAccessToken();
+                    if (!refreshed) {
+                        toast.error(
+                            "Your session has expired. Please log in again.",
+                            { autoClose: 3000 }
+                        );
+                        navigate("/sign-in");
+                        return;
+                    }
+
+                    accessToken = sessionStorage.getItem("accessToken");
+                    res = await sendRequest(accessToken);
+                }
+
+                const data = await res.json();
                 setResult(data);
                 console.log(data);
-            })
-            .catch((error) => {
-                console.error("get result erro: ", error);
-            });
+            } catch (error) {
+                console.error("get result error: ", error);
+            }
+        };
+
+        if (resultId) {
+            getResult();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [resultId]);
 
     const date = new Date(result?.createdAt);

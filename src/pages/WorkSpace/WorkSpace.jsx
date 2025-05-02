@@ -7,9 +7,11 @@ import Solutions from "../../components/Solutions/Solutions";
 import Sidebar from "../../components/SideBar/Sidebar";
 import Result from "../../components/Result/Result";
 import Submissions from "../../components/Submissions/Submissions";
+import refreshAccessToken from "../../api/refreshAccessToken";
 import "./WorkSpace.css";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import apiUrl from "../../config/api";
 
 function WorkSpace() {
@@ -24,6 +26,7 @@ function WorkSpace() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [resultId, setResultId] = useState("");
     const [tab, setTab] = useState("description");
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`${apiUrl}/v1/problems/${problem.id}`)
@@ -54,32 +57,54 @@ function WorkSpace() {
         setProblem((prev) => ({ id: prev.id, index: prev.index + 1 }));
     };
 
-    const handleSubmitCode = () => {
-        fetch(`${apiUrl}/v1/submissions`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${sessionStorage.getItem(
-                    "accessToken"
-                )}`,
-                "X-CSRF-Token": `${sessionStorage.getItem("csrfToken")}`,
-            },
-            body: JSON.stringify({
-                problemId: problem.id,
-                language: language,
-                code: code,
-            }),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                setResultId(data._id);
-                setTab("result");
-                console.log("result submit: ", data);
-            })
-            .catch((error) => {
-                console.error("submit error: ", error);
+    const handleSubmitCode = async () => {
+        const csrfToken = sessionStorage.getItem("csrfToken");
+
+        const sendRequest = async (token) => {
+            return await fetch(`${apiUrl}/v1/submissions`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "X-CSRF-Token": csrfToken,
+                },
+                body: JSON.stringify({
+                    problemId: problem.id,
+                    language: language,
+                    code: code,
+                }),
             });
+        };
+
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            let res = await sendRequest(accessToken);
+
+            if (res.status === 401) {
+                console.warn("Token expired, attempting to refresh...");
+
+                const refreshed = await refreshAccessToken();
+                if (!refreshed) {
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        { autoClose: 3000 }
+                    );
+                    navigate("/sign-in");
+                    return;
+                }
+
+                accessToken = sessionStorage.getItem("accessToken");
+                res = await sendRequest(accessToken);
+            }
+
+            const data = await res.json();
+            setResultId(data._id);
+            setTab("result");
+            console.log("result submit: ", data);
+        } catch (error) {
+            console.error("submit error: ", error);
+        }
     };
 
     return (
@@ -89,6 +114,7 @@ function WorkSpace() {
                     toggleSidebar={toggleSidebar}
                     changeProblem={changeProblem}
                     selectedProblemIndex={problem.index}
+                    newResultId={resultId}
                 />
             </div>
             <div className="workspace-container">
@@ -190,6 +216,7 @@ function WorkSpace() {
                                 problemId={problem.id}
                                 setResultId={setResultId}
                                 setTabResult={setTab}
+                                newResultId={resultId}
                             />
                         </div>
                         <div

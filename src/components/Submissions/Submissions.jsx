@@ -1,30 +1,61 @@
 import { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
+import { toast } from "react-toastify";
 import "./Submissions.css";
 import apiUrl from "../../config/api";
+import { useNavigate } from "react-router-dom";
+import refreshAccessToken from "../../api/refreshAccessToken";
 
-function Submissions({ problemId, setResultId, setTabResult }) {
+function Submissions({ problemId, setResultId, setTabResult, newResultId }) {
     const [submissions, setSubmissions] = useState();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${apiUrl}/v1/submissions?problemId=${problemId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${sessionStorage.getItem(
-                    "accessToken"
-                )}`,
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => {
+        const getSubmissions = async () => {
+            const sendRequest = async (token) => {
+                return await fetch(
+                    `${apiUrl}/v1/submissions?problemId=${problemId}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+            };
+
+            try {
+                let accessToken = sessionStorage.getItem("accessToken");
+                let res = await sendRequest(accessToken);
+
+                if (res.status === 401) {
+                    console.warn("refresh token...");
+
+                    const refreshed = await refreshAccessToken();
+                    if (!refreshed) {
+                        toast.error(
+                            "Your session has expired. Please log in again.",
+                            { autoClose: 3000 }
+                        );
+                        navigate("/sign-in");
+                        return;
+                    }
+
+                    accessToken = sessionStorage.getItem("accessToken");
+                    res = await sendRequest(accessToken);
+                }
+                const data = await res.json();
                 setSubmissions(data.data);
                 console.log("submissions: ", data);
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error("submissions error: ", error);
-            });
-    }, [problemId]);
+            }
+        };
+
+        if (problemId) getSubmissions();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [problemId, newResultId]);
 
     const handleSelectResult = (id) => {
         setResultId(id);

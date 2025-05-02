@@ -95,7 +95,7 @@ function SignIn() {
                 console.log("Sign in status: ", status);
                 console.log("Login response:", data);
 
-                if (data.accessToken !== undefined) {
+                if (data.accessToken) {
                     console.log("accessToken: ", data.accessToken);
                     sessionStorage.setItem("accessToken", data.accessToken);
                     console.log("csrfToken: ", data.csrfToken);

@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import "./Sidebar.css";
 import apiUrl from "../../config/api";
 
-function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
+function Sidebar({
+    toggleSidebar,
+    changeProblem,
+    selectedProblemIndex,
+    newResultId,
+}) {
     const [problems, setProblems] = useState([]);
 
     useEffect(() => {
@@ -21,7 +26,7 @@ function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
                 setProblems(res.data);
             })
             .catch((error) => console.error("Sidebar api error: ", error));
-    }, []);
+    }, [newResultId]);
 
     useEffect(() => {
         const size = problems.length;
