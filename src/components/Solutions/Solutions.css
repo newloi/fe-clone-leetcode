@@ -121,3 +121,17 @@
     font-size: 500;
     font-size: 14px;
 }
+
+@media (max-width: 768px) {
+    .solutions-container {
+        padding: 10px;
+    }
+
+    .header-solution {
+        height: 50px;
+    }
+
+    .header-solution span {
+        font-size: 18px;
+    }
+}

@@ -126,3 +126,35 @@
 .active-tab i {
     opacity: 1 !important;
 }
+
+@media (max-width: 768px) {
+    .right-side {
+        display: none;
+    }
+
+    .left-side {
+        /* width: 100vw; */
+        flex: 1;
+    }
+
+    .gutter {
+        display: none;
+    }
+
+    .block {
+        border-radius: 0;
+    }
+
+    .workspace-container {
+        padding: 0;
+    }
+
+    .tab button {
+        font-size: 15px;
+    }
+
+    .tab button:hover {
+        padding: 0;
+        background-color: inherit;
+    }
+}

@@ -225,7 +225,7 @@ const SignUp = () => {
                 <div className="signin-action">
                     Have an account?{" "}
                     <span>
-                        <Link to="/">Sign In</Link>
+                        <Link to="/sign-in">Sign In</Link>
                     </span>
                 </div>
                 <div className="container-another">

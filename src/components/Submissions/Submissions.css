@@ -71,3 +71,26 @@
 .accept-status {
     color: rgb(44 187 93);
 }
+
+@media (max-width: 768px) {
+    .index-submissions {
+        width: 20px;
+    }
+
+    .status-submissions {
+        width: 110px;
+        font-weight: 500;
+    }
+
+    .language-submissions {
+        width: 70px;
+    }
+
+    .runtime-submissions {
+        width: 70px;
+    }
+
+    .header-submissions {
+        padding-left: 30px;
+    }
+}

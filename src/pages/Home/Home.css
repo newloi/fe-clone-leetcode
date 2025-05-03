@@ -63,3 +63,15 @@
 .footer-home span {
     cursor: pointer;
 }
+
+
+@media (max-width: 768px) {
+    .greeting h1 {
+        padding: 40px;
+        font-size: 30px;
+    }
+
+    .problems-home {
+        width: 100%;
+    }
+}

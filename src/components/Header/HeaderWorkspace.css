@@ -83,4 +83,27 @@
 
 .fa-circle-user {
     color: #949494;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .group-middle-btn {
+        display: none;
+    }
+
+    .header-icon {
+        font-size: 20px;
+    }
+
+    .fa-circle-user {
+        font-size: 40px;
+    }
+
+    .medium-icon {
+        font-size: 30px;
+    }
+
+    .header-container {
+        background-color: #ffffff24;
+    }
 }

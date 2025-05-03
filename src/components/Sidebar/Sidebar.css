@@ -77,3 +77,9 @@
     font-size: 12px;
     font-weight: 400;
 }
+
+@media (max-width: 768px) {
+    .container-sidebar {
+        width: 100vw;
+    }
+}

@@ -75,3 +75,9 @@
 .status-result {
     flex: 1;
 }
+
+@media (max-width: 768px) {
+    .header-result button {
+        display: none;
+    }
+}
