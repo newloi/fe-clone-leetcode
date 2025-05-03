@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 export const ResetPassword = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

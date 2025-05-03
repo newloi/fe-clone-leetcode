@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import "highlight.js/styles/vs2015.css";
 import { useEffect, useState } from "react";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 const Solution = ({ solutionId, setTab }) => {
     const [solution, setSolution] = useState();
@@ -32,38 +32,6 @@ const Solution = ({ solutionId, setTab }) => {
         minute: "2-digit",
         hour12: true,
     });
-
-    //     const markdown = `
-    // # Intuition
-    // Hello moi nguoi
-
-    // # Approach
-    // <!-- Describe your approach to solving the problem. -->
-
-    // # Complexity
-    // - **Time complexity**:
-    //   <!-- Add your time complexity here, e.g. $$O(n)$$ -->
-
-    // - **Space complexity**:
-    //   <!-- Add your space complexity here, e.g. $$O(n)$$ -->
-
-    // # Code
-    // \`\`\`cpp
-    // class Solution {
-    // public:
-    //     int removeElement(vector<int>& nums, int val) {
-    //         int k = 0;
-    //         for (int i = 0; i < nums.size(); i++) {
-    //             if (nums[i] != val) {
-    //                 nums[k] = nums[i];
-    //                 k++;
-    //             }
-    //         }
-    //         return k;
-    //     }
-    // };
-    // \`\`\`
-    // `;
 
     return (
         <div className="solution-container">

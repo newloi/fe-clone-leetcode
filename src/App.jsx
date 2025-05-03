@@ -8,7 +8,7 @@ import Home from "./pages/Home/Home";
 import "./App.css";
 import PostSolution from "./pages/PostSolution/PostSolution";
 
-function App() {
+const App = () => {
     return (
         <Router>
             <ToastContainer />
@@ -23,7 +23,8 @@ function App() {
                 <Route
                     path="/forgot-password/change-password/:emailAddress"
                     element={<ChangePassword />}
-                />
+                />{" "}
+                // ? Security
                 <Route path="/" element={<Home />} />
                 <Route
                     path="/problem/:problemId/:problemIndex"
@@ -36,6 +37,6 @@ function App() {
             </Routes>
         </Router>
     );
-}
+};
 
 export default App;

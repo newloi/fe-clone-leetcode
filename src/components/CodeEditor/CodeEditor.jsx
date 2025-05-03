@@ -1,7 +1,7 @@
 import Editor from "@monaco-editor/react";
 import "./CodeEditor.css";
 import { useEffect } from "react";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 const CodeEditor = ({
     problemId,
@@ -11,21 +11,19 @@ const CodeEditor = ({
     setLanguage,
     language,
 }) => {
-    // const [code, setCode] = useState("");
-    // const [language, setLanguage] = useState("javascript");
-
     useEffect(() => {
-        fetch(
-            `${apiUrl}/v1/problems/${problemId}/functions?language=${language}`
-        )
-            .then((res) => res.json())
-            .then((data) => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch(
+                    `${apiUrl}/v1/problems/${problemId}/functions?language=${language}`
+                );
+                const data = await res.json();
                 setCode(data.function);
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error("error get function declaration: ", error);
-            });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            }
+        };
+        fetchData();
     }, [language, problemId]);
 
     const handleChangeLanguage = (e) => {
@@ -54,6 +52,7 @@ const CodeEditor = ({
                     })}
                 </select>
             </div>
+            {/* <hr className="light-line" /> */}
             <Editor
                 height="100%"
                 language={language}

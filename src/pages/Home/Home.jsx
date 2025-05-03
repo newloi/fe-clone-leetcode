@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import HeaderHome from "../../components/Header/HeaderHome";
+import HeaderHome from "@/components/Header/HeaderHome";
 import "./Home.css";
 import apiUrl from "../../config/api";
 import UserBox from "@/components/UserBox/UserBox";

@@ -39,7 +39,6 @@ const Sidebar = ({
                 ((selectedProblemIndex % size) + size) % size;
             changeProblem(problems[currProblemIndex]._id, currProblemIndex);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProblemIndex, problems]);
 
     return (
@@ -50,6 +49,7 @@ const Sidebar = ({
                     <i className="fa-solid fa-xmark" />
                 </button>
             </div>
+
             <div className="problems scrollable">
                 {problems?.map((problem, index) => {
                     return (

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import "./VerifyEmail.css";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 const VerifyEmail = () => {
     const { emailAddress } = useParams();

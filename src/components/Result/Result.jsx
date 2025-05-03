@@ -49,7 +49,7 @@ const Result = ({ resultId }) => {
 
                 const data = await res.json();
                 setResult(data);
-                console.log("result: ", data);
+                console.log(data);
             } catch (error) {
                 console.error("get result error: ", error);
             }
@@ -75,9 +75,6 @@ const Result = ({ resultId }) => {
     });
 
     const status = result?.status;
-    const codeMarkdown = `\`\`\`${result?.language}
-${result?.code}
-\`\`\``;
 
     return (
         <div className="code-editor-container scrollable">
