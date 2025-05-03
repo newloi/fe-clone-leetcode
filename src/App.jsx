@@ -7,6 +7,7 @@ import { SignIn, ResetPassword, ChangePassword } from "@/pages/SignIn";
 import WorkSpace from "@/pages/WorkSpace/WorkSpace";
 import Home from "@/pages/Home/Home";
 import "./App.css";
+import PostSolution from "./pages/PostSolution/PostSolution";
 
 const App = () => {
   return (

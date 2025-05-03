@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import "highlight.js/styles/vs2015.css";
 import refreshAccessToken from "../../api/refreshAccessToken";
 import "./Result.css";
 import apiUrl from "../../config/api";
@@ -41,6 +46,7 @@ const Result = ({ resultId }) => {
           accessToken = sessionStorage.getItem("accessToken");
           res = await sendRequest(accessToken);
         }
+
 
         const data = await res.json();
         setResult(data);

@@ -14,7 +14,7 @@
     background-color: #262626;
     border-bottom: 0.1px solid #ffffff99;
     align-items: center;
-    padding-left: 40px;
+    padding-left: 50px;
 }
 
 .body-submissions {
@@ -36,7 +36,7 @@
 }
 
 .index-submissions {
-    padding-right: 15px;
+    width: 30px;
 }
 
 .status-submissions {

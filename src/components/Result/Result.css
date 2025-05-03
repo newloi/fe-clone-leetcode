@@ -45,9 +45,33 @@
     font-weight: 200;
 }
 
-.code-content {
-    background-color: hsl(0deg 0% 20%);
+.hljs {
+    background-color: hsl(0deg 0% 20%) !important;
     padding: 10px;
     border-radius: 10px;
     margin: 10px 0;
+}
+
+.header-result {
+    display: flex;
+    flex-direction: row;
+}
+
+.header-result button {
+    color: #fff;
+    border: none;
+    background-color: #2cbb5d;
+    font-weight: 500;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.header-result button i {
+    margin-right: 5px;
+}
+
+.status-result {
+    flex: 1;
 }
