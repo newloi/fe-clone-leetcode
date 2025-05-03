@@ -11,7 +11,7 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
     const [maxPage, setMaxPage] = useState();
 
     useEffect(() => {
-        fetch(`${apiUrl}/v1/problems/${problemId}/solutions`)
+        fetch(`${apiUrl}/v1/problems/${problemId}/solutions?page=${page}`)
             .then((res) => res.json())
             .then((data) => {
                 setSolutions(data.data);
@@ -20,7 +20,7 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
             .catch((error) => {
                 console.error("get solutions error: ", error);
             });
-    }, [problemId]);
+    }, [problemId, page]);
 
     return (
         <div className="solutions-container">

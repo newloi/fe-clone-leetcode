@@ -90,7 +90,9 @@ const Home = () => {
                     })}
                 </div>
             </div>
-            <Footer page={page} setPage={setPage} maxPage={maxPage} />
+            <div className="footer-home">
+                <Footer page={page} setPage={setPage} maxPage={maxPage} />
+            </div>
         </div>
     );
 };
