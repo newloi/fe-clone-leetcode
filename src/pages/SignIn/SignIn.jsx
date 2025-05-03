@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import "./SignIn.css";
-import logo from "../../assets/logo.svg";
-import apiUrl from "../../config/api";
+import logo from "@/assets/logo.svg";
+import apiUrl from "@/config/api";
 
 function SignIn() {
     // user input values
