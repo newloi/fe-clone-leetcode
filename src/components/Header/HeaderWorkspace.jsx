@@ -1,12 +1,13 @@
 import "./HeaderWorkspace.css";
 // import logo from "/logo-dark.png";
 
-function HeaderWorkspace({
+const HeaderWorkspace = ({
     toggleSidebar,
     preProblem,
     nextProblem,
     handleSubmitCode,
-}) {
+    toggleUserBox,
+}) => {
     return (
         <div className="header-container">
             <div className="group-left-header">
@@ -46,10 +47,13 @@ function HeaderWorkspace({
                 <button className="action-btn no-background-btn">
                     <i className="fa-solid fa-gear medium-icon" />
                 </button>
-                <i className="fa-regular fa-circle-user big-icon"></i>
+                <i
+                    className="fa-regular fa-circle-user big-icon"
+                    onClick={toggleUserBox}
+                ></i>
             </div>
         </div>
     );
-}
+};
 
 export default HeaderWorkspace;

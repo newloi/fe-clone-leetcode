@@ -5,7 +5,7 @@ import "./SignUp.css";
 import logo from "../../assets/logo.svg";
 import apiUrl from "../../config/api";
 
-function SignUp() {
+const SignUp = () => {
     const passwordRegex = /^[A-Za-z0-9]{8,}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -100,7 +100,6 @@ function SignUp() {
                 }));
 
                 isValid = false;
-                console.log("Invalid input");
             }
         }
         if (isValid) {
@@ -110,7 +109,6 @@ function SignUp() {
                         ...prevErrors,
                         username: "Username is used",
                     }));
-                    console.error("username is used!");
                 } else if (status === 418) {
                     setErrors((prevState) => ({
                         ...prevState,
@@ -118,8 +116,7 @@ function SignUp() {
                     }));
                 } else if (status === 201) {
                     navigate(`/sign-up/verify-email/${account.email}`);
-                    console.log("account is created");
-                } else console.error("another error!");
+                }
             });
         }
     };
@@ -141,13 +138,8 @@ function SignUp() {
                 const status = response.status;
                 const data = await response.json();
 
-                console.log("Sign in status: ", status);
-                console.log("Login response:", data);
-
                 if (data.accessToken) {
-                    console.log("accessToken: ", data.accessToken);
                     sessionStorage.setItem("accessToken", data.accessToken);
-                    console.log("csrfToken: ", data.csrfToken);
                     sessionStorage.setItem("csrfToken", data.csrfToken);
                 }
 
@@ -250,6 +242,6 @@ function SignUp() {
             </div>
         </div>
     );
-}
+};
 
 export default SignUp;

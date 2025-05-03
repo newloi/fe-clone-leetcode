@@ -3,13 +3,18 @@ import { Link } from "react-router-dom";
 import HeaderHome from "../../components/Header/HeaderHome";
 import "./Home.css";
 import apiUrl from "../../config/api";
+import UserBox from "@/components/UserBox/UserBox";
+import Footer from "@/components/Footer/Footer";
 
-function Home() {
+const Home = () => {
     const [problems, setProblems] = useState([]);
+    const [isCloseUserBox, setIsCloseUserBox] = useState(true);
+    const [page, setPage] = useState(1);
+    const [maxPage, setMaxPage] = useState();
 
     useEffect(() => {
         const token = sessionStorage.getItem("accessToken");
-        fetch(`${apiUrl}/v1/problems`, {
+        fetch(`${apiUrl}/v1/problems?page=${page}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -19,15 +24,21 @@ function Home() {
         })
             .then((res) => res.json())
             .then((res) => {
-                console.log("problems: ", res.data);
+                setMaxPage(res.maxPage);
                 setProblems(res.data);
             })
-            .catch((error) => console.error("Sidebar api error: ", error));
-    }, []);
+            .catch((error) => console.error("home api error: ", error));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page]);
 
     return (
         <div className="container-home">
-            <HeaderHome />
+            <HeaderHome
+                toggleUserBox={() => {
+                    setIsCloseUserBox((pre) => !pre);
+                }}
+            />
+            <UserBox isClose={isCloseUserBox} />
             <div className="body-home">
                 <div className="greeting">
                     <h1>Welcome to LeetClone 🎉🎉🎉</h1>
@@ -79,8 +90,9 @@ function Home() {
                     })}
                 </div>
             </div>
+            <Footer page={page} setPage={setPage} maxPage={maxPage} />
         </div>
     );
-}
+};
 
 export default Home;

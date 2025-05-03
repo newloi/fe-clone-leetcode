@@ -2,14 +2,14 @@ import logo from "/logo-dark.png";
 import "./HeaderHome.css";
 import { Link } from "react-router-dom";
 
-function HeaderHome() {
+const HeaderHome = ({ toggleUserBox }) => {
     return (
         <div className="header-container header-home">
             <img src={logo} alt="LeetClone" />
             {sessionStorage.getItem("accessToken") ? (
                 <div>
-                    <span>
-                        <Link to="/sign-in">Log out</Link>
+                    <span onClick={toggleUserBox}>
+                        <i className="fa-regular fa-circle-user big-icon" />
                     </span>
                 </div>
             ) : (
@@ -25,6 +25,6 @@ function HeaderHome() {
             )}
         </div>
     );
-}
+};
 
 export default HeaderHome;

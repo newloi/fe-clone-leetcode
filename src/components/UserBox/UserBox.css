@@ -1,0 +1,54 @@
+.user-box {
+    position: fixed;
+    right: 30px;
+    top: 55px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    width: 300px;
+    /* height: 100px; */
+    background-color: hsl(0deg 0% 18.82%);
+    padding: 20px;
+    gap: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-infor {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.user-infor i {
+    font-size: 50px;
+}
+
+.user-infor span {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.user-actions span {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.user-actions span:hover {
+    background-color: #ffffff24;
+}
+
+.user-actions span i {
+    margin-right: 10px;
+}
+
+.user-actions {
+    color: #ffffff99;
+    font-size: 16px;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+}

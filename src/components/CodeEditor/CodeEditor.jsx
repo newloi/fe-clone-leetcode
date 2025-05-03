@@ -3,14 +3,14 @@ import "./CodeEditor.css";
 import { useEffect } from "react";
 import apiUrl from "../../config/api";
 
-function CodeEditor({
+const CodeEditor = ({
     problemId,
     languages,
     setCode,
     code,
     setLanguage,
     language,
-}) {
+}) => {
     // const [code, setCode] = useState("");
     // const [language, setLanguage] = useState("javascript");
 
@@ -20,7 +20,6 @@ function CodeEditor({
         )
             .then((res) => res.json())
             .then((data) => {
-                console.log("function: ", data.function);
                 setCode(data.function);
             })
             .catch((error) => {
@@ -55,7 +54,6 @@ function CodeEditor({
                     })}
                 </select>
             </div>
-            {/* <hr className="light-line" /> */}
             <Editor
                 height="100%"
                 language={language}
@@ -67,6 +65,6 @@ function CodeEditor({
             />
         </div>
     );
-}
+};
 
 export default CodeEditor;

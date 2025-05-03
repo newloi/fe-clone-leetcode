@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import apiUrl from "../../config/api";
 
-export function ResetPassword() {
+export const ResetPassword = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const navigate = useNavigate();
 
@@ -91,9 +91,9 @@ export function ResetPassword() {
             </button>
         </div>
     );
-}
+};
 
-export function ChangePassword() {
+export const ChangePassword = () => {
     const { emailAddress } = useParams();
     const passwordRegex = /^[A-Za-z0-9]{8,}$/;
     const [passwords, setPasswords] = useState({
@@ -199,21 +199,18 @@ export function ChangePassword() {
     };
 
     const getStatusChangePassword = () => {
-        return fetch(
-            `${apiUrl}/v1/auth/reset-password`,
-            {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: emailAddress,
-                    pin: passwords.code,
-                    password: passwords.password,
-                }),
-            }
-        )
+        return fetch(`${apiUrl}/v1/auth/reset-password`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: emailAddress,
+                pin: passwords.code,
+                password: passwords.password,
+            }),
+        })
             .then((response) => {
                 console.log("Change password status: ", response.status);
                 return response.status;
@@ -284,4 +281,4 @@ export function ChangePassword() {
             </button>
         </div>
     );
-}
+};

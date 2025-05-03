@@ -10,7 +10,7 @@ import refreshAccessToken from "../../api/refreshAccessToken";
 import "./Result.css";
 import apiUrl from "../../config/api";
 
-function Result({ resultId }) {
+const Result = ({ resultId }) => {
     const [result, setResult] = useState();
     const navigate = useNavigate();
 
@@ -101,7 +101,7 @@ ${result?.code}
                 {status === "ACCEPTED" && (
                     <button className="create-solution">
                         <Link to={`/post-solution/${resultId}`}>
-                            <i class="fa-solid fa-pen-to-square" /> Solution
+                            <i className="fa-solid fa-pen-to-square" /> Solution
                         </Link>
                     </button>
                 )}
@@ -140,6 +140,6 @@ ${result?.code}
             </div>
         </div>
     );
-}
+};
 
 export default Result;

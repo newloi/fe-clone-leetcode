@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import "./Sidebar.css";
 import apiUrl from "../../config/api";
+import Footer from "../Footer/Footer";
 
-function Sidebar({
+const Sidebar = ({
     toggleSidebar,
     changeProblem,
     selectedProblemIndex,
     newResultId,
-}) {
+}) => {
     const [problems, setProblems] = useState([]);
+    const [page, setPage] = useState(1);
+    const [maxPage, setMaxPage] = useState();
 
     useEffect(() => {
         const token = sessionStorage.getItem("accessToken");
-        fetch(`${apiUrl}/v1/problems`, {
+        fetch(`${apiUrl}/v1/problems?page=${page}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -22,18 +25,19 @@ function Sidebar({
         })
             .then((res) => res.json())
             .then((res) => {
-                console.log("problems: ", res.data);
+                setMaxPage(res.maxPage);
                 setProblems(res.data);
             })
             .catch((error) => console.error("Sidebar api error: ", error));
-    }, [newResultId]);
+    }, [newResultId, page]);
 
     useEffect(() => {
         const size = problems.length;
 
         if (size > 0) {
-            const currProblemId = ((selectedProblemIndex % size) + size) % size;
-            changeProblem(problems[currProblemId]._id, currProblemId);
+            const currProblemIndex =
+                ((selectedProblemIndex % size) + size) % size;
+            changeProblem(problems[currProblemIndex]._id, currProblemIndex);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProblemIndex, problems]);
@@ -91,8 +95,9 @@ function Sidebar({
                     );
                 })}
             </div>
+            <Footer page={page} setPage={setPage} maxPage={maxPage} />
         </div>
     );
-}
+};
 
 export default Sidebar;

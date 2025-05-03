@@ -5,7 +5,7 @@ import "./SignIn.css";
 import logo from "../../assets/logo.svg";
 import apiUrl from "../../config/api";
 
-function SignIn() {
+const SignIn = () => {
     // user input values
     const [account, setAccount] = useState({
         username: "",
@@ -51,7 +51,6 @@ function SignIn() {
                 }));
 
                 isValid = false;
-                console.log("Invalid input");
             }
         }
         if (isValid) {
@@ -61,9 +60,7 @@ function SignIn() {
                         ...prevErrors,
                         username: "The username you specified are not correct.",
                     }));
-                    console.error("Wrong account!");
                 } else if (status === 200) {
-                    console.log("Sign in successful!");
                     navigate("/");
                 } else if (status === 401) {
                     setErrors((prevErrors) => ({
@@ -92,13 +89,8 @@ function SignIn() {
                 const status = response.status;
                 const data = await response.json();
 
-                console.log("Sign in status: ", status);
-                console.log("Login response:", data);
-
                 if (data.accessToken) {
-                    console.log("accessToken: ", data.accessToken);
                     sessionStorage.setItem("accessToken", data.accessToken);
-                    console.log("csrfToken: ", data.csrfToken);
                     sessionStorage.setItem("csrfToken", data.csrfToken);
                 }
 
@@ -169,6 +161,6 @@ function SignIn() {
             </div>
         </div>
     );
-}
+};
 
 export default SignIn;

@@ -9,13 +9,14 @@ import Result from "../../components/Result/Result";
 import Submissions from "../../components/Submissions/Submissions";
 import refreshAccessToken from "../../api/refreshAccessToken";
 import Solution from "../../components/Solutions/Solution";
+import UserBox from "@/components/UserBox/UserBox";
 import "./WorkSpace.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import apiUrl from "../../config/api";
 
-function WorkSpace() {
+const WorkSpace = () => {
     const { problemId, problemIndex } = useParams();
     const [problem, setProblem] = useState({
         id: problemId,
@@ -34,7 +35,6 @@ function WorkSpace() {
         fetch(`${apiUrl}/v1/problems/${problem.id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("problem: ", data);
                 setData(data);
                 setLanguage(data.supports[0]);
             })
@@ -84,8 +84,6 @@ function WorkSpace() {
             let res = await sendRequest(accessToken);
 
             if (res.status === 401) {
-                console.warn("Token expired, attempting to refresh...");
-
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
                     toast.error(
@@ -103,14 +101,16 @@ function WorkSpace() {
             const data = await res.json();
             setResultId(data._id);
             setTab("result");
-            console.log("result submit: ", data);
         } catch (error) {
             console.error("submit error: ", error);
         }
     };
 
+    const [isCloseUserBox, setIsCloseUserBox] = useState(true);
+
     return (
         <div>
+            <UserBox isClose={isCloseUserBox} />
             <div className={`sidebar ${isSidebarOpen ? "" : "close"}`}>
                 <Sidebar
                     toggleSidebar={toggleSidebar}
@@ -130,6 +130,9 @@ function WorkSpace() {
                         preProblem={preProblem}
                         nextProblem={nextProblem}
                         handleSubmitCode={handleSubmitCode}
+                        toggleUserBox={() => {
+                            setIsCloseUserBox((pre) => !pre);
+                        }}
                     />
                 </div>
                 <Split className="split" sizes={[50, 50]}>
@@ -211,6 +214,7 @@ function WorkSpace() {
                             }`}
                         >
                             <Solutions
+                                problemId={problem.id}
                                 setTabSolution={setTab}
                                 setSolutionId={setSolutionId}
                             />
@@ -283,6 +287,6 @@ function WorkSpace() {
             </div>
         </div>
     );
-}
+};
 
 export default WorkSpace;

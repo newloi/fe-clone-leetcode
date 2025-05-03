@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "./VerifyEmail.css";
 import apiUrl from "../../config/api";
 
-function VerifyEmail() {
+const VerifyEmail = () => {
     const { emailAddress } = useParams();
 
     const navigate = useNavigate();
@@ -30,7 +30,6 @@ function VerifyEmail() {
             getVerifyStatus().then((status) => {
                 if (status === 400) setError("Wrong code!");
                 else if (status === 200) {
-                    console.log("Code: ", code);
                     toast.success(
                         "Welcome! Your account has been successfully registered.",
                         {
@@ -40,7 +39,6 @@ function VerifyEmail() {
                     navigate("/");
                 } else {
                     setError("Something is wrong!");
-                    console.error("Something is wrong!");
                 }
             });
         }
@@ -59,11 +57,7 @@ function VerifyEmail() {
                     email: emailAddress,
                     action: "verify",
                 }),
-            })
-                .then((response) => {
-                    console.log("Status ResendEmail: ", response.status);
-                })
-                .catch((error) => console.error("Error: ", error));
+            }).catch((error) => console.error("Error: ", error));
             setIsActive(true);
             setCountdown(60);
         }
@@ -92,9 +86,6 @@ function VerifyEmail() {
             }),
         })
             .then((response) => {
-                console.log("Status: ", response.status);
-                console.log("Code: ", code);
-
                 return response.status;
             })
             .catch((error) => console.error("Error: ", error));
@@ -115,56 +106,6 @@ function VerifyEmail() {
                     placeholder="Enter your code"
                     onInput={handleChange}
                 />
-                {/* <div className="letters-group">
-                    <input
-                        className="input input-without-icon input-letter"
-                        type="text"
-                        maxLength="1"
-                        onInput={handleInput}
-                    />
-                    <input
-                        className="input input-without-icon input-letter"
-                        type="text"
-                        maxLength="1"
-                        onInput={handleInput}
-                    />
-                    <input
-                        className="input input-without-icon input-letter"
-                        type="text"
-                        maxLength="1"
-                        onInput={handleInput}
-                    />
-                    <input
-                        className="input input-without-icon input-letter"
-                        type="text"
-                        maxLength="1"
-                        onInput={handleInput}
-                    />
-                    <input
-                        className="input input-without-icon input-letter"
-                        type="text"
-                        maxLength="1"
-                        onInput={handleInput}
-                    />
-                    <input
-                        className="input input-without-icon input-letter"
-                        type="text"
-                        maxLength="1"
-                        onInput={handleInput}
-                    />
-                    <input
-                        className="input input-without-icon input-letter"
-                        type="text"
-                        maxLength="1"
-                        onInput={handleInput}
-                    />
-                    <input
-                        className="input input-without-icon input-letter"
-                        type="text"
-                        maxLength="1"
-                        onInput={handleInput}
-                    />
-                </div> */}
                 <p className="error-message">{error}</p>
             </div>
             <button className="resend-code" onClick={handleResendCode}>
@@ -175,6 +116,6 @@ function VerifyEmail() {
             </button>
         </div>
     );
-}
+};
 
 export default VerifyEmail;

@@ -6,7 +6,7 @@ import "highlight.js/styles/vs2015.css";
 import { useEffect, useState } from "react";
 import apiUrl from "../../config/api";
 
-function Solution({ solutionId, setTab }) {
+const Solution = ({ solutionId, setTab }) => {
     const [solution, setSolution] = useState();
 
     useEffect(() => {
@@ -14,7 +14,6 @@ function Solution({ solutionId, setTab }) {
             .then((res) => res.json())
             .then((data) => {
                 setSolution(data);
-                console.log("solution: ", data);
             })
             .catch((error) => {
                 console.error("solution error: ", error);
@@ -80,7 +79,7 @@ function Solution({ solutionId, setTab }) {
             <div className="body-solution scrollable">
                 <p className="title-solution">{solution?.title}</p>
                 <div className="author-infor">
-                    <i class="fa-regular fa-circle-user" />
+                    <i className="fa-regular fa-circle-user" />
                     <div>
                         <span>{solution?.author?.name}</span>
                         <span>
@@ -115,6 +114,6 @@ function Solution({ solutionId, setTab }) {
             </div>
         </div>
     );
-}
+};
 
 export default Solution;

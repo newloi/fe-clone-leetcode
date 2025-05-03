@@ -1,3 +1,14 @@
+.solutions-container {
+    height: 100%;
+    background-color: #262626;
+    display: flex;
+    flex-direction: column;
+}
+
+.body-solutions {
+    flex: 1;
+}
+
 .solution-card {
     display: flex;
     flex-direction: row;
@@ -74,7 +85,6 @@
 
 .body-solution {
     padding: 20px;
-    padding-bottom: 50px;
 }
 
 .content-solution {

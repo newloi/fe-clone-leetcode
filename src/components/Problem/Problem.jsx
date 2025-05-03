@@ -2,20 +2,7 @@
 import "./Problem.css";
 // import apiUrl from "../../config/api";
 
-function Problem({ problem }) {
-    // const [problem, setProblem] = useState({});
-    // useEffect(() => {
-    //     fetch(`${apiUrl}/v1/problems/${problemId}`)
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             console.log("problem: ", data);
-    //             setProblem(data);
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
-    // }, [problemId]);
-
+const Problem = ({ problem }) => {
     return (
         <div className="code-editor-container scrollable">
             <div className="problem-container">
@@ -92,6 +79,6 @@ function Problem({ problem }) {
             </div>
         </div>
     );
-}
+};
 
 export default Problem;

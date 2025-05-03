@@ -116,3 +116,8 @@ hr {
 .hidden {
   display: none;
 }
+
+.null-img {
+  width: 200px;
+  margin: auto auto;
+}

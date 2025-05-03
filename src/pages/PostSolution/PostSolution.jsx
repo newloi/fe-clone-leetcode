@@ -10,7 +10,7 @@ import "./PostSolution.css";
 import apiUrl from "../../config/api";
 import refreshAccessToken from "../../api/refreshAccessToken";
 
-function PostSolution() {
+const PostSolution = () => {
     const { resultId } = useParams();
     const navigate = useNavigate();
     const [result, setResult] = useState();
@@ -220,6 +220,6 @@ ${result.code}
             </div>
         </div>
     );
-}
+};
 
 export default PostSolution;
