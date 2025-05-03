@@ -51,7 +51,6 @@ const PostSolution = () => {
 
                 const data = await res.json();
                 setResult(data);
-                console.log("result: ", data);
             } catch (error) {
                 console.error("get result error: ", error);
             }
@@ -85,17 +84,17 @@ ${result.code}
 \`\`\``;
 
             setMarkdown(markdownTemplate);
-            setTags([
-                `${
-                    result.language === "javascript"
-                        ? "JavaScript"
-                        : result.language === "python"
-                        ? "Python"
-                        : result.language === "cpp"
-                        ? "C++"
-                        : "Java"
-                }`,
-            ]);
+            // setTags([
+            //     `${
+            //         result.language === "javascript"
+            //             ? "JavaScript"
+            //             : result.language === "python"
+            //             ? "Python"
+            //             : result.language === "cpp"
+            //             ? "C++"
+            //             : "Java"
+            //     }`,
+            // ]);
         }
     }, [result]);
 
@@ -104,8 +103,18 @@ ${result.code}
             fetch(`${apiUrl}/v1/problems/${result?.problem}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log("problem: ", data);
-                    setTags((prevTags) => [...prevTags, ...data.tags]);
+                    data.tags.unshift(
+                        `${
+                            result.language === "javascript"
+                                ? "JavaScript"
+                                : result.language === "python"
+                                ? "Python"
+                                : result.language === "cpp"
+                                ? "C++"
+                                : "Java"
+                        }`
+                    );
+                    setTags(data.tags);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -162,7 +171,7 @@ ${result.code}
                 console.error("post solution error: ", error);
             }
 
-            // navigate(-1);
+            navigate(-1);
         }
     };
 

@@ -31,8 +31,6 @@ const Result = ({ resultId }) => {
                 let res = await sendRequest(accessToken);
 
                 if (res.status === 401) {
-                    console.warn("Token expired, attempting to refresh...");
-
                     const refreshed = await refreshAccessToken();
                     if (!refreshed) {
                         toast.error(
@@ -49,7 +47,6 @@ const Result = ({ resultId }) => {
 
                 const data = await res.json();
                 setResult(data);
-                console.log(data);
             } catch (error) {
                 console.error("get result error: ", error);
             }
@@ -75,6 +72,9 @@ const Result = ({ resultId }) => {
     });
 
     const status = result?.status;
+    const codeMarkdown = `\`\`\`${result?.language}
+${result?.code}
+\`\`\``;
 
     return (
         <div className="code-editor-container scrollable">
