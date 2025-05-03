@@ -1,19 +1,19 @@
 import Split from "react-split";
-import HeaderWorkspace from "../../components/Header/HeaderWorkspace";
-import CodeEditor from "../../components/CodeEditor/CodeEditor";
-import Problem from "../../components/Problem/Problem";
-import Testcase from "../../components/Testcase/Testcase";
-import Solutions from "../../components/Solutions/Solutions";
-import Sidebar from "../../components/SideBar/Sidebar";
-import Result from "../../components/Result/Result";
-import Submissions from "../../components/Submissions/Submissions";
-import refreshAccessToken from "../../api/refreshAccessToken";
-import Solution from "../../components/Solutions/Solution";
+import HeaderWorkspace from "@/components/Header/HeaderWorkspace";
+import CodeEditor from "@/components/CodeEditor/CodeEditor";
+import Problem from "@/components/Problem/Problem";
+import Testcase from "@/components/Testcase/Testcase";
+import Solutions from "@/components/Solutions/Solutions";
+import Sidebar from "@/components/SideBar/Sidebar";
+import Result from "@/components/Result/Result";
+import Submissions from "@/components/Submissions/Submissions";
+import refreshAccessToken from "@/api/refreshAccessToken";
+import Solution from "@/components/Solutions/Solution";
 import "./WorkSpace.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
 function WorkSpace() {
   const { problemId, problemIndex } = useParams();
@@ -34,7 +34,6 @@ function WorkSpace() {
     fetch(`${apiUrl}/v1/problems/${problem.id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("problem: ", data);
         setData(data);
         setLanguage(data.supports[0]);
       })
@@ -154,9 +153,9 @@ function WorkSpace() {
                 <span>|</span>
                 <button
                   className={`${tab === "solutions" ||
-                      tab === "solution"
-                      ? "active-tab"
-                      : ""
+                    tab === "solution"
+                    ? "active-tab"
+                    : ""
                     }`}
                   onClick={() => {
                     setTab("solutions");

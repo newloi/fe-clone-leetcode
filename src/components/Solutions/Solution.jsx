@@ -4,37 +4,36 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import "highlight.js/styles/vs2015.css";
 import { useEffect, useState } from "react";
-import apiUrl from "../../config/api";
+import apiUrl from "@/config/api";
 
-function Solution({ solutionId, setTab }) {
-    const [solution, setSolution] = useState();
+const Solution = ({ solutionId, setTab }) => {
+  const [solution, setSolution] = useState();
 
-    useEffect(() => {
-        fetch(`${apiUrl}/v1/discussions/${solutionId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setSolution(data);
-                console.log("solution: ", data);
-            })
-            .catch((error) => {
-                console.error("solution error: ", error);
-            });
-    }, [solutionId]);
+  useEffect(() => {
+    fetch(`${apiUrl}/v1/discussions/${solutionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setSolution(data);
+      })
+      .catch((error) => {
+        console.error("solution error: ", error);
+      });
+  }, [solutionId]);
 
-    const date = new Date(solution?.createdAt);
-    const dateString = date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "2-digit",
-    });
+  const date = new Date(solution?.createdAt);
+  const dateString = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  });
 
-    const timeString = date.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-    });
+  const timeString = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
 
-    const markdown = `
+  const markdown = `
 # Intuition
 Hello moi nguoi
 
@@ -66,55 +65,55 @@ public:
 \`\`\`
 `;
 
-    return (
-        <div className="solution-container">
-            <div className="header-solution">
-                <span
-                    onClick={() => {
-                        setTab("solutions");
-                    }}
-                >
-                    <i className="fa-solid fa-arrow-left" /> All Solutions
-                </span>
-            </div>
-            <div className="body-solution scrollable">
-                <p className="title-solution">{solution?.title}</p>
-                <div className="author-infor">
-                    <i class="fa-regular fa-circle-user" />
-                    <div>
-                        <span>{solution?.author?.name}</span>
-                        <span>
-                            {dateString}, {timeString}
-                        </span>
-                    </div>
-                </div>
-                <div className="tags">
-                    {solution?.solution?.language && (
-                        <span>
-                            {solution.solution?.language === "javascript"
-                                ? "JavaScript"
-                                : solution.solution?.language === "python"
-                                ? "Python"
-                                : solution.solution?.language === "cpp"
-                                ? "C++"
-                                : "Java"}
-                        </span>
-                    )}
-                    {solution?.tags?.map((tag, index) => {
-                        return <span key={index}>{tag}</span>;
-                    })}
-                </div>
-                <div className="content-solution">
-                    <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                    >
-                        {solution?.content}
-                    </ReactMarkdown>
-                </div>
-            </div>
+  return (
+    <div className="solution-container">
+      <div className="header-solution">
+        <span
+          onClick={() => {
+            setTab("solutions");
+          }}
+        >
+          <i className="fa-solid fa-arrow-left" /> All Solutions
+        </span>
+      </div>
+      <div className="body-solution scrollable">
+        <p className="title-solution">{solution?.title}</p>
+        <div className="author-infor">
+          <i class="fa-regular fa-circle-user" />
+          <div>
+            <span>{solution?.author?.name}</span>
+            <span>
+              {dateString}, {timeString}
+            </span>
+          </div>
         </div>
-    );
-}
+        <div className="tags">
+          {solution?.solution?.language && (
+            <span>
+              {solution.solution?.language === "javascript"
+                ? "JavaScript"
+                : solution.solution?.language === "python"
+                  ? "Python"
+                  : solution.solution?.language === "cpp"
+                    ? "C++"
+                    : "Java"}
+            </span>
+          )}
+          {solution?.tags?.map((tag, index) => {
+            return <span key={index}>{tag}</span>;
+          })}
+        </div>
+        <div className="content-solution">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, rehypeHighlight]}
+          >
+            {solution?.content}
+          </ReactMarkdown>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Solution;

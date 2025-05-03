@@ -8,30 +8,30 @@ import WorkSpace from "@/pages/WorkSpace/WorkSpace";
 import Home from "@/pages/Home/Home";
 import "./App.css";
 
-function App() {
-    return (
-        <Router>
-            <ToastContainer />
-            <Routes>
-                <Route path="/sign-in" element={<SignIn />} />
-                <Route path="/sign-up" element={<SignUp />} />
-                <Route
-                    path="/sign-up/verify-email/:emailAddress"
-                    element={<VerifyEmail />}
-                />
-                <Route path="/forgot-password" element={<ResetPassword />} />
-                <Route
-                    path="/forgot-password/change-password/:emailAddress"
-                    element={<ChangePassword />}
-                />
-                <Route path="/" element={<Home />} />
-                <Route
-                    path="/problem/:problemId/:problemIndex"
-                    element={<WorkSpace />}
-                />
-            </Routes>
-        </Router>
-    );
-}
+const App = () => {
+  return (
+    <Router>
+      <ToastContainer />
+      <Routes>
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route
+          path="/sign-up/verify-email/:emailAddress"
+          element={<VerifyEmail />}
+        />
+        <Route path="/forgot-password" element={<ResetPassword />} />
+        <Route
+          path="/forgot-password/change-password/:emailAddress"
+          element={<ChangePassword />}
+        /> // ? Security
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/problem/:problemId/:problemIndex"
+          element={<WorkSpace />}
+        />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;
