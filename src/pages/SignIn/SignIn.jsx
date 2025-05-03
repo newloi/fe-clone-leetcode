@@ -59,13 +59,17 @@ function SignIn() {
                 if (status === 404) {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
-                        password:
-                            "The username and/or password you specified are not correct.",
+                        username: "The username you specified are not correct.",
                     }));
                     console.error("Wrong account!");
                 } else if (status === 200) {
                     console.log("Sign in successful!");
                     navigate("/");
+                } else if (status === 401) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        password: "The password you specified are not correct.",
+                    }));
                 } else console.error("another error!");
             });
         }
@@ -91,7 +95,7 @@ function SignIn() {
                 console.log("Sign in status: ", status);
                 console.log("Login response:", data);
 
-                if (data.accessToken !== undefined) {
+                if (data.accessToken) {
                     console.log("accessToken: ", data.accessToken);
                     sessionStorage.setItem("accessToken", data.accessToken);
                     console.log("csrfToken: ", data.csrfToken);

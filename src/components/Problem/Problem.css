@@ -1,6 +1,5 @@
 .description {
     white-space: pre-line;
-    font-weight: 400;
 }
 
 .content-example {
@@ -18,8 +17,10 @@
 }
 
 .tags {
+    display: flex;
     margin-bottom: 20px;
     margin-top: 10px;
+    flex-wrap: wrap;
 }
 
 .tags span {
@@ -30,6 +31,7 @@
     border-radius: 99px;
     margin-right: 5px;
     white-space: nowrap;
+    color: #f5f5f5;
 }
 
 .problem-container strong {
@@ -55,13 +57,13 @@
 }
 
 .easy-tag {
-    color: #3fc37d;
+    color: #3fc37d !important;
 }
 
 .medium-tag {
-    color: #fac31d;
+    color: #fac31d !important;
 }
 
 .hard-tag {
-    color: #f8615c;
+    color: #f8615c !important;
 }

@@ -2,18 +2,31 @@ import { useEffect, useState } from "react";
 import "./Sidebar.css";
 import apiUrl from "@/config/api";
 
-function Sidebar({ toggleSidebar, changeProblem, selectedProblemIndex }) {
+function Sidebar({
+    toggleSidebar,
+    changeProblem,
+    selectedProblemIndex,
+    newResultId,
+}) {
     const [problems, setProblems] = useState([]);
 
     useEffect(() => {
-        fetch(`${apiUrl}/v1/problems`)
+        const token = sessionStorage.getItem("accessToken");
+        fetch(`${apiUrl}/v1/problems`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Cache-Control": "no-cache",
+                ...(token && { Authorization: `Bearer ${token}` }),
+            },
+        })
             .then((res) => res.json())
             .then((res) => {
                 console.log("problems: ", res.data);
                 setProblems(res.data);
             })
             .catch((error) => console.error("Sidebar api error: ", error));
-    }, []);
+    }, [newResultId]);
 
     useEffect(() => {
         const size = problems.length;

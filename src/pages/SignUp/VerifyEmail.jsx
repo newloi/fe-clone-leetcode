@@ -56,7 +56,7 @@ function VerifyEmail() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    email: "luungocloi24052004@gmail.com",
+                    email: emailAddress,
                     action: "verify",
                 }),
             })
@@ -87,7 +87,7 @@ function VerifyEmail() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                email: "luungocloi24052004@gmail.com",
+                email: emailAddress,
                 pin: code,
             }),
         })
