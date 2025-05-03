@@ -117,7 +117,9 @@ function Submissions({ problemId, setResultId, setTabResult, newResultId }) {
                             </span>
                             <span className="runtime-submissions">
                                 <i className="fa-regular fa-clock"></i>{" "}
-                                {Math.round(submission.runtime)} ms
+                                {status === "ACCEPTED"
+                                    ? `${Math.round(submission.runtime)} ms`
+                                    : "N/A"}
                             </span>
                             <span className="createdAt-submissions">
                                 {createdAt}

@@ -7,6 +7,7 @@ import { SignIn, ResetPassword, ChangePassword } from "./pages/SignIn";
 import WorkSpace from "./pages/WorkSpace/WorkSpace";
 import Home from "./pages/Home/Home";
 import "./App.css";
+import PostSolution from "./pages/PostSolution/PostSolution";
 
 function App() {
     return (
@@ -28,6 +29,10 @@ function App() {
                 <Route
                     path="/problem/:problemId/:problemIndex"
                     element={<WorkSpace />}
+                />
+                <Route
+                    path="/post-solution/:resultId"
+                    element={<PostSolution />}
                 />
             </Routes>
         </Router>

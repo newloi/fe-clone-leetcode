@@ -34,37 +34,37 @@ function Solution({ solutionId, setTab }) {
         hour12: true,
     });
 
-    const markdown = `
-# Intuition
-Hello moi nguoi
+    //     const markdown = `
+    // # Intuition
+    // Hello moi nguoi
 
-# Approach
-<!-- Describe your approach to solving the problem. -->
+    // # Approach
+    // <!-- Describe your approach to solving the problem. -->
 
-# Complexity
-- **Time complexity**:  
-  <!-- Add your time complexity here, e.g. $$O(n)$$ -->
+    // # Complexity
+    // - **Time complexity**:
+    //   <!-- Add your time complexity here, e.g. $$O(n)$$ -->
 
-- **Space complexity**:  
-  <!-- Add your space complexity here, e.g. $$O(n)$$ -->
+    // - **Space complexity**:
+    //   <!-- Add your space complexity here, e.g. $$O(n)$$ -->
 
-# Code
-\`\`\`cpp
-class Solution {
-public:
-    int removeElement(vector<int>& nums, int val) {
-        int k = 0;
-        for (int i = 0; i < nums.size(); i++) {
-            if (nums[i] != val) {
-                nums[k] = nums[i];
-                k++;
-            }
-        }
-        return k;
-    }
-};
-\`\`\`
-`;
+    // # Code
+    // \`\`\`cpp
+    // class Solution {
+    // public:
+    //     int removeElement(vector<int>& nums, int val) {
+    //         int k = 0;
+    //         for (int i = 0; i < nums.size(); i++) {
+    //             if (nums[i] != val) {
+    //                 nums[k] = nums[i];
+    //                 k++;
+    //             }
+    //         }
+    //         return k;
+    //     }
+    // };
+    // \`\`\`
+    // `;
 
     return (
         <div className="solution-container">

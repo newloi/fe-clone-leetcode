@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import "highlight.js/styles/vs2015.css";
 import refreshAccessToken from "../../api/refreshAccessToken";
 import "./Result.css";
 import apiUrl from "../../config/api";
@@ -44,7 +49,7 @@ function Result({ resultId }) {
 
                 const data = await res.json();
                 setResult(data);
-                console.log(data);
+                console.log("result: ", data);
             } catch (error) {
                 console.error("get result error: ", error);
             }
@@ -70,22 +75,36 @@ function Result({ resultId }) {
     });
 
     const status = result?.status;
+    const codeMarkdown = `\`\`\`${result?.language}
+${result?.code}
+\`\`\``;
 
     return (
         <div className="code-editor-container scrollable">
-            <div className="status-result">
-                <p
-                    className={
-                        status === "ACCEPTED" ? "accept-status" : "error-status"
-                    }
-                >
-                    {status === "ACCEPTED"
-                        ? "Accepted"
-                        : status === "WRONG_ANSWER"
-                        ? "Wrong Answer"
-                        : "Compile Error"}
-                </p>
-                <span>submitted at {`${dateString} ${timeString}`}</span>
+            <div className="header-result">
+                <div className="status-result">
+                    <p
+                        className={
+                            status === "ACCEPTED"
+                                ? "accept-status"
+                                : "error-status"
+                        }
+                    >
+                        {status === "ACCEPTED"
+                            ? "Accepted"
+                            : status === "WRONG_ANSWER"
+                            ? "Wrong Answer"
+                            : "Compile Error"}
+                    </p>
+                    <span>submitted at {`${dateString} ${timeString}`}</span>
+                </div>
+                {status === "ACCEPTED" && (
+                    <button className="create-solution">
+                        <Link to={`/post-solution/${resultId}`}>
+                            <i class="fa-solid fa-pen-to-square" /> Solution
+                        </Link>
+                    </button>
+                )}
             </div>
             {status === "ACCEPTED" ? (
                 <div className="output-accept">
@@ -111,9 +130,12 @@ function Result({ resultId }) {
                         : "Java"}
                 </div>
                 <div className="code-content">
-                    <pre>
-                        <code>{result?.code}</code>
-                    </pre>
+                    <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                    >
+                        {codeMarkdown}
+                    </ReactMarkdown>
                 </div>
             </div>
         </div>
