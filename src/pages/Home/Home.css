@@ -140,6 +140,8 @@
     }
 
     .search-box {
+        width: 90%;
+        /* Match the problems list width */
         padding: 8px 12px;
     }
 
@@ -164,5 +166,10 @@
 
     .problems-home {
         width: 95%;
+    }
+
+    .search-box {
+        width: 95%;
+        /* Match the problems list width */
     }
 }
