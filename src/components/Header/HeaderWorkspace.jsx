@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 import "./HeaderWorkspace.css";
+import UserBox from "../UserBox/UserBox";
 // import logo from "/logo-dark.png";
 
 const HeaderWorkspace = ({
@@ -6,10 +9,12 @@ const HeaderWorkspace = ({
     preProblem,
     nextProblem,
     handleSubmitCode,
-    toggleUserBox,
 }) => {
+    const [isCloseUserBox, setIsCloseUserBox] = useState(true);
+
     return (
         <div className="header-container">
+            <UserBox isClose={isCloseUserBox} setIsClose={setIsCloseUserBox} />
             <div className="group-left-header">
                 {/* <img src={logo} alt="logo" className="avatar" /> */}
                 <button
@@ -49,7 +54,9 @@ const HeaderWorkspace = ({
                 </button>
                 <i
                     className="fa-regular fa-circle-user big-icon"
-                    onClick={toggleUserBox}
+                    onClick={() => {
+                        setIsCloseUserBox((pre) => !pre);
+                    }}
                 ></i>
             </div>
         </div>

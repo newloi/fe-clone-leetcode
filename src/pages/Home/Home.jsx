@@ -9,7 +9,7 @@ import debounce from "lodash.debounce";
 
 const Home = () => {
     const [problems, setProblems] = useState([]);
-    const [isCloseUserBox, setIsCloseUserBox] = useState(true);
+
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
     const [searchQuery, setSearchQuery] = useState("");
@@ -50,7 +50,9 @@ const Home = () => {
                 setIsSearching(true);
                 const token = sessionStorage.getItem("accessToken");
                 const response = await fetch(
-                    `${apiUrl}/v1/problems/search?term=${encodeURIComponent(query)}`,
+                    `${apiUrl}/v1/problems/search?term=${encodeURIComponent(
+                        query
+                    )}`,
                     {
                         method: "GET",
                         headers: {
@@ -91,12 +93,7 @@ const Home = () => {
 
     return (
         <div className="container-home">
-            <HeaderHome
-                toggleUserBox={() => {
-                    setIsCloseUserBox((pre) => !pre);
-                }}
-            />
-            <UserBox isClose={isCloseUserBox} />
+            <HeaderHome />
             <div className="body-home">
                 <div className="greeting">
                     <h1>Welcome to LeetClone 🎉🎉🎉</h1>
@@ -138,31 +135,35 @@ const Home = () => {
                                             className={
                                                 problem.status === "SOLVED"
                                                     ? "fa-regular fa-circle-check solved-icon"
-                                                    : problem.status === "ATTEMPTED"
-                                                        ? "fa-solid fa-circle-half-stroke attempted-icon"
-                                                        : "fa-regular fa-circle unsolved-icon"
+                                                    : problem.status ===
+                                                      "ATTEMPTED"
+                                                    ? "fa-solid fa-circle-half-stroke attempted-icon"
+                                                    : "fa-regular fa-circle unsolved-icon"
                                             }
                                         />
                                         <div className="problem">
                                             <p>{problem.title}</p>
                                             <div className="tags">
-                                                {problem.tags.map((tag, index) => {
-                                                    return (
-                                                        <span key={index}>
-                                                            {tag}
-                                                        </span>
-                                                    );
-                                                })}
+                                                {problem.tags.map(
+                                                    (tag, index) => {
+                                                        return (
+                                                            <span key={index}>
+                                                                {tag}
+                                                            </span>
+                                                        );
+                                                    }
+                                                )}
                                             </div>
                                         </div>
                                         <span
-                                            className={`small-tag ${problem.difficulty === "EASY"
-                                                ? "easy-tag"
-                                                : problem.difficulty ===
-                                                    "MEDIUM"
+                                            className={`small-tag ${
+                                                problem.difficulty === "EASY"
+                                                    ? "easy-tag"
+                                                    : problem.difficulty ===
+                                                      "MEDIUM"
                                                     ? "medium-tag"
                                                     : "hard-tag"
-                                                }`}
+                                            }`}
                                         >
                                             {problem.difficulty}
                                         </span>

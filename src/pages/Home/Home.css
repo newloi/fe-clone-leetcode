@@ -59,7 +59,7 @@
     margin: -25px auto 25px;
     padding: 0 20px;
     position: relative;
-    z-index: 10;
+    z-index: 5;
 }
 
 .search-box {

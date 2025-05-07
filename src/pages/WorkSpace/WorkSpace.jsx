@@ -106,11 +106,8 @@ const WorkSpace = () => {
         }
     };
 
-    const [isCloseUserBox, setIsCloseUserBox] = useState(true);
-
     return (
         <div>
-            <UserBox isClose={isCloseUserBox} />
             <div className={`sidebar ${isSidebarOpen ? "" : "close"}`}>
                 <Sidebar
                     toggleSidebar={toggleSidebar}
@@ -130,9 +127,6 @@ const WorkSpace = () => {
                         preProblem={preProblem}
                         nextProblem={nextProblem}
                         handleSubmitCode={handleSubmitCode}
-                        toggleUserBox={() => {
-                            setIsCloseUserBox((pre) => !pre);
-                        }}
                     />
                 </div>
                 <Split className="split" sizes={[50, 50]}>

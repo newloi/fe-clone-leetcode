@@ -5,7 +5,7 @@ import "./UserBox.css";
 import apiUrl from "@/config/api";
 import refreshAccessToken from "@/api/refreshAccessToken";
 
-const UserBox = ({ isClose }) => {
+const UserBox = ({ isClose, setIsClose }) => {
     const [userProfile, setUserProfile] = useState();
     const navigate = useNavigate();
     useEffect(() => {
@@ -60,21 +60,29 @@ const UserBox = ({ isClose }) => {
     };
 
     return (
-        <div className={`user-box ${isClose ? "hidden" : ""}`}>
-            <div className="user-infor">
-                <i className="fa-regular fa-circle-user big-icon" />{" "}
-                <span>{userProfile?.name}</span>
+        <>
+            <div
+                className={`overlay-userbox ${isClose ? "hidden" : ""}`}
+                onClick={() => {
+                    setIsClose(true);
+                }}
+            ></div>
+            <div className={`user-box ${isClose ? "hidden" : ""}`}>
+                <div className="user-infor">
+                    <i className="fa-regular fa-circle-user big-icon" />{" "}
+                    <span>{userProfile?.name}</span>
+                </div>
+                <div className="user-actions">
+                    <span>
+                        <i className="fa-solid fa-gear" /> Settings
+                    </span>
+                    <span onClick={handleLogOut}>
+                        <i className="fa-solid fa-arrow-right-from-bracket" />{" "}
+                        Sign Out
+                    </span>
+                </div>
             </div>
-            <div className="user-actions">
-                <span>
-                    <i className="fa-solid fa-gear" /> Settings
-                </span>
-                <span onClick={handleLogOut}>
-                    <i className="fa-solid fa-arrow-right-from-bracket" /> Sign
-                    Out
-                </span>
-            </div>
-        </div>
+        </>
     );
 };
 

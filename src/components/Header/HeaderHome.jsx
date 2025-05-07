@@ -1,14 +1,23 @@
+import { Link } from "react-router-dom";
+import { useState } from "react";
+
 import logo from "/logo-dark.png";
 import "./HeaderHome.css";
-import { Link } from "react-router-dom";
+import UserBox from "../UserBox/UserBox";
 
-const HeaderHome = ({ toggleUserBox }) => {
+const HeaderHome = () => {
+    const [isCloseUserBox, setIsCloseUserBox] = useState(true);
     return (
         <div className="header-container header-home">
+            <UserBox isClose={isCloseUserBox} setIsClose={setIsCloseUserBox} />
             <img src={logo} alt="LeetClone" />
             {sessionStorage.getItem("accessToken") ? (
                 <div>
-                    <span onClick={toggleUserBox}>
+                    <span
+                        onClick={() => {
+                            setIsCloseUserBox((pre) => !pre);
+                        }}
+                    >
                         <i className="fa-regular fa-circle-user big-icon" />
                     </span>
                 </div>

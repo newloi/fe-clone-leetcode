@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 import "./SignIn.css";
 import logo from "@/assets/logo.svg";
@@ -61,7 +62,11 @@ const SignIn = () => {
                         username: "The username you specified are not correct.",
                     }));
                 } else if (status === 200) {
-                    navigate("/");
+                    const decode = jwtDecode(
+                        sessionStorage.getItem("accessToken")
+                    );
+                    if (decode.role === "USER") navigate("/");
+                    else navigate("/admin");
                 } else if (status === 401) {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
