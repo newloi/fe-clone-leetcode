@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import HeaderHome from "@/components/Header/HeaderHome";
 import "./Home.css";
 import apiUrl from "@/config/api";
-import UserBox from "@/components/UserBox/UserBox";
 import Footer from "@/components/Footer/Footer";
 import debounce from "lodash.debounce";
 

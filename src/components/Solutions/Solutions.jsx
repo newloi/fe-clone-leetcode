@@ -20,7 +20,7 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
             .catch((error) => {
                 console.error("get solutions error: ", error);
             });
-    }, [problemId, page]);
+    }, [page]);
 
     return (
         <div className="solutions-container">

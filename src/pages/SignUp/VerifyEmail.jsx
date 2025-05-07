@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import { handleEnter } from "../SignIn/SignIn";
 import "./VerifyEmail.css";
 import apiUrl from "@/config/api";
 
@@ -14,6 +15,12 @@ const VerifyEmail = () => {
     const [error, setError] = useState("");
     const [countdown, setCountdown] = useState("60");
     const [isActive, setIsActive] = useState(false);
+
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
 
     // update values when user is typing...
     const handleChange = (e) => {
@@ -100,11 +107,15 @@ const VerifyEmail = () => {
             </p>
             <div className="verify-container">
                 <input
+                    ref={inputRef}
                     className="input input-without-icon input-code"
                     type="text"
                     maxLength="8"
                     placeholder="Enter your code"
                     onInput={handleChange}
+                    onKeyDown={(e) => {
+                        handleEnter(e, handleVerify);
+                    }}
                 />
                 <p className="error-message">{error}</p>
             </div>

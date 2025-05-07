@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -18,6 +18,13 @@ const SignIn = () => {
         username: "",
         password: "",
     });
+
+    const inputUsername = useRef(null);
+    const inputPassword = useRef(null);
+
+    useEffect(() => {
+        inputUsername.current?.focus();
+    }, []);
 
     const navigate = useNavigate();
 
@@ -72,7 +79,7 @@ const SignIn = () => {
                         ...prevErrors,
                         password: "The password you specified are not correct.",
                     }));
-                } else console.error("another error!");
+                }
             });
         }
     };
@@ -115,22 +122,35 @@ const SignIn = () => {
                 <img src={logo} alt="LeetCode Logo" />
                 <form action="" className="signup">
                     <input
+                        ref={inputUsername}
                         type="text"
                         className="input input-without-icon"
                         name="username"
                         placeholder="Username or E-mail"
                         onChange={handleChange}
                         onInput={handleInput}
+                        onKeyDown={(e) => {
+                            handleEnter(
+                                e,
+                                handleSubmit,
+                                inputPassword,
+                                account
+                            );
+                        }}
                     />
                     <p className="error-message">{errors.username}</p>
                     <label className="input input-with-icon">
                         <input
+                            ref={inputPassword}
                             type={showPassword ? "text" : "password"}
                             name="password"
                             className=""
                             placeholder="Password"
                             onChange={handleChange}
                             onInput={handleInput}
+                            onKeyDown={(e) => {
+                                handleEnter(e, handleSubmit);
+                            }}
                         />
                         <i
                             className={
@@ -169,3 +189,13 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
+export const handleEnter = (e, handleEnter, nextRef, object) => {
+    if (e.key === "Enter") {
+        if (nextRef) {
+            if (Object.values(object).every((value) => value !== ""))
+                handleEnter();
+            else nextRef.current?.focus();
+        } else handleEnter();
+    }
+};

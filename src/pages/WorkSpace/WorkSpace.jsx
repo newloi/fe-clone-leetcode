@@ -1,4 +1,8 @@
 import Split from "react-split";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import HeaderWorkspace from "../../components/Header/HeaderWorkspace";
 import CodeEditor from "../../components/CodeEditor/CodeEditor";
 import Problem from "../../components/Problem/Problem";
@@ -9,19 +13,24 @@ import Result from "../../components/Result/Result";
 import Submissions from "../../components/Submissions/Submissions";
 import refreshAccessToken from "../../api/refreshAccessToken";
 import Solution from "../../components/Solutions/Solution";
-import UserBox from "@/components/UserBox/UserBox";
 import "./WorkSpace.css";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import apiUrl from "@/config/api";
+import Holder from "@/components/Holder/Holder";
 
-const WorkSpace = () => {
+const WorkSpaceWrapper = () => {
     const { problemId, problemIndex } = useParams();
-    const [problem, setProblem] = useState({
-        id: problemId,
-        index: problemIndex,
-    });
+
+    return (
+        <WorkSpace
+            key={problemId}
+            problemId={problemId}
+            problemIndex={problemIndex}
+        />
+    );
+};
+
+const WorkSpace = ({ problemId, problemIndex }) => {
+    const [index, setIndex] = useState(Number(problemIndex));
     const [data, setData] = useState();
     const [code, setCode] = useState("");
     const [language, setLanguage] = useState("");
@@ -32,7 +41,7 @@ const WorkSpace = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${apiUrl}/v1/problems/${problem.id}`)
+        fetch(`${apiUrl}/v1/problems/${problemId}`)
             .then((res) => res.json())
             .then((data) => {
                 setData(data);
@@ -41,22 +50,18 @@ const WorkSpace = () => {
             .catch((error) => {
                 console.error(error);
             });
-    }, [problem.id]);
+    }, []);
 
     const toggleSidebar = () => {
         setIsSidebarOpen((prev) => !prev);
     };
 
-    const changeProblem = (newId, newIndex) => {
-        setProblem({ id: newId, index: newIndex });
-    };
-
     const preProblem = () => {
-        setProblem((prev) => ({ id: prev.id, index: prev.index - 1 }));
+        setIndex((prev) => prev - 1);
     };
 
     const nextProblem = () => {
-        setProblem((prev) => ({ id: prev.id, index: prev.index + 1 }));
+        setIndex((prev) => prev + 1);
     };
 
     const handleSubmitCode = async () => {
@@ -72,7 +77,7 @@ const WorkSpace = () => {
                     "X-CSRF-Token": csrfToken,
                 },
                 body: JSON.stringify({
-                    problemId: problem.id,
+                    problemId: problemId,
                     language: language,
                     code: code,
                 }),
@@ -81,26 +86,31 @@ const WorkSpace = () => {
 
         try {
             let accessToken = sessionStorage.getItem("accessToken");
-            let res = await sendRequest(accessToken);
+            if (accessToken) {
+                let res = await sendRequest(accessToken);
 
-            if (res.status === 401) {
-                const refreshed = await refreshAccessToken();
-                if (!refreshed) {
-                    toast.error(
-                        "Your session has expired. Please log in again.",
-                        { autoClose: 3000 }
-                    );
-                    navigate("/sign-in");
-                    return;
+                if (res.status === 401) {
+                    const refreshed = await refreshAccessToken();
+                    if (!refreshed) {
+                        toast.error(
+                            "Your session has expired. Please log in again.",
+                            { autoClose: 3000 }
+                        );
+                        navigate("/sign-in");
+                        return;
+                    }
+
+                    accessToken = sessionStorage.getItem("accessToken");
+                    res = await sendRequest(accessToken);
                 }
 
-                accessToken = sessionStorage.getItem("accessToken");
-                res = await sendRequest(accessToken);
-            }
-
-            const data = await res.json();
-            setResultId(data._id);
-            setTab("result");
+                const data = await res.json();
+                setResultId(data._id);
+                setTab("result");
+            } else
+                toast.error("You need to Log in to Submit.", {
+                    autoClose: 3000,
+                });
         } catch (error) {
             console.error("submit error: ", error);
         }
@@ -111,8 +121,7 @@ const WorkSpace = () => {
             <div className={`sidebar ${isSidebarOpen ? "" : "close"}`}>
                 <Sidebar
                     toggleSidebar={toggleSidebar}
-                    changeProblem={changeProblem}
-                    selectedProblemIndex={problem.index}
+                    selectedProblemIndex={index}
                     newResultId={resultId}
                 />
             </div>
@@ -208,7 +217,7 @@ const WorkSpace = () => {
                             }`}
                         >
                             <Solutions
-                                problemId={problem.id}
+                                problemId={problemId}
                                 setTabSolution={setTab}
                                 setSolutionId={setSolutionId}
                             />
@@ -225,12 +234,16 @@ const WorkSpace = () => {
                                 tab === "submissions" ? "" : "hidden"
                             }`}
                         >
-                            <Submissions
-                                problemId={problem.id}
-                                setResultId={setResultId}
-                                setTabResult={setTab}
-                                newResultId={resultId}
-                            />
+                            {sessionStorage.getItem("accessToken") ? (
+                                <Submissions
+                                    problemId={problemId}
+                                    setResultId={setResultId}
+                                    setTabResult={setTab}
+                                    newResultId={resultId}
+                                />
+                            ) : (
+                                <Holder />
+                            )}
                         </div>
                         <div
                             className={`container-tab ${
@@ -254,7 +267,7 @@ const WorkSpace = () => {
                                     </div>
                                 </div>
                                 <CodeEditor
-                                    problemId={problem.id}
+                                    problemId={problemId}
                                     languages={data?.supports}
                                     setCode={setCode}
                                     code={code}
@@ -283,4 +296,4 @@ const WorkSpace = () => {
     );
 };
 
-export default WorkSpace;
+export default WorkSpaceWrapper;

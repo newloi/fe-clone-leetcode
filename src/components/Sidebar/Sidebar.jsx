@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import apiUrl from "../../config/api";
 import Footer from "../Footer/Footer";
 
-const Sidebar = ({
-    toggleSidebar,
-    changeProblem,
-    selectedProblemIndex,
-    newResultId,
-}) => {
+const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     const [problems, setProblems] = useState([]);
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = sessionStorage.getItem("accessToken");
@@ -37,7 +34,9 @@ const Sidebar = ({
         if (size > 0) {
             const currProblemIndex =
                 ((selectedProblemIndex % size) + size) % size;
-            changeProblem(problems[currProblemIndex]._id, currProblemIndex);
+            navigate(
+                `/problem/${problems[currProblemIndex]._id}/${currProblemIndex}`
+            );
         }
     }, [selectedProblemIndex, problems]);
 
@@ -59,7 +58,7 @@ const Sidebar = ({
                                 selectedProblemIndex === index ? "selected" : ""
                             }`}
                             onClick={() => {
-                                changeProblem(problem._id, index);
+                                navigate(`/problem/${problem._id}/${index}`);
                                 toggleSidebar();
                             }}
                         >

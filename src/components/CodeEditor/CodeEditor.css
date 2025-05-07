@@ -22,3 +22,23 @@
     width: fit-content;
     color: #B1B1B1;
 }
+
+.footer-editor {
+    background-color: #0a84ff2e;
+    height: 36px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 20px;
+    color: #eff1f6bf;
+}
+
+.footer-editor .blue-span {
+    color: rgb(10 132 255);
+    font-weight: 500;
+    margin: 0 4px;
+}
+
+.footer-editor .blue-span:hover {
+    text-decoration: underline;
+}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import "./HeaderWorkspace.css";
 import UserBox from "../UserBox/UserBox";
@@ -14,7 +15,6 @@ const HeaderWorkspace = ({
 
     return (
         <div className="header-container">
-            <UserBox isClose={isCloseUserBox} setIsClose={setIsCloseUserBox} />
             <div className="group-left-header">
                 {/* <img src={logo} alt="logo" className="avatar" /> */}
                 <button
@@ -52,12 +52,31 @@ const HeaderWorkspace = ({
                 <button className="action-btn no-background-btn">
                     <i className="fa-solid fa-gear medium-icon" />
                 </button>
-                <i
-                    className="fa-regular fa-circle-user big-icon"
-                    onClick={() => {
-                        setIsCloseUserBox((pre) => !pre);
-                    }}
-                ></i>
+                {sessionStorage.getItem("accessToken") ? (
+                    <div>
+                        <UserBox
+                            isClose={isCloseUserBox}
+                            setIsClose={setIsCloseUserBox}
+                        />
+                        <span
+                            onClick={() => {
+                                setIsCloseUserBox((pre) => !pre);
+                            }}
+                        >
+                            <i className="fa-regular fa-circle-user big-icon" />
+                        </span>
+                    </div>
+                ) : (
+                    <div>
+                        <span>
+                            <Link to="/sign-up">Register</Link>
+                        </span>{" "}
+                        or{" "}
+                        <span>
+                            <Link to="/sign-in">Sign in</Link>
+                        </span>
+                    </div>
+                )}
             </div>
         </div>
     );

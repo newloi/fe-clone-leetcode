@@ -56,6 +56,7 @@ const UserBox = ({ isClose, setIsClose }) => {
             credentials: "include",
         });
 
+        sessionStorage.removeItem("accessToken");
         navigate("/sign-in");
     };
 

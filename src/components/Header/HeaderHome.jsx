@@ -9,10 +9,13 @@ const HeaderHome = () => {
     const [isCloseUserBox, setIsCloseUserBox] = useState(true);
     return (
         <div className="header-container header-home">
-            <UserBox isClose={isCloseUserBox} setIsClose={setIsCloseUserBox} />
             <img src={logo} alt="LeetClone" />
             {sessionStorage.getItem("accessToken") ? (
                 <div>
+                    <UserBox
+                        isClose={isCloseUserBox}
+                        setIsClose={setIsCloseUserBox}
+                    />
                     <span
                         onClick={() => {
                             setIsCloseUserBox((pre) => !pre);

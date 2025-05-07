@@ -59,7 +59,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
 
         if (problemId) getSubmissions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [problemId, newResultId, page]);
+    }, [newResultId, page]);
 
     const handleSelectResult = (id) => {
         setResultId(id);

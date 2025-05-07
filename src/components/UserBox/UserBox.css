@@ -48,7 +48,6 @@
 .user-actions {
     color: #ffffff99;
     font-size: 16px;
-    margin-left: 10px;
     display: flex;
     flex-direction: column;
 }

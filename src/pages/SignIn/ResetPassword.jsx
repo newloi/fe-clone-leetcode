@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
+import { handleEnter } from "./SignIn";
 import apiUrl from "@/config/api";
 
 export const ResetPassword = () => {
@@ -9,6 +11,12 @@ export const ResetPassword = () => {
 
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
+
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    });
 
     // clear error when user is typing...
     const handleInput = () => {
@@ -35,15 +43,11 @@ export const ResetPassword = () => {
         if (email) {
             getStatusPasswordReset().then((status) => {
                 if (status === 200) {
-                    console.log("Success! Navigate to verify email");
                     navigate(`/forgot-password/change-password/${email}`);
-                } else {
-                    console.log("Something is wrong");
                 }
             });
         } else {
             setError("Required");
-            console.log("empty email");
         }
     };
 
@@ -60,7 +64,6 @@ export const ResetPassword = () => {
             }),
         })
             .then((response) => {
-                console.log("Password reset status: ", response.status);
                 return response.status;
             })
             .catch((error) => console.error("Password reset error: ", error));
@@ -76,12 +79,16 @@ export const ResetPassword = () => {
             </p>
             <div className="form-group">
                 <input
+                    ref={inputRef}
                     type="email"
                     className="input input-without-icon"
                     placeholder="E-mail address"
                     onChange={handleChange}
                     onInput={handleInput}
                     onBlur={handleInvalidation}
+                    onKeyDown={(e) => {
+                        handleEnter(e, handleSubmit);
+                    }}
                 />
                 <p className="error-message">{error}</p>
             </div>
@@ -107,7 +114,15 @@ export const ChangePassword = () => {
         code: "",
     });
     const [showPassword, setShowPassword] = useState(false);
-    // const navigate = useNavigate();
+
+    const inputPassword = useRef(null);
+    const inputConfirmPassword = useRef(null);
+    const inputCode = useRef(null);
+
+    useEffect(() => {
+        inputCode.current?.focus();
+    }, []);
+    const navigate = useNavigate();
 
     // update account when user is typing...
     const handleChange = (e) => {
@@ -175,25 +190,22 @@ export const ChangePassword = () => {
                 }));
 
                 isValid = false;
-                console.log("Invalid input");
             }
         }
         if (isValid) {
             getStatusChangePassword().then((status) => {
                 if (status === 200) {
-                    alert("Password change successful!");
-                    console.log("Successful! Navigate to home page");
                     toast.success(
                         "Your password has been changed successfully.",
                         { autoClose: 3000 }
                     );
+                    navigate("/sign-in");
                 } else if (status === 400) {
                     setErrors({
                         ...errors,
                         code: "Wrong code!",
                     });
-                    console.error("Wrong code");
-                } else console.error("another error!");
+                }
             });
         }
     };
@@ -211,20 +223,19 @@ export const ChangePassword = () => {
                 password: passwords.password,
             }),
         })
-            .then((response) => {
-                console.log("Change password status: ", response.status);
-                return response.status;
-            })
+            .then((response) => response.status)
             .catch((error) => {
-                console.log("Change password error: ", error);
+                console.error("Change password error: ", error);
             });
     };
+
     return (
         <div className="reset-form">
             <h3 className="reset-form-heading">Change Password</h3>
             <hr />
             <div className="form-group">
                 <input
+                    ref={inputCode}
                     type="text"
                     className="input input-without-icon"
                     name="code"
@@ -232,10 +243,14 @@ export const ChangePassword = () => {
                     onChange={handleChange}
                     onBlur={handleInvalidation}
                     onInput={handleInput}
+                    onKeyDown={(e) => {
+                        handleEnter(e, handleSubmit, inputPassword, passwords);
+                    }}
                 />
                 <p className="error-message">{errors.code}</p>
                 <label className="input input-with-icon">
                     <input
+                        ref={inputPassword}
                         type={showPassword ? "text" : "password"}
                         className=""
                         name="newPassword"
@@ -243,6 +258,14 @@ export const ChangePassword = () => {
                         onChange={handleChange}
                         onBlur={handleInvalidation}
                         onInput={handleInput}
+                        onKeyDown={(e) => {
+                            handleEnter(
+                                e,
+                                handleSubmit,
+                                inputConfirmPassword,
+                                passwords
+                            );
+                        }}
                     />
                     <i
                         className={
@@ -256,6 +279,7 @@ export const ChangePassword = () => {
                 <p className="error-message">{errors.newPassword}</p>
                 <label className="input input-with-icon">
                     <input
+                        ref={inputConfirmPassword}
                         type={showPassword ? "text" : "password"}
                         className=""
                         name="confirmNewPassword"
@@ -263,6 +287,9 @@ export const ChangePassword = () => {
                         onChange={handleChange}
                         onBlur={handleInvalidation}
                         onInput={handleInput}
+                        onKeyDown={(e) => {
+                            handleEnter(e, handleSubmit);
+                        }}
                     />
                     <i
                         className={

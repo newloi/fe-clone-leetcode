@@ -1,4 +1,6 @@
 import Editor from "@monaco-editor/react";
+import { Link } from "react-router-dom";
+
 import "./CodeEditor.css";
 import { useEffect } from "react";
 import apiUrl from "@/config/api";
@@ -23,8 +25,8 @@ const CodeEditor = ({
                 console.error("error get function declaration: ", error);
             }
         };
-        fetchData();
-    }, [language, problemId]);
+        if (language) fetchData();
+    }, [language]);
 
     const handleChangeLanguage = (e) => {
         setLanguage(e.target.value);
@@ -52,7 +54,15 @@ const CodeEditor = ({
                     })}
                 </select>
             </div>
-            {/* <hr className="light-line" /> */}
+            {!sessionStorage.getItem("accessToken") && (
+                <div className="footer-editor">
+                    You need to
+                    <Link to="/sign-in" className="blue-span">
+                        Login / Sign up
+                    </Link>{" "}
+                    to run or submit
+                </div>
+            )}
             <Editor
                 height="100%"
                 language={language}

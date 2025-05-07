@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { handleEnter } from "../SignIn/SignIn";
 import "./SignUp.css";
 import logo from "@/assets/logo.svg";
 import apiUrl from "@/config/api";
@@ -27,6 +28,15 @@ const SignUp = () => {
 
     // show password or not
     const [showPassword, setShowPassword] = useState(false);
+
+    const inputUsername = useRef(null);
+    const inputPassword = useRef(null);
+    const inputConfirmPassword = useRef(null);
+    const inputEmail = useRef(null);
+
+    useEffect(() => {
+        inputUsername.current?.focus();
+    }, []);
 
     const navigate = useNavigate();
 
@@ -159,6 +169,7 @@ const SignUp = () => {
                 <img src={logo} alt="LeetCode Logo" />
                 <form className="signup">
                     <input
+                        ref={inputUsername}
                         type="text"
                         className="input input-without-icon"
                         name="username"
@@ -166,10 +177,19 @@ const SignUp = () => {
                         onChange={handleChange}
                         onBlur={handleInvalidation}
                         onInput={handleInput}
+                        onKeyDown={(e) => {
+                            handleEnter(
+                                e,
+                                handleSubmit,
+                                inputPassword,
+                                account
+                            );
+                        }}
                     />
                     <p className="error-message">{errors.username}</p>
                     <label className="input input-with-icon">
                         <input
+                            ref={inputPassword}
                             type={showPassword ? "text" : "password"}
                             className=""
                             name="password"
@@ -177,6 +197,14 @@ const SignUp = () => {
                             onChange={handleChange}
                             onBlur={handleInvalidation}
                             onInput={handleInput}
+                            onKeyDown={(e) => {
+                                handleEnter(
+                                    e,
+                                    handleSubmit,
+                                    inputConfirmPassword,
+                                    account
+                                );
+                            }}
                         />
                         <i
                             className={
@@ -190,6 +218,7 @@ const SignUp = () => {
                     <p className="error-message">{errors.password}</p>
                     <label className="input input-with-icon">
                         <input
+                            ref={inputConfirmPassword}
                             type={showPassword ? "text" : "password"}
                             className=""
                             name="confirmPassword"
@@ -197,6 +226,14 @@ const SignUp = () => {
                             onChange={handleChange}
                             onBlur={handleInvalidation}
                             onInput={handleInput}
+                            onKeyDown={(e) => {
+                                handleEnter(
+                                    e,
+                                    handleSubmit,
+                                    inputEmail,
+                                    account
+                                );
+                            }}
                         />
                         <i
                             className={
@@ -209,6 +246,7 @@ const SignUp = () => {
                     </label>
                     <p className="error-message">{errors.confirmPassword}</p>
                     <input
+                        ref={inputEmail}
                         type="email"
                         className="input input-without-icon"
                         name="email"
@@ -216,6 +254,9 @@ const SignUp = () => {
                         onChange={handleChange}
                         onBlur={handleInvalidation}
                         onInput={handleInput}
+                        onKeyDown={(e) => {
+                            handleEnter(e, handleSubmit);
+                        }}
                     />
                     <p className="error-message">{errors.email}</p>
                 </form>
