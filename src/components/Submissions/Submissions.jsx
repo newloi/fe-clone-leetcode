@@ -10,12 +10,14 @@ import Footer from "../Footer/Footer";
 
 const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
     const [submissions, setSubmissions] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
-    const [maxPage, setMaxPage] = useState();
+    const [maxPage, setMaxPage] = useState(1);
 
     useEffect(() => {
         const getSubmissions = async () => {
+            setIsLoading(true);
             const sendRequest = async (token) => {
                 return await fetch(
                     `${apiUrl}/v1/submissions?problemId=${problemId}&page=${page}`,
@@ -50,10 +52,12 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                     res = await sendRequest(accessToken);
                 }
                 const data = await res.json();
-                setSubmissions(data.data);
-                setMaxPage(data.maxPage);
+                setSubmissions(data.data || []);
+                setMaxPage(data.maxPage || 1);
             } catch (error) {
-                console.error("submissions error: ", error);
+                setSubmissions([]);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -67,7 +71,9 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
 
     return (
         <div className="submissions-container">
-            {submissions.length !== 0 ? (
+            {isLoading ? (
+                <div className="loading">Loading submissions...</div>
+            ) : submissions && submissions.length > 0 ? (
                 <>
                     <div className="header-submissions">
                         <span className="status-submissions">Status</span>
@@ -78,7 +84,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                         </span>
                     </div>
                     <div className="body-submissions scrollable">
-                        {submissions?.map((submission, index) => {
+                        {submissions.map((submission, index) => {
                             const createdAt = formatDistanceToNow(
                                 new Date(submission.createdAt),
                                 { addSuffix: true }
@@ -87,11 +93,10 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
 
                             return (
                                 <div
-                                    className={`submission-card ${
-                                        index % 2 === 1
-                                            ? "light-background"
-                                            : ""
-                                    }`}
+                                    className={`submission-card ${index % 2 === 1
+                                        ? "light-background"
+                                        : ""
+                                        }`}
                                     key={index}
                                     onClick={() => {
                                         handleSelectResult(submission._id);
@@ -102,37 +107,36 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                                         {index + 1}
                                     </span>
                                     <span
-                                        className={`status-submissions ${
-                                            status === "ACCEPTED"
-                                                ? "accept-status"
-                                                : "error-status"
-                                        }`}
+                                        className={`status-submissions ${status === "ACCEPTED"
+                                            ? "accept-status"
+                                            : "error-status"
+                                            }`}
                                     >
                                         {status === "WRONG_ANSWER"
                                             ? "Wrong Answer"
                                             : status === "COMPILE_ERROR"
-                                            ? "Compile Error"
-                                            : "Accepted"}
+                                                ? "Compile Error"
+                                                : "Accepted"}
                                     </span>
                                     <span className="language-submissions">
                                         <span className="tag">
                                             {submission.language ===
-                                            "javascript"
+                                                "javascript"
                                                 ? "JavaScript"
                                                 : submission.language ===
-                                                  "python"
-                                                ? "Python"
-                                                : submission.language === "cpp"
-                                                ? "C++"
-                                                : "Java"}
+                                                    "python"
+                                                    ? "Python"
+                                                    : submission.language === "cpp"
+                                                        ? "C++"
+                                                        : "Java"}
                                         </span>
                                     </span>
                                     <span className="runtime-submissions">
                                         <i className="fa-regular fa-clock"></i>{" "}
                                         {status === "ACCEPTED"
                                             ? `${Math.round(
-                                                  submission.runtime
-                                              )} ms`
+                                                submission.runtime
+                                            )} ms`
                                             : "N/A"}
                                     </span>
                                     <span className="createdAt-submissions">
@@ -141,7 +145,6 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                                 </div>
                             );
                         })}
-                        {/* <Footer page={page} setPage={setPage} maxPage={maxPage} /> */}
                     </div>
                     <div style={{ marginBottom: "30px" }}>
                         <Footer
