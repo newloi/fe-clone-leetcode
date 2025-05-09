@@ -21,12 +21,13 @@
     color: #eff1f6bf;
     font-weight: 400;
     flex: 1;
+    padding-bottom: 40px;
 }
 
 .submission-card {
     display: flex;
     flex-direction: row;
-    padding: 15px 15px;
+    padding: 20px 15px;
     cursor: pointer;
 }
 
@@ -70,6 +71,10 @@
 
 .accept-status {
     color: rgb(44 187 93);
+}
+
+.createdAt-submissions {
+    flex: 1;
 }
 
 @media (max-width: 768px) {

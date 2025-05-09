@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import debounce from "lodash.debounce";
+
 import "./Sidebar.css";
 import apiUrl from "../../config/api";
-import Footer from "../Footer/Footer";
 
 const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     const [problems, setProblems] = useState([]);
@@ -21,9 +22,10 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
             },
         })
             .then((res) => res.json())
-            .then((res) => {
-                setMaxPage(res.maxPage);
-                setProblems(res.data);
+            .then((data) => {
+                setMaxPage(data.maxPage);
+                if (page === 1) setProblems(data.data);
+                else setProblems((prev) => [...prev, ...data.data]);
             })
             .catch((error) => console.error("Sidebar api error: ", error));
     }, [newResultId, page]);
@@ -40,6 +42,21 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
         }
     }, [selectedProblemIndex, problems]);
 
+    const handleScroll = useCallback(
+        debounce(() => {
+            if (page < maxPage) {
+                const scrollTop = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+
+                if (scrollTop + windowHeight >= documentHeight - 500) {
+                    setPage((prev) => prev + 1);
+                }
+            }
+        }, 500),
+        [page, maxPage]
+    );
+
     return (
         <div className="container-sidebar">
             <div className="header-sidebar">
@@ -49,11 +66,11 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
                 </button>
             </div>
 
-            <div className="mobile-footer">
+            {/* <div className="mobile-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />
-            </div>
+            </div> */}
 
-            <div className="problems scrollable">
+            <div className="problems scrollable" onScroll={handleScroll}>
                 {problems?.map((problem, index) => {
                     return (
                         <div
@@ -98,9 +115,9 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
                     );
                 })}
             </div>
-            <div className="desktop-footer">
+            {/* <div className="desktop-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />
-            </div>
+            </div> */}
         </div>
     );
 };

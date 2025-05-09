@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import debounce from "lodash.debounce";
 
 import HeaderHome from "@/components/Header/HeaderHome";
 import "./Home.css";
 import apiUrl from "@/config/api";
-import Footer from "@/components/Footer/Footer";
 import resendEmail from "@/api/resendEmail";
-import debounce from "lodash.debounce";
 
 const Home = () => {
     const [problems, setProblems] = useState([]);
@@ -16,7 +15,6 @@ const Home = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearching, setIsSearching] = useState(false);
     const [isShowBanner, setIsShowBanner] = useState(false);
-
     const [decode, setDecode] = useState(null);
 
     useEffect(() => {
@@ -42,7 +40,8 @@ const Home = () => {
             });
             const data = await response.json();
             setMaxPage(data.maxPage);
-            setProblems(data.data);
+            if (page === 1) setProblems(data.data);
+            else setProblems((prev) => [...prev, ...data.data]);
         } catch (error) {
             console.error("Error fetching problems:", error);
         }
@@ -106,6 +105,21 @@ const Home = () => {
         fetchProblems();
     };
 
+    const handleScroll = useCallback(
+        debounce(() => {
+            if (page < maxPage) {
+                const scrollTop = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+
+                if (scrollTop + windowHeight >= documentHeight - 500) {
+                    setPage((prev) => prev + 1);
+                }
+            }
+        }, 500),
+        [page, maxPage]
+    );
+
     return (
         <div className="container-home">
             <HeaderHome />
@@ -143,7 +157,7 @@ const Home = () => {
                     </div>
                 </>
             )}
-            <div className="body-home">
+            <div className="body-home" onScroll={handleScroll}>
                 <div className="greeting">
                     <h1>Welcome to LeetClone 🎉🎉🎉</h1>
                 </div>
@@ -167,11 +181,11 @@ const Home = () => {
                     </div>
                 </div>
 
-                <div className="footer-home mobile-footer">
+                {/* <div className="footer-home mobile-footer">
                     <Footer page={page} setPage={setPage} maxPage={maxPage} />
-                </div>
+                </div> */}
 
-                <div className="problems scrollable problems-home">
+                <div className="problems problems-home">
                     {isSearching && problems.length === 0 ? (
                         <div className="no-results">
                             <p>No problems found matching "{searchQuery}"</p>
@@ -227,9 +241,9 @@ const Home = () => {
                     )}
                 </div>
             </div>
-            <div className="footer-home desktop-footer">
+            {/* <div className="footer-home desktop-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />
-            </div>
+            </div> */}
         </div>
     );
 };

@@ -1,26 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "react-toastify";
+import debounce from "lodash.debounce";
+
 import "./Submissions.css";
 import apiUrl from "../../config/api";
 import nullImg from "../../assets/null.png";
 import { useNavigate } from "react-router-dom";
 import refreshAccessToken from "../../api/refreshAccessToken";
-import Footer from "../Footer/Footer";
 
 const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
     const [submissions, setSubmissions] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState(1);
 
     useEffect(() => {
+        setPage(1);
+    }, [newResultId]);
+
+    useEffect(() => {
         const getSubmissions = async () => {
-            setIsLoading(true);
             const sendRequest = async (token) => {
                 return await fetch(
-                    `${apiUrl}/v1/submissions?problemId=${problemId}&page=${page}`,
+                    `${apiUrl}/v1/submissions?problemId=${problemId}&page=${page}&limit=15`,
                     {
                         method: "GET",
                         headers: {
@@ -52,37 +55,41 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                     res = await sendRequest(accessToken);
                 }
                 const data = await res.json();
-                setSubmissions(data.data || []);
-                setMaxPage(data.maxPage || 1);
+                if (page === 1) setSubmissions(data.data);
+                else setSubmissions((prev) => [...prev, ...data.data]);
+                setMaxPage(data.maxPage);
             } catch (error) {
                 console.error("submissions error: ", error);
-                setSubmissions([]);
-            } finally {
-                setIsLoading(false);
             }
         };
 
         if (problemId) getSubmissions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [newResultId, page]);
+    }, [page]);
 
     const handleSelectResult = (id) => {
         setResultId(id);
     };
 
+    const handleScroll = useCallback(
+        debounce(() => {
+            if (page < maxPage) {
+                const scrollTop = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+
+                if (scrollTop + windowHeight >= documentHeight - 500) {
+                    setPage((prev) => prev + 1);
+                }
+            }
+        }, 500),
+        [page, maxPage]
+    );
+
     return (
         <div className="submissions-container">
-            {isLoading ? (
-                <div className="loading">Loading submissions...</div>
-            ) : submissions && submissions.length > 0 ? (
+            {submissions && submissions.length > 0 ? (
                 <>
-                    <div className="mobile-footer">
-                        <Footer
-                            page={page}
-                            setPage={setPage}
-                            maxPage={maxPage}
-                        />
-                    </div>
                     <div className="header-submissions">
                         <span className="status-submissions">Status</span>
                         <span className="language-submissions">Language</span>
@@ -92,7 +99,10 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                         </span>
                     </div>
 
-                    <div className="body-submissions scrollable">
+                    <div
+                        className="body-submissions scrollable"
+                        onScroll={handleScroll}
+                    >
                         {submissions.map((submission, index) => {
                             const createdAt = formatDistanceToNow(
                                 new Date(submission.createdAt),
@@ -156,16 +166,6 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                                 </div>
                             );
                         })}
-                    </div>
-                    <div
-                        style={{ marginBottom: "30px" }}
-                        className="desktop-footer"
-                    >
-                        <Footer
-                            page={page}
-                            setPage={setPage}
-                            maxPage={maxPage}
-                        />
                     </div>
                 </>
             ) : (
