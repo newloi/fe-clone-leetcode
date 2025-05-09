@@ -42,7 +42,15 @@ const WorkSpace = ({ problemId, problemIndex }) => {
     const [solutionId, setSolutionId] = useState("");
     const navigate = useNavigate();
 
-    const decode = jwtDecode(sessionStorage.getItem("accessToken"));
+    const [decode, setDecode] = useState(null);
+
+    useEffect(() => {
+        const accessToken = sessionStorage.getItem("accessToken");
+        if (accessToken) {
+            const decoded = jwtDecode(accessToken);
+            setDecode(decoded);
+        }
+    }, []);
 
     useEffect(() => {
         fetch(`${apiUrl}/v1/problems/${problemId}`)
@@ -91,7 +99,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
         try {
             let accessToken = sessionStorage.getItem("accessToken");
             if (accessToken) {
-                if (decode.isVerify) {
+                if (decode.isVerified) {
                     let res = await sendRequest(accessToken);
 
                     if (res.status === 401) {
@@ -264,7 +272,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                             }`}
                         >
                             {sessionStorage.getItem("accessToken") ? (
-                                decode.isVerify ? (
+                                decode?.isVerified ? (
                                     <Submissions
                                         problemId={problemId}
                                         setResultId={setResultId}

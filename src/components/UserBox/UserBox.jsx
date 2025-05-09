@@ -1,11 +1,24 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
 import "./UserBox.css";
 import apiUrl from "@/config/api";
 import refreshAccessToken from "@/api/refreshAccessToken";
+import resendEmail from "@/api/resendEmail";
 
 const UserBox = ({ isClose, setIsClose }) => {
+    const [decode, setDecode] = useState(null);
+
+    useEffect(() => {
+        const accessToken = sessionStorage.getItem("accessToken");
+        if (accessToken) {
+            const decoded = jwtDecode(accessToken);
+            setDecode(decoded);
+        }
+    }, []);
+
     const [userProfile, setUserProfile] = useState();
     const navigate = useNavigate();
     useEffect(() => {
@@ -46,9 +59,9 @@ const UserBox = ({ isClose, setIsClose }) => {
             }
         };
 
-        if (sessionStorage.getItem("accessToken")) getProfile();
+        if (decode?.isVerified) getProfile();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [decode]);
 
     const handleLogOut = () => {
         fetch(`${apiUrl}/v1/auth/logout`, {
@@ -71,9 +84,22 @@ const UserBox = ({ isClose, setIsClose }) => {
             <div className={`user-box ${isClose ? "hidden" : ""}`}>
                 <div className="user-infor">
                     <i className="fa-regular fa-circle-user big-icon" />{" "}
-                    <span>{userProfile?.name}</span>
+                    <span>{userProfile?.name || "Username"}</span>
                 </div>
                 <div className="user-actions">
+                    {!decode?.isVerified && (
+                        <span
+                            onClick={() => {
+                                resendEmail(decode.email);
+                                navigate(
+                                    `/sign-up/verify-email/${decode.email}`
+                                );
+                            }}
+                        >
+                            <i className="fa-solid fa-user-check" /> Verify
+                            Email
+                        </span>
+                    )}
                     <span>
                         <i className="fa-solid fa-gear" /> Settings
                     </span>

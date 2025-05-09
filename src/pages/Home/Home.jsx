@@ -10,14 +10,23 @@ import resendEmail from "@/api/resendEmail";
 import debounce from "lodash.debounce";
 
 const Home = () => {
-    const decode = jwtDecode(sessionStorage.getItem("accessToken"));
-
     const [problems, setProblems] = useState([]);
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearching, setIsSearching] = useState(false);
-    const [isShowBanner, setIsShowBanner] = useState(!decode.isVerify);
+    const [isShowBanner, setIsShowBanner] = useState(false);
+
+    const [decode, setDecode] = useState(null);
+
+    useEffect(() => {
+        const token = sessionStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            setDecode(decoded);
+            setIsShowBanner(!decoded.isVerified);
+        }
+    }, []);
 
     const navigate = useNavigate();
 
@@ -100,7 +109,7 @@ const Home = () => {
     return (
         <div className="container-home">
             <HeaderHome />
-            {isShowBanner ? (
+            {isShowBanner && (
                 <>
                     <div
                         className="overlay dark-overlay"
@@ -133,8 +142,6 @@ const Home = () => {
                         </div>
                     </div>
                 </>
-            ) : (
-                <></>
             )}
             <div className="body-home">
                 <div className="greeting">

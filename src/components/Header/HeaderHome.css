@@ -15,7 +15,7 @@
     height: auto;
 }
 
-.header-home span {
+.header-home>div>span {
     font-weight: 400;
     margin: 10px;
     cursor: pointer;
