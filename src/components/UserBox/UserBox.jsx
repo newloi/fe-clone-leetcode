@@ -63,7 +63,7 @@ const UserBox = ({ isClose, setIsClose }) => {
     return (
         <>
             <div
-                className={`overlay-userbox ${isClose ? "hidden" : ""}`}
+                className={`overlay ${isClose ? "hidden" : ""}`}
                 onClick={() => {
                     setIsClose(true);
                 }}

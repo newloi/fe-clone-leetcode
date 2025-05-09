@@ -2,6 +2,7 @@ import Split from "react-split";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 import HeaderWorkspace from "../../components/Header/HeaderWorkspace";
 import CodeEditor from "../../components/CodeEditor/CodeEditor";
@@ -16,6 +17,7 @@ import Solution from "../../components/Solutions/Solution";
 import "./WorkSpace.css";
 import apiUrl from "@/config/api";
 import Holder from "@/components/Holder/Holder";
+import resendEmail from "@/api/resendEmail";
 
 const WorkSpaceWrapper = () => {
     const { problemId, problemIndex } = useParams();
@@ -39,6 +41,8 @@ const WorkSpace = ({ problemId, problemIndex }) => {
     const [tab, setTab] = useState("description");
     const [solutionId, setSolutionId] = useState("");
     const navigate = useNavigate();
+
+    const decode = jwtDecode(sessionStorage.getItem("accessToken"));
 
     useEffect(() => {
         fetch(`${apiUrl}/v1/problems/${problemId}`)
@@ -87,26 +91,49 @@ const WorkSpace = ({ problemId, problemIndex }) => {
         try {
             let accessToken = sessionStorage.getItem("accessToken");
             if (accessToken) {
-                let res = await sendRequest(accessToken);
+                if (decode.isVerify) {
+                    let res = await sendRequest(accessToken);
 
-                if (res.status === 401) {
-                    const refreshed = await refreshAccessToken();
-                    if (!refreshed) {
-                        toast.error(
-                            "Your session has expired. Please log in again.",
-                            { autoClose: 3000 }
-                        );
-                        navigate("/sign-in");
-                        return;
+                    if (res.status === 401) {
+                        const refreshed = await refreshAccessToken();
+                        if (!refreshed) {
+                            toast.error(
+                                "Your session has expired. Please log in again.",
+                                { autoClose: 3000 }
+                            );
+                            navigate("/sign-in");
+                            return;
+                        }
+
+                        accessToken = sessionStorage.getItem("accessToken");
+                        res = await sendRequest(accessToken);
                     }
 
-                    accessToken = sessionStorage.getItem("accessToken");
-                    res = await sendRequest(accessToken);
-                }
-
-                const data = await res.json();
-                setResultId(data._id);
-                setTab("result");
+                    const data = await res.json();
+                    setResultId(data._id);
+                    setTab("result");
+                } else
+                    toast.error(
+                        ({ closeToast }) => (
+                            <div className="toast-with-btn">
+                                <span>You need to Verify email to Submit.</span>
+                                <button
+                                    onClick={() => {
+                                        closeToast();
+                                        resendEmail(decode.email);
+                                        navigate(
+                                            `/sign-up/verify-email/${decode.email}`
+                                        );
+                                    }}
+                                >
+                                    Verify now!
+                                </button>
+                            </div>
+                        ),
+                        {
+                            autoClose: 3000,
+                        }
+                    );
             } else
                 toast.error("You need to Log in to Submit.", {
                     autoClose: 3000,
@@ -127,7 +154,9 @@ const WorkSpace = ({ problemId, problemIndex }) => {
             </div>
             <div className="workspace-container">
                 <div
-                    className={`overlay ${isSidebarOpen ? "" : "hidden"}`}
+                    className={`overlay dark-overlay ${
+                        isSidebarOpen ? "" : "hidden"
+                    }`}
                     onClick={toggleSidebar}
                 />
                 <div className="header-workspace">
@@ -235,14 +264,31 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                             }`}
                         >
                             {sessionStorage.getItem("accessToken") ? (
-                                <Submissions
-                                    problemId={problemId}
-                                    setResultId={setResultId}
-                                    setTabResult={setTab}
-                                    newResultId={resultId}
-                                />
+                                decode.isVerify ? (
+                                    <Submissions
+                                        problemId={problemId}
+                                        setResultId={setResultId}
+                                        setTabResult={setTab}
+                                        newResultId={resultId}
+                                    />
+                                ) : (
+                                    <Holder
+                                        actionText={"Verify now"}
+                                        action={() => {
+                                            resendEmail(decode.email);
+                                            navigate(
+                                                `/sign-up/verify-email/${decode.email}`
+                                            );
+                                        }}
+                                    />
+                                )
                             ) : (
-                                <Holder />
+                                <Holder
+                                    actionText={"Register or Sign In"}
+                                    action={() => {
+                                        navigate("/sign-in");
+                                    }}
+                                />
                             )}
                         </div>
                         <div

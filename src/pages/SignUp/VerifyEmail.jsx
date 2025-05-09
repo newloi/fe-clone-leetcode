@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { handleEnter } from "../SignIn/SignIn";
 import "./VerifyEmail.css";
 import apiUrl from "@/config/api";
+import resendEmail from "@/api/resendEmail";
 
 const VerifyEmail = () => {
     const { emailAddress } = useParams();
@@ -54,17 +55,7 @@ const VerifyEmail = () => {
     // handle resend code verify
     const handleResendCode = () => {
         if (!isActive) {
-            fetch(`${apiUrl}/v1/auth/resend-email`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: emailAddress,
-                    action: "verify",
-                }),
-            }).catch((error) => console.error("Error: ", error));
+            resendEmail(emailAddress);
             setIsActive(true);
             setCountdown(60);
         }

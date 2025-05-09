@@ -67,7 +67,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
 
     return (
         <div className="submissions-container">
-            {submissions.length !== 0 ? (
+            {submissions?.length !== 0 ? (
                 <>
                     <div className="header-submissions">
                         <span className="status-submissions">Status</span>

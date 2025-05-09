@@ -1,18 +1,25 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
 import HeaderHome from "@/components/Header/HeaderHome";
 import "./Home.css";
 import apiUrl from "@/config/api";
 import Footer from "@/components/Footer/Footer";
+import resendEmail from "@/api/resendEmail";
 import debounce from "lodash.debounce";
 
 const Home = () => {
-    const [problems, setProblems] = useState([]);
+    const decode = jwtDecode(sessionStorage.getItem("accessToken"));
 
+    const [problems, setProblems] = useState([]);
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearching, setIsSearching] = useState(false);
+    const [isShowBanner, setIsShowBanner] = useState(!decode.isVerify);
+
+    const navigate = useNavigate();
 
     const fetchProblems = async () => {
         try {
@@ -93,6 +100,42 @@ const Home = () => {
     return (
         <div className="container-home">
             <HeaderHome />
+            {isShowBanner ? (
+                <>
+                    <div
+                        className="overlay dark-overlay"
+                        onClick={() => {
+                            setIsShowBanner(false);
+                        }}
+                    ></div>
+                    <div className="banner-verify">
+                        <span>
+                            Please verify your email to unlock more features!
+                        </span>
+                        <div>
+                            <button
+                                onClick={() => {
+                                    resendEmail(decode.email);
+                                    navigate(
+                                        `/sign-up/verify-email/${decode.email}`
+                                    );
+                                }}
+                            >
+                                Verify
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setIsShowBanner(false);
+                                }}
+                            >
+                                Not now
+                            </button>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <></>
+            )}
             <div className="body-home">
                 <div className="greeting">
                     <h1>Welcome to LeetClone 🎉🎉🎉</h1>
