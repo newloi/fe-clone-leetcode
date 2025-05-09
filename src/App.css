@@ -121,3 +121,7 @@ hr {
   width: 200px;
   margin: auto auto;
 }
+
+.visibility-hidden {
+  visibility: hidden;
+}

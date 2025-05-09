@@ -49,6 +49,10 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
                 </button>
             </div>
 
+            <div className="mobile-footer">
+                <Footer page={page} setPage={setPage} maxPage={maxPage} />
+            </div>
+
             <div className="problems scrollable">
                 {problems?.map((problem, index) => {
                     return (
@@ -94,7 +98,9 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
                     );
                 })}
             </div>
-            <Footer page={page} setPage={setPage} maxPage={maxPage} />
+            <div className="desktop-footer">
+                <Footer page={page} setPage={setPage} maxPage={maxPage} />
+            </div>
         </div>
     );
 };

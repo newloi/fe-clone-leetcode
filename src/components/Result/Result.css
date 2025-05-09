@@ -17,6 +17,11 @@
     font-size: 12px;
 }
 
+.output-error pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
 .output-accept {
     background-color: hsl(0deg 0% 20%);
     padding: 10px;

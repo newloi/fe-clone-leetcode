@@ -27,6 +27,13 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
             {/* <div className="seacrh-group"></div> */}
             {solutions.length !== 0 ? (
                 <>
+                    <div className="mobile-footer">
+                        <Footer
+                            page={page}
+                            setPage={setPage}
+                            maxPage={maxPage}
+                        />
+                    </div>
                     <div className="body-solutions scrollable">
                         {solutions?.map((solution, index) => {
                             const updatedAt = formatDistanceToNow(
@@ -103,7 +110,10 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
                             );
                         })}
                     </div>
-                    <div style={{ marginBottom: "30px" }}>
+                    <div
+                        style={{ marginBottom: "30px" }}
+                        className="desktop-footer"
+                    >
                         <Footer
                             page={page}
                             setPage={setPage}

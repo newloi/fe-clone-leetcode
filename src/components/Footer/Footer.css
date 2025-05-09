@@ -15,12 +15,25 @@
     cursor: pointer;
 }
 
+@media (min-width: 768px) {
+    .mobile-footer {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     .footer {
         height: 50px;
+        justify-content: space-between;
+        padding: 0 20px;
     }
 
     .footer span {
         font-size: 20px;
+        font-size: 14px;
+    }
+
+    .desktop-footer {
+        display: none;
     }
 }

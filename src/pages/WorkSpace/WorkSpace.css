@@ -176,4 +176,8 @@
         padding: 0;
         background-color: inherit;
     }
+
+    .tab i {
+        display: none;
+    }
 }

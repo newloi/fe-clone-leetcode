@@ -55,6 +55,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                 setSubmissions(data.data || []);
                 setMaxPage(data.maxPage || 1);
             } catch (error) {
+                console.error("submissions error: ", error);
                 setSubmissions([]);
             } finally {
                 setIsLoading(false);
@@ -75,6 +76,13 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                 <div className="loading">Loading submissions...</div>
             ) : submissions && submissions.length > 0 ? (
                 <>
+                    <div className="mobile-footer">
+                        <Footer
+                            page={page}
+                            setPage={setPage}
+                            maxPage={maxPage}
+                        />
+                    </div>
                     <div className="header-submissions">
                         <span className="status-submissions">Status</span>
                         <span className="language-submissions">Language</span>
@@ -83,6 +91,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                             Submitted At
                         </span>
                     </div>
+
                     <div className="body-submissions scrollable">
                         {submissions.map((submission, index) => {
                             const createdAt = formatDistanceToNow(
@@ -148,7 +157,10 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                             );
                         })}
                     </div>
-                    <div style={{ marginBottom: "30px" }}>
+                    <div
+                        style={{ marginBottom: "30px" }}
+                        className="desktop-footer"
+                    >
                         <Footer
                             page={page}
                             setPage={setPage}

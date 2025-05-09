@@ -167,6 +167,10 @@ const Home = () => {
                     </div>
                 </div>
 
+                <div className="footer-home mobile-footer">
+                    <Footer page={page} setPage={setPage} maxPage={maxPage} />
+                </div>
+
                 <div className="problems scrollable problems-home">
                     {isSearching && problems.length === 0 ? (
                         <div className="no-results">
@@ -223,7 +227,7 @@ const Home = () => {
                     )}
                 </div>
             </div>
-            <div className="footer-home">
+            <div className="footer-home desktop-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />
             </div>
         </div>
