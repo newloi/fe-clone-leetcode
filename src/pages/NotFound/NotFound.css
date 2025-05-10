@@ -1,0 +1,29 @@
+.page-not-found img {
+    width: 270px;
+    height: auto;
+}
+
+.page-not-found>div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    flex: 1;
+    margin-top: 200px;
+    padding: 0 30px;
+    color: #eff2f699;
+    font-weight: 400;
+}
+
+.page-not-found>h2 {
+    font-weight: 700;
+    color: #eff1f6bf
+}
+
+@media (max-width: 768px) {
+    .page-not-found img {
+        width: 130px;
+    }
+}

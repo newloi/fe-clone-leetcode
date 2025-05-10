@@ -7,6 +7,7 @@ import WorkSpaceWrapper from "./pages/WorkSpace/WorkSpace";
 import Home from "./pages/Home/Home";
 import "./App.css";
 import PostSolution from "./pages/PostSolution/PostSolution";
+import NotFound from "./pages/NotFound/NotFound";
 
 const App = () => {
     return (
@@ -34,6 +35,7 @@ const App = () => {
                     path="/post-solution/:resultId"
                     element={<PostSolution />}
                 />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>
     );

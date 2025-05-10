@@ -24,3 +24,9 @@
 .header-home span:hover {
     color: white;
 }
+
+@media (min-width: 768px) {
+    .header-home {
+        padding: 0 50px;
+    }
+}
