@@ -9,9 +9,11 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     const [problems, setProblems] = useState([]);
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
+        setIsLoading(true);
         const token = sessionStorage.getItem("accessToken");
         fetch(`${apiUrl}/v1/problems?page=${page}`, {
             method: "GET",
@@ -27,7 +29,12 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
                 if (page === 1) setProblems(data.data);
                 else setProblems((prev) => [...prev, ...data.data]);
             })
-            .catch((error) => console.error("Sidebar api error: ", error));
+            .catch((error) => {
+                console.error("Sidebar api error: ", error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }, [newResultId, page]);
 
     useEffect(() => {
@@ -44,7 +51,7 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
 
     const handleScroll = useCallback(
         debounce(() => {
-            if (page < maxPage) {
+            if (page < maxPage && !isLoading) {
                 const scrollTop = window.scrollY;
                 const windowHeight = window.innerHeight;
                 const documentHeight = document.documentElement.scrollHeight;
@@ -114,6 +121,7 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
                         </div>
                     );
                 })}
+                {isLoading && <p className="loading-results">Loading...</p>}
             </div>
             {/* <div className="desktop-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />

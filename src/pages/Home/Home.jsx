@@ -16,6 +16,7 @@ const Home = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [isShowBanner, setIsShowBanner] = useState(false);
     const [decode, setDecode] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const token = sessionStorage.getItem("accessToken");
@@ -29,6 +30,7 @@ const Home = () => {
     const navigate = useNavigate();
 
     const fetchProblems = async () => {
+        setIsLoading(true);
         try {
             const token = sessionStorage.getItem("accessToken");
             const response = await fetch(`${apiUrl}/v1/problems?page=${page}`, {
@@ -44,8 +46,14 @@ const Home = () => {
             else setProblems((prev) => [...prev, ...data.data]);
         } catch (error) {
             console.error("Error fetching problems:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        setPage(1);
+    }, [searchQuery]);
 
     useEffect(() => {
         if (!isSearching) {
@@ -107,7 +115,7 @@ const Home = () => {
 
     const handleScroll = useCallback(
         debounce(() => {
-            if (page < maxPage) {
+            if (page < maxPage && !isLoading) {
                 const scrollTop = window.scrollY;
                 const windowHeight = window.innerHeight;
                 const documentHeight = document.documentElement.scrollHeight;
@@ -240,6 +248,7 @@ const Home = () => {
                         })
                     )}
                 </div>
+                {isLoading && <p className="loading-results">Loading...</p>}
             </div>
             {/* <div className="footer-home desktop-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />

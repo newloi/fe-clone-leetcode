@@ -115,6 +115,7 @@ ${result.code}
                         }`
                     );
                     setTags(data.tags);
+                    console.log(data.tags);
                 })
                 .catch((error) => {
                     console.error(error);

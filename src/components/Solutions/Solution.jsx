@@ -56,17 +56,6 @@ const Solution = ({ solutionId, setTab }) => {
                     </div>
                 </div>
                 <div className="tags">
-                    {solution?.solution?.language && (
-                        <span>
-                            {solution.solution?.language === "javascript"
-                                ? "JavaScript"
-                                : solution.solution?.language === "python"
-                                ? "Python"
-                                : solution.solution?.language === "cpp"
-                                ? "C++"
-                                : "Java"}
-                        </span>
-                    )}
                     {solution?.tags?.map((tag, index) => {
                         return <span key={index}>{tag}</span>;
                     })}

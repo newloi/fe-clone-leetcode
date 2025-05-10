@@ -11,8 +11,10 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
     const [solutions, setSolutions] = useState([]);
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
+    const [isLoading, setisLoading] = useState(false);
 
     useEffect(() => {
+        setisLoading(true);
         fetch(`${apiUrl}/v1/problems/${problemId}/solutions?page=${page}`)
             .then((res) => res.json())
             .then((data) => {
@@ -22,12 +24,15 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
             })
             .catch((error) => {
                 console.error("get solutions error: ", error);
+            })
+            .finally(() => {
+                setisLoading(false);
             });
     }, [page]);
 
     const handleScroll = useCallback(
         debounce(() => {
-            if (page < maxPage) {
+            if (page < maxPage && !isLoading) {
                 const scrollTop = window.scrollY;
                 const windowHeight = window.innerHeight;
                 const documentHeight = document.documentElement.scrollHeight;
@@ -78,21 +83,6 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
                                         {solution.title}
                                     </span>
                                     <div className="tags">
-                                        {solution.solution?.language && (
-                                            <span>
-                                                {solution.solution?.language ===
-                                                "javascript"
-                                                    ? "JavaScript"
-                                                    : solution.solution
-                                                          ?.language ===
-                                                      "python"
-                                                    ? "Python"
-                                                    : solution.solution
-                                                          ?.language === "cpp"
-                                                    ? "C++"
-                                                    : "Java"}
-                                            </span>
-                                        )}
                                         {solution.tags.map((tag, index) => {
                                             return (
                                                 <span key={index}>{tag}</span>
@@ -117,6 +107,7 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
                             </div>
                         );
                     })}
+                    {isLoading && <p className="loading-results">Loading...</p>}
                 </div>
             ) : (
                 <img src={nullImg} alt="No data" className="null-img" />

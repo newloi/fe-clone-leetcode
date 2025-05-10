@@ -14,6 +14,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setPage(1);
@@ -22,6 +23,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
     useEffect(() => {
         const getSubmissions = async () => {
             const sendRequest = async (token) => {
+                setIsLoading(true);
                 return await fetch(
                     `${apiUrl}/v1/submissions?problemId=${problemId}&page=${page}&limit=15`,
                     {
@@ -60,6 +62,8 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                 setMaxPage(data.maxPage);
             } catch (error) {
                 console.error("submissions error: ", error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -73,7 +77,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
 
     const handleScroll = useCallback(
         debounce(() => {
-            if (page < maxPage) {
+            if (page < maxPage && !isLoading) {
                 const scrollTop = window.scrollY;
                 const windowHeight = window.innerHeight;
                 const documentHeight = document.documentElement.scrollHeight;
@@ -166,6 +170,9 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                                 </div>
                             );
                         })}
+                        {isLoading && (
+                            <p className="loading-results">Loading...</p>
+                        )}
                     </div>
                 </>
             ) : (
