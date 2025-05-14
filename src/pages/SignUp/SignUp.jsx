@@ -135,6 +135,7 @@ const SignUp = () => {
     const getStatusSignUp = () => {
         return fetch(`${apiUrl}/v1/auth/register`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

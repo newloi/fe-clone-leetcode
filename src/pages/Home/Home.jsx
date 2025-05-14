@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import debounce from "lodash.debounce";
 
@@ -18,6 +18,22 @@ const Home = () => {
     const [decode, setDecode] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const accessToken = queryParams.get("accessToken");
+        const csrfToken = queryParams.get("csrfToken");
+
+        if (accessToken && csrfToken) {
+            sessionStorage.setItem("accessToken", accessToken);
+            sessionStorage.setItem("csrfToken", csrfToken);
+
+            navigate("/", { replace: true });
+        }
+    }, [location.search, navigate]);
+
     useEffect(() => {
         const token = sessionStorage.getItem("accessToken");
         if (token) {
@@ -26,8 +42,6 @@ const Home = () => {
             setIsShowBanner(!decoded.isVerified);
         }
     }, []);
-
-    const navigate = useNavigate();
 
     const fetchProblems = async () => {
         setIsLoading(true);

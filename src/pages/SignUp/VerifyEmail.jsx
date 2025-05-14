@@ -6,6 +6,7 @@ import { handleEnter } from "../SignIn/SignIn";
 import "./VerifyEmail.css";
 import apiUrl from "@/config/api";
 import resendEmail from "@/api/resendEmail";
+import refreshAccessToken from "@/api/refreshAccessToken";
 
 const VerifyEmail = () => {
     const { emailAddress } = useParams();
@@ -31,24 +32,31 @@ const VerifyEmail = () => {
     };
 
     // handle when user clicks verify button
-    const handleVerify = () => {
+    const handleVerify = async () => {
         if (code.length !== 8) {
             setError("Code is too short!");
         } else {
-            getVerifyStatus().then((status) => {
-                if (status === 400) setError("Wrong code!");
-                else if (status === 200) {
-                    toast.success(
-                        "Welcome! Your account has been successfully registered.",
-                        {
-                            autoClose: 3000,
-                        }
-                    );
-                    navigate("/");
+            try {
+                const status = await getVerifyStatus();
+
+                if (status === 400) {
+                    setError("Wrong code!");
+                } else if (status === 200) {
+                    const refreshed = await refreshAccessToken();
+                    if (refreshed) {
+                        toast.success(
+                            "Welcome! Your account has been successfully registered.",
+                            { autoClose: 3000 }
+                        );
+                        navigate("/");
+                    }
                 } else {
                     setError("Something is wrong!");
                 }
-            });
+            } catch (err) {
+                console.error("Verification error: ", err);
+                setError("Something went wrong!");
+            }
         }
     };
 
