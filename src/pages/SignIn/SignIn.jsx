@@ -72,7 +72,10 @@ const SignIn = () => {
                     const decode = jwtDecode(
                         sessionStorage.getItem("accessToken")
                     );
-                    if (decode.role === "USER") navigate("/");
+                    if (decode.role === "USER")
+                        navigate(
+                            `${sessionStorage.getItem("lastVisit") || "/"}`
+                        );
                     else navigate("/admin");
                 } else if (status === 401) {
                     setErrors((prevErrors) => ({

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
@@ -13,6 +13,7 @@ import apiUrl from "../../config/api";
 const Result = ({ resultId }) => {
     const [result, setResult] = useState();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const getResult = async () => {
@@ -37,6 +38,7 @@ const Result = ({ resultId }) => {
                             "Your session has expired. Please log in again.",
                             { autoClose: 3000 }
                         );
+                        sessionStorage.setItem("lastVisit", location.pathname);
                         navigate("/sign-in");
                         return;
                     }

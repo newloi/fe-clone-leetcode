@@ -48,7 +48,9 @@ const VerifyEmail = () => {
                             "Welcome! Your account has been successfully registered.",
                             { autoClose: 3000 }
                         );
-                        navigate("/");
+                        navigate(
+                            `${sessionStorage.getItem("lastVisit") || "/"}`
+                        );
                     }
                 } else {
                     setError("Something is wrong!");

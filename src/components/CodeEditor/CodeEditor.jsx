@@ -1,5 +1,5 @@
 import Editor from "@monaco-editor/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import "./CodeEditor.css";
 import { useEffect } from "react";
@@ -13,6 +13,8 @@ const CodeEditor = ({
     setLanguage,
     language,
 }) => {
+    const location = useLocation();
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -57,7 +59,16 @@ const CodeEditor = ({
             {!sessionStorage.getItem("accessToken") && (
                 <div className="footer-editor">
                     You need to
-                    <Link to="/sign-in" className="blue-span">
+                    <Link
+                        to="/sign-in"
+                        className="blue-span"
+                        onClick={() => {
+                            sessionStorage.setItem(
+                                "lastVisit",
+                                location.pathname
+                            );
+                        }}
+                    >
                         Login / Sign up
                     </Link>{" "}
                     to run or submit

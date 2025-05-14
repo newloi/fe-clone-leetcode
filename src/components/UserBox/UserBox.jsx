@@ -70,6 +70,7 @@ const UserBox = ({ isClose, setIsClose }) => {
         });
 
         sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem("lastVisit");
         navigate("/sign-in");
     };
 

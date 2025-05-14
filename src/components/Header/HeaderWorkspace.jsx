@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import "./HeaderWorkspace.css";
 import UserBox from "../UserBox/UserBox";
@@ -12,6 +12,7 @@ const HeaderWorkspace = ({
     handleSubmitCode,
 }) => {
     const [isCloseUserBox, setIsCloseUserBox] = useState(true);
+    const location = useLocation();
 
     return (
         <div className="header-container">
@@ -69,11 +70,31 @@ const HeaderWorkspace = ({
                 ) : (
                     <div>
                         <span>
-                            <Link to="/sign-up">Register</Link>
+                            <Link
+                                to="/sign-up"
+                                onClick={() => {
+                                    sessionStorage.setItem(
+                                        "lastVisit",
+                                        location.pathname
+                                    );
+                                }}
+                            >
+                                Register
+                            </Link>
                         </span>{" "}
                         or{" "}
                         <span>
-                            <Link to="/sign-in">Sign in</Link>
+                            <Link
+                                to="/sign-in"
+                                onClick={() => {
+                                    sessionStorage.setItem(
+                                        "lastVisit",
+                                        location.pathname
+                                    );
+                                }}
+                            >
+                                Sign in
+                            </Link>
                         </span>
                     </div>
                 )}

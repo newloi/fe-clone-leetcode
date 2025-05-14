@@ -1,6 +1,6 @@
 import Split from "react-split";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
@@ -41,6 +41,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
     const [tab, setTab] = useState("description");
     const [solutionId, setSolutionId] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [decode, setDecode] = useState(null);
 
@@ -109,6 +110,10 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 "Your session has expired. Please log in again.",
                                 { autoClose: 3000 }
                             );
+                            sessionStorage.setItem(
+                                "lastVisit",
+                                location.pathname
+                            );
                             navigate("/sign-in");
                             return;
                         }
@@ -128,6 +133,10 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 <button
                                     onClick={() => {
                                         closeToast();
+                                        sessionStorage.setItem(
+                                            "lastVisit",
+                                            location.pathname
+                                        );
                                         resendEmail(decode.email);
                                         navigate(
                                             `/sign-up/verify-email/${decode.email}`
@@ -284,6 +293,10 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                         actionText={"Verify now"}
                                         action={() => {
                                             resendEmail(decode.email);
+                                            sessionStorage.setItem(
+                                                "lastVisit",
+                                                location.pathname
+                                            );
                                             navigate(
                                                 `/sign-up/verify-email/${decode.email}`
                                             );
@@ -294,6 +307,10 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 <Holder
                                     actionText={"Register or Sign In"}
                                     action={() => {
+                                        sessionStorage.setItem(
+                                            "lastVisit",
+                                            location.pathname
+                                        );
                                         navigate("/sign-in");
                                     }}
                                 />
