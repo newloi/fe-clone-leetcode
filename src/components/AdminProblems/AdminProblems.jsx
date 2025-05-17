@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react";
+import { useOutletContext, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 import "./AdminProblems.css";
 import apiUrl from "@/config/api";
 import Footer from "../Footer/Footer";
+import Dialog from "../Dialog/Dialog";
 
-const AdminProblems = ({ setAction }) => {
+const AdminProblems = () => {
+    const { setProblemId } = useOutletContext();
     const [problems, setProblems] = useState([]);
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
+    const [isShowWarning, setIsShowWarning] = useState(false);
+    const [problemSelected, setProblemSelected] = useState({});
+    const [count, setCount] = useState(0);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = sessionStorage.getItem("accessToken");
@@ -25,58 +35,125 @@ const AdminProblems = ({ setAction }) => {
                 setProblems(res.data);
             })
             .catch((error) => console.error("home api error: ", error));
-    }, [page]);
+    }, [page, count]);
+
+    useEffect(() => {
+        if (problems.length === 0 && page > 1) {
+            setPage((pre) => pre - 1);
+        }
+    }, [problems]);
+
+    const handleDeleteProblem = (problemId) => {
+        const token = sessionStorage.getItem("accessToken");
+        if (jwtDecode(token).role === "ADMIN") {
+            fetch(`${apiUrl}/v1/problems/${problemId}`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "X-CSRF-Token": sessionStorage.getItem("csrfToken"),
+                },
+            }).then((res) => {
+                if (res.status === 204) {
+                    setCount((pre) => pre + 1);
+                    toast.success("You’ve successfully deleted the problem.", {
+                        autoClose: 3000,
+                    });
+                } else {
+                    toast.error("Unexpected error. Please try again.", {
+                        autoClose: 3000,
+                    });
+                }
+            });
+        } else {
+            toast.error(
+                "Access denied. You are not authorized to perform this operation.",
+                {
+                    autoClose: 3000,
+                }
+            );
+        }
+    };
 
     return (
-        <div className="admin-problems-container">
-            <div className="admin-group-btn">
-                <button
-                    className="admin-add-btn"
-                    onClick={() => {
-                        setAction("add");
+        <>
+            {isShowWarning && (
+                <Dialog
+                    message={`Delete problem ${problemSelected.title}?`}
+                    positiveBtnMessage="Delete"
+                    negativeBtnMessage="No"
+                    setIsShowDialog={setIsShowWarning}
+                    action={() => {
+                        handleDeleteProblem(problemSelected._id);
+                        setIsShowWarning(false);
                     }}
-                >
-                    <i className="fa-solid fa-plus" /> Add new problem
-                </button>
-            </div>
-            <div className="admin-problems scrollable">
-                {problems?.map((problem, index) => {
-                    return (
-                        <div
-                            className={`admin-problems-card ${
-                                index % 2 === 0
-                                    ? "dark-background"
-                                    : "light-background"
-                            }`}
-                            key={index}
-                        >
-                            <div className="problem">
-                                <p>{problem.title}</p>
-                                <div className="tags">
-                                    <span
-                                        className={
-                                            problem?.difficulty === "EASY"
-                                                ? "easy-tag"
-                                                : problem?.difficulty ===
-                                                  "MEDIUM"
-                                                ? "medium-tag"
-                                                : "hard-tag"
-                                        }
-                                    >
-                                        {problem?.difficulty}
-                                    </span>
-                                    {problem.tags.map((tag, index) => {
-                                        return <span key={index}>{tag}</span>;
-                                    })}
+                />
+            )}
+            <div className="admin-problems-container">
+                <div className="admin-group-btn">
+                    <button
+                        className="admin-add-btn"
+                        onClick={() => {
+                            setProblemId("");
+                            navigate("/admin/add-new-problem");
+                        }}
+                    >
+                        <i className="fa-solid fa-plus" /> Add new problem
+                    </button>
+                </div>
+                <div className="admin-problems scrollable">
+                    {problems?.map((problem, index) => {
+                        return (
+                            <div
+                                className={`admin-problems-card ${
+                                    index % 2 === 0
+                                        ? "dark-background"
+                                        : "light-background"
+                                }`}
+                                key={index}
+                                onClick={() => {
+                                    setProblemId(problem._id);
+                                    navigate("/admin/add-new-problem");
+                                }}
+                            >
+                                <div className="problem">
+                                    <p>{problem.title}</p>
+                                    <div className="tags">
+                                        <span
+                                            className={
+                                                problem?.difficulty === "EASY"
+                                                    ? "easy-tag"
+                                                    : problem?.difficulty ===
+                                                      "MEDIUM"
+                                                    ? "medium-tag"
+                                                    : "hard-tag"
+                                            }
+                                        >
+                                            {problem?.difficulty}
+                                        </span>
+                                        {problem.tags.map((tag, index) => {
+                                            return (
+                                                <span key={index}>{tag}</span>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
+                                <i
+                                    className="fa-solid fa-trash admin-delete-icon"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setProblemSelected(problem);
+                                        setIsShowWarning(true);
+                                    }}
+                                />
                             </div>
-                            <i className="fa-solid fa-trash admin-delete-icon" />
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
+                <Footer page={page} maxPage={maxPage} setPage={setPage} />
             </div>
-            <Footer page={page} maxPage={maxPage} setPage={setPage} />
-        </div>
+        </>
     );
 };
 

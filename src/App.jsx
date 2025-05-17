@@ -10,6 +10,8 @@ import PostSolution from "./pages/PostSolution/PostSolution";
 import NotFound from "./pages/NotFound/NotFound";
 import Admin from "./pages/Admin/Admin";
 import LayoutWorkSpace from "./pages/LayoutWorkSpace/LayoutWorkSpace";
+import AdminProblems from "./components/AdminProblems/AdminProblems";
+import AddNewProblem from "./components/AddNewProblem/AddNewProblem";
 
 const App = () => {
     return (
@@ -40,7 +42,13 @@ const App = () => {
                     element={<PostSolution />}
                 />
                 <Route path="*" element={<NotFound />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route element={<Admin />}>
+                    <Route path="admin/problems" element={<AdminProblems />} />
+                    <Route
+                        path="admin/add-new-problem"
+                        element={<AddNewProblem />}
+                    />
+                </Route>
             </Routes>
         </Router>
     );

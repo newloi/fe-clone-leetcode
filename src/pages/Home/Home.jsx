@@ -7,6 +7,7 @@ import HeaderHome from "@/components/Header/HeaderHome";
 import "./Home.css";
 import apiUrl from "@/config/api";
 import resendEmail from "@/api/resendEmail";
+import Dialog from "@/components/Dialog/Dialog";
 
 const Home = () => {
     const [problems, setProblems] = useState([]);
@@ -146,38 +147,16 @@ const Home = () => {
         <div className="container-home">
             <HeaderHome />
             {isShowBanner && (
-                <>
-                    <div
-                        className="overlay dark-overlay"
-                        onClick={() => {
-                            setIsShowBanner(false);
-                        }}
-                    ></div>
-                    <div className="banner-verify">
-                        <span>
-                            Please verify your email to unlock more features!
-                        </span>
-                        <div>
-                            <button
-                                onClick={() => {
-                                    resendEmail(decode.email);
-                                    navigate(
-                                        `/sign-up/verify-email/${decode.email}`
-                                    );
-                                }}
-                            >
-                                Verify
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setIsShowBanner(false);
-                                }}
-                            >
-                                Not now
-                            </button>
-                        </div>
-                    </div>
-                </>
+                <Dialog
+                    message="Please verify your email to unlock more features!"
+                    positiveBtnMessage="Verify"
+                    negativeBtnMessage="Not now"
+                    action={() => {
+                        resendEmail(decode.email);
+                        navigate(`/sign-up/verify-email/${decode.email}`);
+                    }}
+                    setIsShowDialog={setIsShowBanner}
+                />
             )}
             <div className="body-home" onScroll={handleScroll}>
                 <div className="greeting">

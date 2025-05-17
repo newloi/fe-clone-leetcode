@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
@@ -8,22 +8,36 @@ import Problem from "../Problem/Problem";
 import apiUrl from "@/config/api";
 import refreshAccessToken from "@/api/refreshAccessToken";
 
-const AddNewProblem = ({ setAction, problem }) => {
-    const [newProblem, setNewProblem] = useState(
-        problem || {
-            title: "",
-            description: {
-                text: "",
-                examples: [],
-                constraints: [],
-                extra: "",
-            },
-            difficulty: "",
-            tags: [],
-        }
-    );
+const AddNewProblem = () => {
+    const { problemId } = useOutletContext();
+    const [newProblem, setNewProblem] = useState({
+        title: "",
+        description: {
+            text: "",
+            examples: [],
+            constraints: [],
+            extra: "",
+        },
+        difficulty: "",
+        tags: [],
+    });
+    const [template, setTemplate] = useState(null);
+    const [language, setLanguage] = useState("");
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (problemId) {
+            fetch(`${apiUrl}/v1/problems/${problemId}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    setNewProblem(data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    }, [problemId]);
 
     const handleChangeInput1 = (e) => {
         setNewProblem({ ...newProblem, [e.target.name]: e.target.value });
@@ -153,7 +167,7 @@ const AddNewProblem = ({ setAction, problem }) => {
                     toast.success("Changes have been saved.", {
                         autoClose: 3000,
                     });
-                    setAction("view");
+                    navigate("/admin/problems");
                 } else if (res.action === 400) {
                     toast.error("Some required fields are missing.", {
                         autoClose: 3000,
@@ -253,13 +267,13 @@ const AddNewProblem = ({ setAction, problem }) => {
                             name="text"
                             type="text"
                             placeholder="Description here"
-                            value={newProblem.description.text}
+                            value={newProblem.description?.text}
                             rows={5}
                             onChange={handleChangeInput2}
                         />
                     </div>
                     <div className="group-example">
-                        {newProblem.description.examples.map(
+                        {newProblem.description?.examples.map(
                             (example, index) => {
                                 return (
                                     <div className="new-example" key={index}>
@@ -342,10 +356,13 @@ const AddNewProblem = ({ setAction, problem }) => {
                     <div className="group-constraint">
                         <div className="label-input">
                             <span>Constraints:</span>
-                            {newProblem.description.constraints.map(
+                            {newProblem.description?.constraints.map(
                                 (constraint, index) => {
                                     return (
-                                        <div className="admin-constraint">
+                                        <div
+                                            className="admin-constraint"
+                                            key={index}
+                                        >
                                             <i
                                                 className="fa-solid fa-xmark admin-delete-icon"
                                                 onClick={() =>
@@ -395,10 +412,48 @@ const AddNewProblem = ({ setAction, problem }) => {
                             type="text"
                             name="extra"
                             placeholder="Challenge"
-                            value={newProblem.description.extra}
+                            value={newProblem.description?.extra}
                             onChange={handleChangeInput2}
                         />
                     </div>
+                    {problemId && (
+                        <div className="group-template">
+                            <div className="label-input row-label-input">
+                                <span>Languages: </span>
+                                <div className="tags">
+                                    {newProblem?.supports?.map(
+                                        (language, index) => (
+                                            <span key={index}>{language}</span>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                            <div>
+                                <select
+                                    value={language}
+                                    onChange={(e) => {
+                                        setLanguage(e.target.value);
+                                    }}
+                                >
+                                    <option value="" disabled>
+                                        Select language
+                                    </option>
+                                    <option value="python">python</option>
+                                    <option value="javascript">
+                                        javascript
+                                    </option>
+                                    <option value="cpp">cpp</option>
+                                    <option value="java">java</option>
+                                </select>
+                                <input
+                                    type="file"
+                                    onChange={(e) => {
+                                        setTemplate(e.target.files[0]);
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="preview-problem problem-container">
                     <div>
@@ -406,7 +461,7 @@ const AddNewProblem = ({ setAction, problem }) => {
                         <div>
                             <button
                                 onClick={() => {
-                                    setAction("view");
+                                    navigate("/admin/problems");
                                 }}
                             >
                                 Cancel

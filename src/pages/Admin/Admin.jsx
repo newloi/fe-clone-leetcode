@@ -1,12 +1,12 @@
-// import { useState } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import "./Admin.css";
-import AdminProblems from "@/components/AdminProblems/AdminProblems";
 import logo from "../../assets/logo-dark.png";
-import AddNewProblem from "@/components/AddNewProblem/AddNewProblem";
 
 const Admin = () => {
+    const [problemId, setProblemId] = useState("");
+
     return (
         <div className="admin-container">
             <div className="admin-sidebar">
@@ -44,7 +44,7 @@ const Admin = () => {
                     </div>
                 </div>
                 <div className="admin-main-content">
-                    <Outlet />
+                    <Outlet context={{ problemId, setProblemId }} />
                 </div>
             </div>
         </div>

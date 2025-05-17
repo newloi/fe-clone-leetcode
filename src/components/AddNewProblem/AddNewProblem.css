@@ -67,6 +67,7 @@ textarea:focus-visible {
     display: flex;
     flex-direction: row;
     gap: 20px;
+    /* align-items: center; */
 }
 
 .group-example,

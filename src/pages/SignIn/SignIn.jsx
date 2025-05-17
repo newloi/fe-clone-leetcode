@@ -76,7 +76,7 @@ const SignIn = () => {
                         navigate(
                             `${sessionStorage.getItem("lastVisit") || "/"}`
                         );
-                    else navigate("/admin");
+                    else navigate("/admin/problems");
                 } else if (status === 401) {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
