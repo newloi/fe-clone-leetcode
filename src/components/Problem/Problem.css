@@ -67,3 +67,13 @@
 .hard-tag {
     color: #f8615c !important;
 }
+
+.text code {
+    background-color: #ffffff12;
+    border-color: #f7faff1f;
+    color: #eff1f6bf;
+    border-radius: 5px;
+    border: 0.1px solid #ffffff24;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    padding: 1px 4px;
+}

@@ -1,0 +1,210 @@
+.add-problem-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-problem-container>div:first-child {
+    /* background-color: white; */
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    /* flex: 1; */
+    height: 100%;
+    gap: 10px;
+}
+
+.create-problem {
+    /* background-color: white; */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 10px;
+}
+
+.preview-problem {
+    /* background-color: aqua; */
+    /* width: 50%;
+    height: 100%; */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-right: 10px;
+}
+
+.label-input {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.label-input>span {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.label-input>input,
+.label-input>textarea,
+.admin-constraint>input {
+    /* border: none; */
+    border: 1px solid #ffffff24;
+    padding: 10px;
+    /* background-color: inherit; */
+    background-color: #1a1a1a48;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.label-input input:focus-visible,
+textarea:focus-visible {
+    outline: none;
+}
+
+.row-label-input {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.group-example,
+.group-constraint {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.group-example button {
+    font-size: 12px;
+    gap: 5px;
+    padding: 0 5px;
+}
+
+.group-example button i {
+    font-size: 12px;
+}
+
+
+.group-constraint button {
+    font-size: 12px;
+    gap: 5px;
+    padding: 0 5px;
+}
+
+.group-constraint button i {
+    font-size: 12px;
+}
+
+.label-input select {
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 7px;
+}
+
+.tags i {
+    cursor: pointer;
+}
+
+.add-tag {
+    cursor: pointer;
+}
+
+.add-tags input {
+    background-color: inherit;
+    border: none;
+    color: #fff;
+    width: 100px;
+}
+
+.new-example {
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #ffffff24;
+    background-color: #1a1a1a8f;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.new-example>div:first-child {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.new-example>div:first-child span {
+    flex: 1;
+}
+
+
+.new-example .admin-delete-icon {
+    margin-left: 20px;
+    font-size: 16px;
+    opacity: 1 !important;
+}
+
+.admin-tag:hover i {
+    opacity: 1;
+}
+
+.admin-constraint {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.admin-constraint:hover i {
+    opacity: 1;
+}
+
+.preview-problem>div:first-child {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 20px 10px;
+    align-items: center;
+    font-size: 30px;
+    font-weight: 900;
+    border-bottom: 1px solid #ffffff24;
+}
+
+.preview-problem>div:first-child button:nth-child(1) {
+    background-color: #ffffff1a;
+    color: #eff1f6bf;
+    padding: 6px 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    margin: 0 15px;
+    height: 32px;
+    cursor: pointer;
+}
+
+.preview-problem>div:first-child button:nth-child(2) {
+    height: 32px;
+    color: #fff;
+    background-color: #2cbb5d;
+    border: none;
+    border-radius: 10px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.preview-problem>div:first-child button i {
+    margin-right: 5px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.preview-problem>div:first-child>div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}

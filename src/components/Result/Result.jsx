@@ -99,7 +99,15 @@ ${result?.code}
                 </div>
                 {status === "ACCEPTED" && (
                     <button className="create-solution">
-                        <Link to={`/post-solution/${resultId}`}>
+                        <Link
+                            to={`/post-solution/${resultId}`}
+                            onClick={() => {
+                                sessionStorage.setItem(
+                                    "lastVisit",
+                                    location.pathname
+                                );
+                            }}
+                        >
                             <i className="fa-solid fa-pen-to-square" /> Solution
                         </Link>
                     </button>

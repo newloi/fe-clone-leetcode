@@ -1,0 +1,66 @@
+.admin-problems-container {
+    width: 100%;
+    height: 100%;
+    /* background-color: white; */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-add-btn {
+    color: #fff;
+    border: none;
+    background-color: #2cbb5d;
+    font-weight: 500;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.admin-add-btn i {
+    font-size: 25px;
+}
+
+.admin-problems {
+    flex: 1;
+}
+
+.admin-problems-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 80px;
+    padding: 0 40px 0 10px;
+    cursor: pointer;
+}
+
+.admin-problems-card:hover {
+    background-color: #ffffff24;
+}
+
+.admin-problems-card:hover .admin-delete-icon {
+    opacity: 1;
+    font-size: 16px;
+}
+
+.admin-problems-card .problem p {
+    font-size: 16px;
+    font-weight: 500;
+    padding-top: 20px;
+}
+
+.admin-delete-icon {
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.admin-problems-card:hover .admin-delete-icon:hover {
+    font-size: 20px;
+}

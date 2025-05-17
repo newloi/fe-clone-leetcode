@@ -1,3 +1,8 @@
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import "highlight.js/styles/vs2015.css";
 // import { useEffect, useState } from "react";
 import "./Problem.css";
 // import apiUrl from "../../config/api";
@@ -26,7 +31,15 @@ const Problem = ({ problem }) => {
                     </div>
                 </div>
                 <div className="description">
-                    <p className="text">{problem?.description?.text}</p>
+                    {/* <p className="text">{problem?.description?.text}</p> */}
+                    <div className="text">
+                        <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                        >
+                            {problem?.description?.text}
+                        </ReactMarkdown>
+                    </div>
                     <br />
                     <br />
                     <div className="examples">
@@ -42,8 +55,14 @@ const Problem = ({ problem }) => {
                                             <strong>Output:</strong>{" "}
                                             {example.output}
                                             <br />
-                                            <strong>Explanation:</strong>{" "}
-                                            {example.explanation}
+                                            {example.explanation && (
+                                                <>
+                                                    <strong>
+                                                        Explanation:
+                                                    </strong>{" "}
+                                                    {example.explanation}
+                                                </>
+                                            )}
                                         </pre>
                                         <br />
                                     </div>
@@ -53,7 +72,9 @@ const Problem = ({ problem }) => {
                     </div>
                     <br />
                     <div className="constraints">
-                        <strong>Constraints:</strong>
+                        {problem?.description?.constraints.length !== 0 && (
+                            <strong>Constraints:</strong>
+                        )}
                         <ul>
                             {problem?.description?.constraints?.map(
                                 (constraint, index) => {

@@ -8,11 +8,15 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
-    padding-bottom: 10px;
+    /* padding-bottom: 10px; */
 }
 
 .footer span {
     cursor: pointer;
+}
+
+.footer span:hover {
+    text-decoration: underline;
 }
 
 @media (min-width: 768px) {

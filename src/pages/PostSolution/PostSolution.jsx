@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import MDEditor from "@uiw/react-md-editor/nohighlight";
@@ -16,6 +16,7 @@ const PostSolution = () => {
     const [result, setResult] = useState();
     const [tags, setTags] = useState([]);
     const [title, setTitle] = useState("");
+    const location = useLocation();
     useEffect(() => {
         const getResult = async () => {
             const sendRequest = async (token) => {
@@ -115,7 +116,7 @@ ${result.code}
                         }`
                     );
                     setTags(data.tags);
-                    console.log(data.tags);
+                    // console.log(data.tags);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -161,6 +162,7 @@ ${result.code}
                             "Your session has expired. Please log in again.",
                             { autoClose: 3000 }
                         );
+                        sessionStorage.setItem("lastVisit", location.pathname);
                         navigate("/sign-in");
                         return;
                     }
@@ -172,7 +174,7 @@ ${result.code}
                 console.error("post solution error: ", error);
             }
 
-            navigate(-1);
+            navigate(`${sessionStorage.getItem("lastVisit") || -1}`);
         }
     };
 
@@ -194,7 +196,13 @@ ${result.code}
                             />
                             <button
                                 onClick={() => {
-                                    navigate(-1);
+                                    navigate(
+                                        `${
+                                            sessionStorage.getItem(
+                                                "lastVisit"
+                                            ) || -1
+                                        }`
+                                    );
                                 }}
                             >
                                 Cancel

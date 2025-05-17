@@ -8,6 +8,7 @@ import Home from "./pages/Home/Home";
 import "./App.css";
 import PostSolution from "./pages/PostSolution/PostSolution";
 import NotFound from "./pages/NotFound/NotFound";
+import Admin from "./pages/Admin/Admin";
 
 const App = () => {
     return (
@@ -36,6 +37,7 @@ const App = () => {
                     element={<PostSolution />}
                 />
                 <Route path="*" element={<NotFound />} />
+                <Route path="/admin" element={<Admin />} />
             </Routes>
         </Router>
     );

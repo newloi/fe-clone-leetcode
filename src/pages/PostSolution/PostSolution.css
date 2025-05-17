@@ -48,6 +48,7 @@
     border: none;
     margin: 0 15px;
     height: 32px;
+    cursor: pointer;
 }
 
 .header-post div:first-child button:nth-child(3) {
