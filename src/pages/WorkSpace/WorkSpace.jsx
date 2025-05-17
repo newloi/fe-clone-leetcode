@@ -1,6 +1,11 @@
 import Split from "react-split";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import {
+    useNavigate,
+    useParams,
+    useLocation,
+    useOutletContext,
+} from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
@@ -32,12 +37,17 @@ const WorkSpaceWrapper = () => {
 };
 
 const WorkSpace = ({ problemId, problemIndex }) => {
-    const [index, setIndex] = useState(Number(problemIndex));
+    const { toggleSidebar, setIndex } = useOutletContext();
+
+    useEffect(() => {
+        setIndex(Number(problemIndex));
+    }, [problemIndex]);
+
+    const [resultId, setResultId] = useState("");
     const [data, setData] = useState();
     const [code, setCode] = useState("");
     const [language, setLanguage] = useState("");
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [resultId, setResultId] = useState("");
+
     const [tab, setTab] = useState("description");
     const [solutionId, setSolutionId] = useState("");
     const navigate = useNavigate();
@@ -64,10 +74,6 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                 console.error(error);
             });
     }, []);
-
-    const toggleSidebar = () => {
-        setIsSidebarOpen((prev) => !prev);
-    };
 
     const preProblem = () => {
         setIndex((prev) => prev - 1);
@@ -162,20 +168,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
 
     return (
         <div>
-            <div className={`sidebar ${isSidebarOpen ? "" : "close"}`}>
-                <Sidebar
-                    toggleSidebar={toggleSidebar}
-                    selectedProblemIndex={index}
-                    newResultId={resultId}
-                />
-            </div>
             <div className="workspace-container">
-                <div
-                    className={`overlay dark-overlay ${
-                        isSidebarOpen ? "" : "hidden"
-                    }`}
-                    onClick={toggleSidebar}
-                />
                 <div className="header-workspace">
                     <HeaderWorkspace
                         toggleSidebar={toggleSidebar}

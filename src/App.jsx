@@ -9,6 +9,7 @@ import "./App.css";
 import PostSolution from "./pages/PostSolution/PostSolution";
 import NotFound from "./pages/NotFound/NotFound";
 import Admin from "./pages/Admin/Admin";
+import LayoutWorkSpace from "./pages/LayoutWorkSpace/LayoutWorkSpace";
 
 const App = () => {
     return (
@@ -28,10 +29,12 @@ const App = () => {
                 />{" "}
                 // ? Security
                 <Route path="/" element={<Home />} />
-                <Route
-                    path="/problem/:problemId/:problemIndex"
-                    element={<WorkSpaceWrapper />}
-                />
+                <Route element={<LayoutWorkSpace />}>
+                    <Route
+                        path="/problem/:problemId/:problemIndex"
+                        element={<WorkSpaceWrapper />}
+                    />
+                </Route>
                 <Route
                     path="/post-solution/:resultId"
                     element={<PostSolution />}

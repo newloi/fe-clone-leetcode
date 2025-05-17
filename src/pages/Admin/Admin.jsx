@@ -1,4 +1,5 @@
-import { useState } from "react";
+// import { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 import "./Admin.css";
 import AdminProblems from "@/components/AdminProblems/AdminProblems";
@@ -6,8 +7,6 @@ import logo from "../../assets/logo-dark.png";
 import AddNewProblem from "@/components/AddNewProblem/AddNewProblem";
 
 const Admin = () => {
-    const [action, setAction] = useState("view");
-
     return (
         <div className="admin-container">
             <div className="admin-sidebar">
@@ -45,12 +44,7 @@ const Admin = () => {
                     </div>
                 </div>
                 <div className="admin-main-content">
-                    {action === "add" && (
-                        <AddNewProblem setAction={setAction} />
-                    )}
-                    {action === "view" && (
-                        <AdminProblems setAction={setAction} />
-                    )}
+                    <Outlet />
                 </div>
             </div>
         </div>
