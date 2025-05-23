@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import debounce from "lodash.debounce";
 
 import "./Sidebar.css";
 import apiUrl from "../../config/api";
+import refreshAccessToken from "@/api/refreshAccessToken";
 
 const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     const [problems, setProblems] = useState([]);
@@ -13,28 +15,56 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setIsLoading(true);
-        const token = sessionStorage.getItem("accessToken");
-        fetch(`${apiUrl}/v1/problems?page=${page}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Cache-Control": "no-cache",
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                setMaxPage(data.maxPage);
-                if (page === 1) setProblems(data.data);
-                else setProblems((prev) => [...prev, ...data.data]);
-            })
-            .catch((error) => {
-                console.error("Sidebar api error: ", error);
-            })
-            .finally(() => {
+        const fetchProblems = async () => {
+            setIsLoading(true);
+            const sendRequest = async (token) => {
+                return await fetch(`${apiUrl}/v1/problems?page=${page}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Cache-Control": "no-cache",
+                        ...(token && { Authorization: `Bearer ${token}` }),
+                    },
+                });
+            };
+
+            try {
+                let accessToken = sessionStorage.getItem("accessToken");
+                let res = await sendRequest(accessToken);
+
+                if (res.status === 401) {
+                    const refreshed = await refreshAccessToken();
+                    if (!refreshed) {
+                        toast.error(
+                            "Your session has expired. Please log in again.",
+                            { autoClose: 3000 }
+                        );
+                        navigate("/sign-in");
+                        return;
+                    }
+
+                    accessToken = sessionStorage.getItem("accessToken");
+                    res = await sendRequest(accessToken);
+                }
+
+                if (res.status === 200) {
+                    const data = await res.json();
+                    setMaxPage(data.maxPage);
+                    if (page === 1) setProblems(data.data);
+                    else setProblems((prev) => [...prev, ...data.data]);
+                } else {
+                    toast.error("Unexpected error. Please try again.", {
+                        autoClose: 3000,
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching problems:", error);
+            } finally {
                 setIsLoading(false);
-            });
+            }
+        };
+
+        fetchProblems();
     }, [newResultId, page]);
 
     useEffect(() => {

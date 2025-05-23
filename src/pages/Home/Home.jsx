@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 import debounce from "lodash.debounce";
 
 import HeaderHome from "@/components/Header/HeaderHome";
@@ -8,6 +9,7 @@ import "./Home.css";
 import apiUrl from "@/config/api";
 import resendEmail from "@/api/resendEmail";
 import Dialog from "@/components/Dialog/Dialog";
+import refreshAccessToken from "@/api/refreshAccessToken";
 
 const Home = () => {
     const [problems, setProblems] = useState([]);
@@ -46,9 +48,8 @@ const Home = () => {
 
     const fetchProblems = async () => {
         setIsLoading(true);
-        try {
-            const token = sessionStorage.getItem("accessToken");
-            const response = await fetch(`${apiUrl}/v1/problems?page=${page}`, {
+        const sendRequest = async (token) => {
+            return await fetch(`${apiUrl}/v1/problems?page=${page}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -56,10 +57,37 @@ const Home = () => {
                     ...(token && { Authorization: `Bearer ${token}` }),
                 },
             });
-            const data = await response.json();
-            setMaxPage(data.maxPage);
-            if (page === 1) setProblems(data.data);
-            else setProblems((prev) => [...prev, ...data.data]);
+        };
+
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            let res = await sendRequest(accessToken);
+
+            if (res.status === 401) {
+                const refreshed = await refreshAccessToken();
+                if (!refreshed) {
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        { autoClose: 3000 }
+                    );
+                    navigate("/sign-in");
+                    return;
+                }
+
+                accessToken = sessionStorage.getItem("accessToken");
+                res = await sendRequest(accessToken);
+            }
+
+            if (res.status === 200) {
+                const data = await res.json();
+                setMaxPage(data.maxPage);
+                if (page === 1) setProblems(data.data);
+                else setProblems((prev) => [...prev, ...data.data]);
+            } else {
+                toast.error("Unexpected error. Please try again.", {
+                    autoClose: 3000,
+                });
+            }
         } catch (error) {
             console.error("Error fetching problems:", error);
         } finally {
