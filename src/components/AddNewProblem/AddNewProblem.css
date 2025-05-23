@@ -189,6 +189,19 @@ textarea:focus-visible {
 .preview-problem>div:first-child button:nth-child(2) {
     height: 32px;
     color: #fff;
+    background-color: #c03939;
+    border: none;
+    border-radius: 10px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.preview-problem>div:first-child button:last-child {
+    height: 32px;
+    color: #fff;
     background-color: #2cbb5d;
     border: none;
     border-radius: 10px;
@@ -208,4 +221,23 @@ textarea:focus-visible {
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.upload-btn {
+    height: 32px;
+    color: #fff;
+    background-color: #2cbb5d;
+    border: none;
+    border-radius: 10px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.upload-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 }

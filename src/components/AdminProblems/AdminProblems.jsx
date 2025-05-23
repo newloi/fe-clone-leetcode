@@ -7,6 +7,7 @@ import "./AdminProblems.css";
 import apiUrl from "@/config/api";
 import Footer from "../Footer/Footer";
 import Dialog from "../Dialog/Dialog";
+import refreshAccessToken from "@/api/refreshAccessToken";
 
 const AdminProblems = () => {
     const [problems, setProblems] = useState([]);
@@ -42,18 +43,40 @@ const AdminProblems = () => {
         }
     }, [problems]);
 
-    const handleDeleteProblem = (problemId) => {
-        const token = sessionStorage.getItem("accessToken");
-        if (jwtDecode(token).role === "ADMIN") {
-            fetch(`${apiUrl}/v1/problems/${problemId}`, {
+    const handleDeleteProblem = async (problemId) => {
+        const deleteRequest = async (token) => {
+            return await fetch(`${apiUrl}/v1/problems/${problemId}`, {
                 method: "DELETE",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
+                    "Cache-Control": "no-cache",
                     "X-CSRF-Token": sessionStorage.getItem("csrfToken"),
                 },
-            }).then((res) => {
+            });
+        };
+
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            if (accessToken && jwtDecode(accessToken).role === "ADMIN") {
+                let res = await deleteRequest(accessToken);
+
+                if (res.status === 401) {
+                    const refreshed = await refreshAccessToken();
+                    if (!refreshed) {
+                        toast.error(
+                            "Your session has expired. Please log in again.",
+                            { autoClose: 3000 }
+                        );
+                        navigate("/sign-in");
+                        return;
+                    }
+
+                    accessToken = sessionStorage.getItem("accessToken");
+                    res = await deleteRequest(accessToken);
+                }
+
                 if (res.status === 204) {
                     setCount((pre) => pre + 1);
                     toast.success("You’ve successfully deleted the problem.", {
@@ -64,14 +87,15 @@ const AdminProblems = () => {
                         autoClose: 3000,
                     });
                 }
-            });
-        } else {
-            toast.error(
-                "Access denied. You are not authorized to perform this operation.",
-                {
-                    autoClose: 3000,
-                }
-            );
+            } else
+                toast.error(
+                    "Access denied. You are not authorized to perform this operation.",
+                    {
+                        autoClose: 3000,
+                    }
+                );
+        } catch (error) {
+            console.error("delete problem error: ", error);
         }
     };
 
@@ -94,7 +118,6 @@ const AdminProblems = () => {
                     <button
                         className="admin-add-btn"
                         onClick={() => {
-                            // setProblemId("");
                             navigate("/admin/add-new-problem");
                         }}
                     >
@@ -112,7 +135,6 @@ const AdminProblems = () => {
                                 }`}
                                 key={index}
                                 onClick={() => {
-                                    // setProblemId(problem._id);
                                     navigate(
                                         `/admin/add-new-problem/${problem._id}`
                                     );
