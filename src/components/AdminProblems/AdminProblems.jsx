@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 
@@ -9,7 +9,6 @@ import Footer from "../Footer/Footer";
 import Dialog from "../Dialog/Dialog";
 
 const AdminProblems = () => {
-    const { setProblemId } = useOutletContext();
     const [problems, setProblems] = useState([]);
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
@@ -95,7 +94,7 @@ const AdminProblems = () => {
                     <button
                         className="admin-add-btn"
                         onClick={() => {
-                            setProblemId("");
+                            // setProblemId("");
                             navigate("/admin/add-new-problem");
                         }}
                     >
@@ -113,8 +112,10 @@ const AdminProblems = () => {
                                 }`}
                                 key={index}
                                 onClick={() => {
-                                    setProblemId(problem._id);
-                                    navigate("/admin/add-new-problem");
+                                    // setProblemId(problem._id);
+                                    navigate(
+                                        `/admin/add-new-problem/${problem._id}`
+                                    );
                                 }}
                             >
                                 <div className="problem">

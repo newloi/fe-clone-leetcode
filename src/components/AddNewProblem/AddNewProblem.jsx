@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
@@ -9,7 +9,7 @@ import apiUrl from "@/config/api";
 import refreshAccessToken from "@/api/refreshAccessToken";
 
 const AddNewProblem = () => {
-    const { problemId } = useOutletContext();
+    const { problemId } = useParams();
     const [newProblem, setNewProblem] = useState({
         title: "",
         description: {
@@ -21,6 +21,7 @@ const AddNewProblem = () => {
         difficulty: "",
         tags: [],
     });
+    const [oldTitle, setOldTitle] = useState("");
     const [template, setTemplate] = useState(null);
     const [language, setLanguage] = useState("");
 
@@ -28,10 +29,15 @@ const AddNewProblem = () => {
 
     useEffect(() => {
         if (problemId) {
-            fetch(`${apiUrl}/v1/problems/${problemId}`)
+            fetch(`${apiUrl}/v1/problems/${problemId}`, {
+                headers: {
+                    "Cache-Control": "no-cache",
+                },
+            })
                 .then((res) => res.json())
                 .then((data) => {
                     setNewProblem(data);
+                    setOldTitle(data.title);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -130,7 +136,7 @@ const AddNewProblem = () => {
     const handlePostProblem = async () => {
         const csrfToken = sessionStorage.getItem("csrfToken");
 
-        const sendRequest = async (token) => {
+        const createProblem = async (token) => {
             return await fetch(`${apiUrl}/v1/problems`, {
                 method: "POST",
                 credentials: "include",
@@ -143,10 +149,32 @@ const AddNewProblem = () => {
             });
         };
 
+        const updateProblem = async (id, token, problem) => {
+            return await fetch(`${apiUrl}/v1/problems/${id}`, {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "Cache-Control": "no-cache",
+                    "X-CSRF-Token": csrfToken,
+                },
+                body: JSON.stringify(problem),
+            });
+        };
+
         try {
             let accessToken = sessionStorage.getItem("accessToken");
             if (accessToken && jwtDecode(accessToken).role === "ADMIN") {
-                let res = await sendRequest(accessToken);
+                let res;
+                if (problemId) {
+                    let problem = newProblem;
+                    const { title, ...rest } = newProblem;
+                    if (title === oldTitle) problem = rest;
+                    res = await updateProblem(problemId, accessToken, problem);
+                } else {
+                    res = await createProblem(accessToken);
+                }
 
                 if (res.status === 401) {
                     const refreshed = await refreshAccessToken();
@@ -160,10 +188,10 @@ const AddNewProblem = () => {
                     }
 
                     accessToken = sessionStorage.getItem("accessToken");
-                    res = await sendRequest(accessToken);
+                    res = await createProblem(accessToken);
                 }
 
-                if (res.status === 201) {
+                if (res.status === 201 || res.status === 200) {
                     toast.success("Changes have been saved.", {
                         autoClose: 3000,
                     });

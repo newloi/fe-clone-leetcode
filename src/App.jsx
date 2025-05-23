@@ -45,7 +45,7 @@ const App = () => {
                 <Route element={<Admin />}>
                     <Route path="admin/problems" element={<AdminProblems />} />
                     <Route
-                        path="admin/add-new-problem"
+                        path="admin/add-new-problem/:problemId?"
                         element={<AddNewProblem />}
                     />
                 </Route>

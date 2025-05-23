@@ -1,11 +1,22 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import "./Admin.css";
 import logo from "../../assets/logo-dark.png";
+import apiUrl from "@/config/api";
 
 const Admin = () => {
-    const [problemId, setProblemId] = useState("");
+    const navigate = useNavigate();
+
+    const handleLogOut = () => {
+        fetch(`${apiUrl}/v1/auth/logout`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem("lastVisit");
+        navigate("/sign-in");
+    };
 
     return (
         <div className="admin-container">
@@ -14,7 +25,12 @@ const Admin = () => {
                     <img src={logo} alt="LeetClone" /> LeetClone
                 </div>
                 <div className="admin-group-tabbar">
-                    <div className="admin-tab">
+                    <div
+                        className="admin-tab"
+                        onClick={() => {
+                            navigate("/admin/problems");
+                        }}
+                    >
                         <i className="fa-solid fa-pen-to-square" /> Problems
                     </div>
                     <div className="admin-tab">
@@ -25,7 +41,7 @@ const Admin = () => {
                     <div className="admin-tab">
                         <i className="fa-solid fa-gears" /> Settings
                     </div>
-                    <div className="admin-tab">
+                    <div className="admin-tab" onClick={handleLogOut}>
                         <i className="fa-solid fa-right-from-bracket" /> Log out
                     </div>
                 </div>
@@ -44,7 +60,7 @@ const Admin = () => {
                     </div>
                 </div>
                 <div className="admin-main-content">
-                    <Outlet context={{ problemId, setProblemId }} />
+                    <Outlet />
                 </div>
             </div>
         </div>
