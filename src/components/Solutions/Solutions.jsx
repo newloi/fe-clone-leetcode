@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { formatDistanceToNow } from "date-fns";
 import debounce from "lodash.debounce";
+import PulseLoader from "react-spinners/PulseLoader";
 
 import "./Solutions.css";
 import apiUrl from "../../config/api";
@@ -68,7 +69,15 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
                                 }}
                             >
                                 <div className="avatar">
-                                    <i className="fa-regular fa-circle-user big-icon" />
+                                    {solution?.author?.avatar ? (
+                                        <div className="avatar-frame small-avatar">
+                                            <img
+                                                src={solution?.author?.avatar}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <i className="fa-regular fa-circle-user big-icon" />
+                                    )}
                                 </div>
                                 <div className="body-card">
                                     <span className="infor">
@@ -107,7 +116,13 @@ const Solutions = ({ problemId, setTabSolution, setSolutionId }) => {
                             </div>
                         );
                     })}
-                    {isLoading && <p className="loading-results">Loading...</p>}
+                    <div className="scroll-loader">
+                        <PulseLoader
+                            color="#ffffff99"
+                            loading={isLoading}
+                            size={10}
+                        />
+                    </div>
                 </div>
             ) : (
                 <img src={nullImg} alt="No data" className="null-img" />

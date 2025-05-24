@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import HashLoader from "react-spinners/HashLoader";
 
 import { handleEnter } from "./SignIn";
 import apiUrl from "@/config/api";
@@ -11,6 +12,7 @@ export const ResetPassword = () => {
 
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const inputRef = useRef(null);
 
@@ -39,64 +41,76 @@ export const ResetPassword = () => {
     };
 
     // handle submission
-    const handleSubmit = () => {
-        if (email) {
-            getStatusPasswordReset().then((status) => {
-                if (status === 200) {
-                    navigate(`/forgot-password/change-password/${email}`);
-                }
+    const handleSubmit = async () => {
+        setIsLoading(true);
+        const sendRequest = async () => {
+            return await fetch(`${apiUrl}/v1/auth/forgot-password`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email,
+                }),
             });
-        } else {
-            setError("Required");
+        };
+
+        try {
+            if (email) {
+                const res = await sendRequest();
+                if (res.status === 200) {
+                    navigate(`/forgot-password/change-password/${email}`);
+                } else {
+                    toast.error("Unexpected error. Please try again.", {
+                        autoClose: 3000,
+                    });
+                }
+            } else setError("Required");
+        } catch (e) {
+            console.error("ResetPassword error: ", e);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    // get status submission
-    const getStatusPasswordReset = () => {
-        return fetch(`${apiUrl}/v1/auth/forgot-password`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-            }),
-        })
-            .then((response) => {
-                return response.status;
-            })
-            .catch((error) => console.error("Password reset error: ", error));
-    };
-
     return (
-        <div className="reset-form">
-            <h3 className="reset-form-heading">Password Reset</h3>
-            <hr />
-            <p className="message">
-                Forgotten your password? Enter your e-mail address below, and
-                we'll send you an e-mail allowing you to reset it.
-            </p>
-            <div className="form-group">
-                <input
-                    ref={inputRef}
-                    type="email"
-                    className="input input-without-icon"
-                    placeholder="E-mail address"
-                    onChange={handleChange}
-                    onInput={handleInput}
-                    onBlur={handleInvalidation}
-                    onKeyDown={(e) => {
-                        handleEnter(e, handleSubmit);
-                    }}
-                />
-                <p className="error-message">{error}</p>
+        <>
+            <div
+                className={`dark-overlay overlay overall-overlay ${
+                    isLoading ? "" : "hidden"
+                }`}
+            >
+                <HashLoader color="#36d7b7" loading={isLoading} size={35} />
             </div>
+            <div className="reset-form">
+                <h3 className="reset-form-heading">Password Reset</h3>
+                <hr />
+                <p className="message">
+                    Forgotten your password? Enter your e-mail address below,
+                    and we'll send you an e-mail allowing you to reset it.
+                </p>
+                <div className="form-group">
+                    <input
+                        ref={inputRef}
+                        type="email"
+                        className="input input-without-icon"
+                        placeholder="E-mail address"
+                        onChange={handleChange}
+                        onInput={handleInput}
+                        onBlur={handleInvalidation}
+                        onKeyDown={(e) => {
+                            handleEnter(e, handleSubmit);
+                        }}
+                    />
+                    <p className="error-message">{error}</p>
+                </div>
 
-            <button className="reset-btn" onClick={handleSubmit}>
-                Reset My Password
-            </button>
-        </div>
+                <button className="reset-btn" onClick={handleSubmit}>
+                    Reset My Password
+                </button>
+            </div>
+        </>
     );
 };
 
@@ -114,6 +128,7 @@ export const ChangePassword = () => {
         code: "",
     });
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const inputPassword = useRef(null);
     const inputConfirmPassword = useRef(null);
@@ -180,81 +195,86 @@ export const ChangePassword = () => {
     };
 
     // validating submission when user clicks Sign Up button
-    const handleSubmit = () => {
-        let isValid = true;
-        for (let prop in passwords) {
-            if (passwords[prop] === "") {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    [prop]: "Required",
-                }));
+    const handleSubmit = async () => {
+        setIsLoading(true);
+        const sendRequest = async () => {
+            console.log({
+                email: emailAddress,
+                pin: passwords.code,
+                password: passwords.newPassword,
+            });
 
-                isValid = false;
+            return await fetch(`${apiUrl}/v1/auth/reset-password`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: emailAddress,
+                    pin: passwords.code,
+                    password: passwords.newPassword,
+                }),
+            });
+        };
+
+        try {
+            let isValid = true;
+            for (let prop in passwords) {
+                if (passwords[prop] === "") {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        [prop]: "Required",
+                    }));
+
+                    isValid = false;
+                }
             }
-        }
-        if (isValid) {
-            getStatusChangePassword().then((status) => {
-                if (status === 200) {
+            if (isValid) {
+                const res = await sendRequest();
+                if (res.status === 200) {
                     toast.success(
                         "Your password has been changed successfully.",
                         { autoClose: 3000 }
                     );
                     navigate("/sign-in");
-                } else if (status === 400) {
+                } else if (res.status === 400) {
                     setErrors({
                         ...errors,
                         code: "Wrong code!",
                     });
+                } else {
+                    toast.error("Unexpected error. Please try again.", {
+                        autoClose: 3000,
+                    });
                 }
-            });
+            }
+        } catch (e) {
+            console.error("Change password error: ", e);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const getStatusChangePassword = () => {
-        return fetch(`${apiUrl}/v1/auth/reset-password`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: emailAddress,
-                pin: passwords.code,
-                password: passwords.password,
-            }),
-        })
-            .then((response) => response.status)
-            .catch((error) => {
-                console.error("Change password error: ", error);
-            });
-    };
-
     return (
-        <div className="reset-form">
-            <h3 className="reset-form-heading">Change Password</h3>
-            <hr />
-            <div className="form-group">
-                <input
-                    ref={inputCode}
-                    type="text"
-                    className="input input-without-icon"
-                    name="code"
-                    placeholder="Verify Code"
-                    onChange={handleChange}
-                    onBlur={handleInvalidation}
-                    onInput={handleInput}
-                    onKeyDown={(e) => {
-                        handleEnter(e, handleSubmit, inputPassword, passwords);
-                    }}
-                />
-                <p className="error-message">{errors.code}</p>
-                <label className="input input-with-icon">
+        <>
+            <div
+                className={`dark-overlay overlay overall-overlay ${
+                    isLoading ? "" : "hidden"
+                }`}
+            >
+                <HashLoader color="#36d7b7" loading={isLoading} size={35} />
+            </div>
+            <div className="reset-form">
+                <h3 className="reset-form-heading">Change Password</h3>
+                <hr />
+                <div className="form-group">
                     <input
-                        ref={inputPassword}
-                        type={showPassword ? "text" : "password"}
-                        className=""
-                        name="newPassword"
-                        placeholder="New password"
+                        ref={inputCode}
+                        type="text"
+                        className="input input-without-icon"
+                        name="code"
+                        placeholder="Verify Code"
                         onChange={handleChange}
                         onBlur={handleInvalidation}
                         onInput={handleInput}
@@ -262,50 +282,71 @@ export const ChangePassword = () => {
                             handleEnter(
                                 e,
                                 handleSubmit,
-                                inputConfirmPassword,
+                                inputPassword,
                                 passwords
                             );
                         }}
                     />
-                    <i
-                        className={
-                            showPassword
-                                ? "fa-regular fa-eye"
-                                : "fa-regular fa-eye-slash"
-                        }
-                        onClick={handleShowPassword}
-                    />
-                </label>
-                <p className="error-message">{errors.newPassword}</p>
-                <label className="input input-with-icon">
-                    <input
-                        ref={inputConfirmPassword}
-                        type={showPassword ? "text" : "password"}
-                        className=""
-                        name="confirmNewPassword"
-                        placeholder="Confirm new password"
-                        onChange={handleChange}
-                        onBlur={handleInvalidation}
-                        onInput={handleInput}
-                        onKeyDown={(e) => {
-                            handleEnter(e, handleSubmit);
-                        }}
-                    />
-                    <i
-                        className={
-                            showPassword
-                                ? "fa-regular fa-eye"
-                                : "fa-regular fa-eye-slash"
-                        }
-                        onClick={handleShowPassword}
-                    />
-                </label>
-                <p className="error-message">{errors.confirmNewPassword}</p>
-            </div>
+                    <p className="error-message">{errors.code}</p>
+                    <label className="input input-with-icon">
+                        <input
+                            ref={inputPassword}
+                            type={showPassword ? "text" : "password"}
+                            className=""
+                            name="newPassword"
+                            placeholder="New password"
+                            onChange={handleChange}
+                            onBlur={handleInvalidation}
+                            onInput={handleInput}
+                            onKeyDown={(e) => {
+                                handleEnter(
+                                    e,
+                                    handleSubmit,
+                                    inputConfirmPassword,
+                                    passwords
+                                );
+                            }}
+                        />
+                        <i
+                            className={
+                                showPassword
+                                    ? "fa-regular fa-eye"
+                                    : "fa-regular fa-eye-slash"
+                            }
+                            onClick={handleShowPassword}
+                        />
+                    </label>
+                    <p className="error-message">{errors.newPassword}</p>
+                    <label className="input input-with-icon">
+                        <input
+                            ref={inputConfirmPassword}
+                            type={showPassword ? "text" : "password"}
+                            className=""
+                            name="confirmNewPassword"
+                            placeholder="Confirm new password"
+                            onChange={handleChange}
+                            onBlur={handleInvalidation}
+                            onInput={handleInput}
+                            onKeyDown={(e) => {
+                                handleEnter(e, handleSubmit);
+                            }}
+                        />
+                        <i
+                            className={
+                                showPassword
+                                    ? "fa-regular fa-eye"
+                                    : "fa-regular fa-eye-slash"
+                            }
+                            onClick={handleShowPassword}
+                        />
+                    </label>
+                    <p className="error-message">{errors.confirmNewPassword}</p>
+                </div>
 
-            <button className="reset-btn" onClick={handleSubmit}>
-                Change Password
-            </button>
-        </div>
+                <button className="reset-btn" onClick={handleSubmit}>
+                    Change Password
+                </button>
+            </div>
+        </>
     );
 };

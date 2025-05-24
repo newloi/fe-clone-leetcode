@@ -13,15 +13,16 @@
     display: flex;
     flex-direction: row;
     margin-top: 10px;
+    padding-left: 10px;
 }
 
 .solution-card .avatar {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
 }
 
 .solution-card .avatar i {
-    font-size: 20px;
+    font-size: 24px;
 }
 
 .body-card {
@@ -104,7 +105,13 @@
 }
 
 .author-infor i {
-    font-size: 30px;
+    font-size: 34px;
+}
+
+.author-infor>.avatar-frame {
+    width: 34px;
+    height: 34px;
+    border: none !important;
 }
 
 .author-infor div {
@@ -120,6 +127,12 @@
     color: #f5f5f5;
     font-size: 500;
     font-size: 14px;
+}
+
+.small-avatar {
+    width: 24px;
+    height: 24px;
+    border: none !important;
 }
 
 @media (max-width: 768px) {

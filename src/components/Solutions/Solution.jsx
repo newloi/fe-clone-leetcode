@@ -47,7 +47,13 @@ const Solution = ({ solutionId, setTab }) => {
             <div className="body-solution scrollable">
                 <p className="title-solution">{solution?.title}</p>
                 <div className="author-infor">
-                    <i className="fa-regular fa-circle-user" />
+                    {solution?.author?.avatar ? (
+                        <div className="avatar-frame">
+                            <img src={solution?.author?.avatar} />
+                        </div>
+                    ) : (
+                        <i className="fa-regular fa-circle-user" />
+                    )}
                     <div>
                         <span>{solution?.author?.name}</span>
                         <span>

@@ -16,6 +16,7 @@ const Admin = () => {
         sessionStorage.removeItem("accessToken");
         sessionStorage.removeItem("lastVisit");
         sessionStorage.removeItem("pageSidebar");
+        sessionStorage.removeItem("pageAdmin");
         navigate("/sign-in");
     };
 
@@ -34,7 +35,12 @@ const Admin = () => {
                     >
                         <i className="fa-solid fa-pen-to-square" /> Problems
                     </div>
-                    <div className="admin-tab">
+                    <div
+                        className="admin-tab"
+                        onClick={() => {
+                            navigate("/admin/users");
+                        }}
+                    >
                         <i className="fa-solid fa-users" /> Users
                     </div>
                 </div>

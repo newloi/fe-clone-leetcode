@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import debounce from "lodash.debounce";
+import PulseLoader from "react-spinners/PulseLoader";
 
 import HeaderHome from "@/components/Header/HeaderHome";
 import "./Home.css";
@@ -276,7 +277,13 @@ const Home = () => {
                         })
                     )}
                 </div>
-                {isLoading && <p className="loading-results">Loading...</p>}
+                <div className="scroll-loader">
+                    <PulseLoader
+                        color="#ffffff99"
+                        loading={isLoading}
+                        size={10}
+                    />
+                </div>
             </div>
             {/* <div className="footer-home desktop-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />

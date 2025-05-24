@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import HashLoader from "react-spinners/HashLoader";
 
 import "./UserBox.css";
 import apiUrl from "@/config/api";
@@ -10,6 +11,9 @@ import resendEmail from "@/api/resendEmail";
 
 const UserBox = ({ isClose, setIsClose }) => {
     const [decode, setDecode] = useState(null);
+    const [isCloseSettingBox, setIsCloseSettingBox] = useState(true);
+    const [count, setCount] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const accessToken = sessionStorage.getItem("accessToken");
@@ -20,7 +24,9 @@ const UserBox = ({ isClose, setIsClose }) => {
     }, []);
 
     const [userProfile, setUserProfile] = useState();
+    const [avatar, setAvatar] = useState(null);
     const navigate = useNavigate();
+
     useEffect(() => {
         const getProfile = async () => {
             const sendRequest = async (token) => {
@@ -61,7 +67,53 @@ const UserBox = ({ isClose, setIsClose }) => {
 
         if (decode?.isVerified) getProfile();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [decode]);
+    }, [decode, count]);
+
+    const handleUpdateProfile = async () => {
+        setIsLoading(true);
+        const updateRequest = async (token) => {
+            const formData = new FormData();
+            formData.append("name", userProfile.name);
+            formData.append("file", avatar);
+
+            return await fetch(`${apiUrl}/v1/users/${userProfile._id}`, {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+            });
+        };
+
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            let res = await updateRequest(accessToken);
+
+            if (res.status === 401) {
+                const refreshed = await refreshAccessToken();
+                if (!refreshed) {
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        { autoClose: 3000 }
+                    );
+                    navigate("/sign-in");
+                    return;
+                }
+
+                accessToken = sessionStorage.getItem("accessToken");
+                res = await updateRequest(accessToken);
+            }
+
+            if (res.status === 200) {
+                setCount((prev) => prev + 1);
+                toast.success("Update successful", { autoClose: 3000 });
+            }
+        } catch (error) {
+            console.error("get profile error: ", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleLogOut = () => {
         fetch(`${apiUrl}/v1/auth/logout`, {
@@ -72,6 +124,7 @@ const UserBox = ({ isClose, setIsClose }) => {
         sessionStorage.removeItem("accessToken");
         sessionStorage.removeItem("lastVisit");
         sessionStorage.removeItem("pageSidebar");
+        sessionStorage.removeItem("pageAdmin");
         navigate("/sign-in");
     };
 
@@ -80,12 +133,26 @@ const UserBox = ({ isClose, setIsClose }) => {
             <div
                 className={`overlay ${isClose ? "hidden" : ""}`}
                 onClick={() => {
+                    setIsCloseSettingBox(true);
                     setIsClose(true);
                 }}
-            ></div>
+            />
+            <div
+                className={`dark-overlay overlay overall-overlay ${
+                    isLoading ? "" : "hidden"
+                }`}
+            >
+                <HashLoader color="#36d7b7" loading={isLoading} size={35} />
+            </div>
             <div className={`user-box ${isClose ? "hidden" : ""}`}>
                 <div className="user-infor">
-                    <i className="fa-regular fa-circle-user big-icon" />{" "}
+                    {userProfile?.avatar ? (
+                        <div className="avatar-frame medium-avatar">
+                            <img src={userProfile.avatar} />
+                        </div>
+                    ) : (
+                        <i className="fa-regular fa-circle-user big-icon" />
+                    )}
                     <span>{userProfile?.name || "Username"}</span>
                 </div>
                 <div className="user-actions">
@@ -102,7 +169,11 @@ const UserBox = ({ isClose, setIsClose }) => {
                             Email
                         </span>
                     )}
-                    <span>
+                    <span
+                        onClick={() => {
+                            setIsCloseSettingBox((prev) => !prev);
+                        }}
+                    >
                         <i className="fa-solid fa-gear" /> Settings
                     </span>
                     <span onClick={handleLogOut}>
@@ -110,6 +181,37 @@ const UserBox = ({ isClose, setIsClose }) => {
                         Sign Out
                     </span>
                 </div>
+            </div>
+            <div
+                className={`user-box setting-box ${
+                    isCloseSettingBox ? "hidden" : ""
+                }`}
+            >
+                <span>Change your information</span>
+                <div>
+                    Avatar:{" "}
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                            setAvatar(e.target.files[0]);
+                        }}
+                    />
+                </div>
+                <div>
+                    Username:{" "}
+                    <input
+                        type="text"
+                        value={userProfile?.name}
+                        onChange={(e) => {
+                            setUserProfile((pre) => ({
+                                ...pre,
+                                name: e.target.value,
+                            }));
+                        }}
+                    />
+                </div>
+                <button onClick={handleUpdateProfile}>Update</button>
             </div>
         </>
     );

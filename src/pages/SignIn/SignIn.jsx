@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import HashLoader from "react-spinners/HashLoader";
 
 import "./SignIn.css";
 import logo from "@/assets/logo.svg";
@@ -21,6 +22,7 @@ const SignIn = () => {
 
     const inputUsername = useRef(null);
     const inputPassword = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         inputUsername.current?.focus();
@@ -49,69 +51,63 @@ const SignIn = () => {
     };
 
     // handle when user clicks Sign in
-    const handleSubmit = () => {
-        let isValid = true;
-        for (let prop in account) {
-            if (account[prop] === "") {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    [prop]: "Required",
-                }));
+    const handleSubmit = async () => {
+        setIsLoading(true);
+        const signInRequest = async () => {
+            return await fetch(`${apiUrl}/v1/auth/login`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: account.username,
+                    password: account.password,
+                }),
+            });
+        };
 
-                isValid = false;
-            }
-        }
-        if (isValid) {
-            getStatusSignIn().then((status) => {
-                if (status === 404) {
+        try {
+            let isValid = true;
+            for (let prop in account) {
+                if (account[prop] === "") {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
-                        username: "The username you specified are not correct.",
+                        [prop]: "Required",
                     }));
-                } else if (status === 200) {
-                    const decode = jwtDecode(
-                        sessionStorage.getItem("accessToken")
-                    );
+
+                    isValid = false;
+                }
+            }
+            if (isValid) {
+                const res = await signInRequest();
+                if (res.status === 200) {
+                    const data = await res.json();
+                    sessionStorage.setItem("accessToken", data.accessToken);
+                    sessionStorage.setItem("csrfToken", data.csrfToken);
+                    const decode = jwtDecode(data.accessToken.toString());
                     if (decode.role === "USER")
                         navigate(
                             `${sessionStorage.getItem("lastVisit") || "/"}`
                         );
                     else navigate("/admin/problems");
-                } else if (status === 401) {
+                } else if (res.status === 401) {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
                         password: "The password you specified are not correct.",
                     }));
+                } else if (res.status === 404) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        username: "The username you specified are not correct.",
+                    }));
                 }
-            });
+            }
+        } catch (e) {
+            console.error("Sign in error: ", e);
+        } finally {
+            setIsLoading(false);
         }
-    };
-
-    // check account's status when sign in
-    const getStatusSignIn = () => {
-        return fetch(`${apiUrl}/v1/auth/login`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: account.username,
-                password: account.password,
-            }),
-        })
-            .then(async (response) => {
-                const status = response.status;
-                const data = await response.json();
-
-                if (data.accessToken) {
-                    sessionStorage.setItem("accessToken", data.accessToken);
-                    sessionStorage.setItem("csrfToken", data.csrfToken);
-                }
-
-                return status;
-            })
-            .catch((error) => console.error("Sign in error: ", error));
     };
 
     // sign in with github
@@ -120,74 +116,83 @@ const SignIn = () => {
     };
 
     return (
-        <div className="signin-box">
-            <div className="container">
-                <img src={logo} alt="LeetCode Logo" />
-                <form action="" className="signup">
-                    <input
-                        ref={inputUsername}
-                        type="text"
-                        className="input input-without-icon"
-                        name="username"
-                        placeholder="Username or E-mail"
-                        onChange={handleChange}
-                        onInput={handleInput}
-                        onKeyDown={(e) => {
-                            handleEnter(
-                                e,
-                                handleSubmit,
-                                inputPassword,
-                                account
-                            );
-                        }}
-                    />
-                    <p className="error-message">{errors.username}</p>
-                    <label className="input input-with-icon">
+        <>
+            <div
+                className={`dark-overlay overlay overall-overlay ${
+                    isLoading ? "" : "hidden"
+                }`}
+            >
+                <HashLoader color="#36d7b7" loading={isLoading} size={35} />
+            </div>
+            <div className="signin-box">
+                <div className="container">
+                    <img src={logo} alt="LeetCode Logo" />
+                    <form action="" className="signup">
                         <input
-                            ref={inputPassword}
-                            type={showPassword ? "text" : "password"}
-                            name="password"
-                            className=""
-                            placeholder="Password"
+                            ref={inputUsername}
+                            type="text"
+                            className="input input-without-icon"
+                            name="username"
+                            placeholder="Username or E-mail"
                             onChange={handleChange}
                             onInput={handleInput}
                             onKeyDown={(e) => {
-                                handleEnter(e, handleSubmit);
+                                handleEnter(
+                                    e,
+                                    handleSubmit,
+                                    inputPassword,
+                                    account
+                                );
                             }}
                         />
-                        <i
-                            className={
-                                showPassword
-                                    ? "fa-regular fa-eye"
-                                    : "fa-regular fa-eye-slash"
-                            }
-                            onClick={handleShowPassword}
-                        />
-                    </label>
-                    <p className="error-message">{errors.password}</p>
-                </form>
-                <button className="signup-btn" onClick={handleSubmit}>
-                    Sign In
-                </button>
-                <div className="signup-action">
-                    <Link to="/forgot-password">Forgot Password?</Link>{" "}
-                    <span>
-                        <Link to="/sign-up">Sign Up</Link>
-                    </span>
-                </div>
-                <div className="container-another">
-                    <p className="tips">or you can sign in with</p>
-                    <div className="another">
-                        <i className="fab fa-google" />
-                        <i
-                            className="fab fa-github"
-                            onClick={handleSignInWithGithub}
-                        />
-                        <i className="fab fa-facebook" />
+                        <p className="error-message">{errors.username}</p>
+                        <label className="input input-with-icon">
+                            <input
+                                ref={inputPassword}
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                className=""
+                                placeholder="Password"
+                                onChange={handleChange}
+                                onInput={handleInput}
+                                onKeyDown={(e) => {
+                                    handleEnter(e, handleSubmit);
+                                }}
+                            />
+                            <i
+                                className={
+                                    showPassword
+                                        ? "fa-regular fa-eye"
+                                        : "fa-regular fa-eye-slash"
+                                }
+                                onClick={handleShowPassword}
+                            />
+                        </label>
+                        <p className="error-message">{errors.password}</p>
+                    </form>
+                    <button className="signup-btn" onClick={handleSubmit}>
+                        Sign In
+                    </button>
+                    <div className="signup-action">
+                        <Link to="/forgot-password">Forgot Password?</Link>{" "}
+                        <span>
+                            <Link to="/sign-up">Sign Up</Link>
+                        </span>
+                    </div>
+                    <div className="container-another">
+                        <p className="tips">or you can sign in with</p>
+                        <div className="another">
+                            <i className="fab fa-google" />
+                            <i
+                                className="fab fa-github"
+                                onClick={handleSignInWithGithub}
+                            />
+                            <i className="fab fa-facebook" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

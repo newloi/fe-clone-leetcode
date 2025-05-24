@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import HashLoader from "react-spinners/HashLoader";
 
 import { handleEnter } from "../SignIn/SignIn";
 import "./VerifyEmail.css";
@@ -17,6 +18,7 @@ const VerifyEmail = () => {
     const [error, setError] = useState("");
     const [countdown, setCountdown] = useState("60");
     const [isActive, setIsActive] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const inputRef = useRef(null);
 
@@ -36,6 +38,7 @@ const VerifyEmail = () => {
         if (code.length !== 8) {
             setError("Code is too short!");
         } else {
+            setIsLoading(true);
             try {
                 const status = await getVerifyStatus();
 
@@ -58,6 +61,8 @@ const VerifyEmail = () => {
             } catch (err) {
                 console.error("Verification error: ", err);
                 setError("Something went wrong!");
+            } finally {
+                setIsLoading(false);
             }
         }
     };
@@ -100,33 +105,45 @@ const VerifyEmail = () => {
     };
 
     return (
-        <div className="verify-box">
-            <h3 className="title-verify">Verify Your Email</h3>
-            <p className="description-verify">
-                Please enter the code that has been sent to{" "}
-                <span className="target-email">{emailAddress}</span>
-            </p>
-            <div className="verify-container">
-                <input
-                    ref={inputRef}
-                    className="input input-without-icon input-code"
-                    type="text"
-                    maxLength="8"
-                    placeholder="Enter your code"
-                    onInput={handleChange}
-                    onKeyDown={(e) => {
-                        handleEnter(e, handleVerify);
-                    }}
-                />
-                <p className="error-message">{error}</p>
+        <>
+            <div
+                className={`dark-overlay overlay overall-overlay ${
+                    isLoading ? "" : "hidden"
+                }`}
+            >
+                <HashLoader color="#36d7b7" loading={isLoading} size={35} />
             </div>
-            <button className="resend-code" onClick={handleResendCode}>
-                Resend Code {isActive && <span>({countdown})</span>}
-            </button>
-            <button className="verify-btn signup-btn" onClick={handleVerify}>
-                Verify
-            </button>
-        </div>
+            <div className="verify-box">
+                <h3 className="title-verify">Verify Your Email</h3>
+                <p className="description-verify">
+                    Please enter the code that has been sent to{" "}
+                    <span className="target-email">{emailAddress}</span>
+                </p>
+                <div className="verify-container">
+                    <input
+                        ref={inputRef}
+                        className="input input-without-icon input-code"
+                        type="text"
+                        maxLength="8"
+                        placeholder="Enter your code"
+                        onInput={handleChange}
+                        onKeyDown={(e) => {
+                            handleEnter(e, handleVerify);
+                        }}
+                    />
+                    <p className="error-message">{error}</p>
+                </div>
+                <button className="resend-code" onClick={handleResendCode}>
+                    Resend Code {isActive && <span>({countdown})</span>}
+                </button>
+                <button
+                    className="verify-btn signup-btn"
+                    onClick={handleVerify}
+                >
+                    Verify
+                </button>
+            </div>
+        </>
     );
 };
 

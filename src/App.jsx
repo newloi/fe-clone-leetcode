@@ -12,6 +12,7 @@ import Admin from "./pages/Admin/Admin";
 import LayoutWorkSpace from "./pages/LayoutWorkSpace/LayoutWorkSpace";
 import AdminProblems from "./components/AdminProblems/AdminProblems";
 import AddNewProblem from "./components/AddNewProblem/AddNewProblem";
+import AdminUsers from "./components/AdminUsers/AdminUsers";
 
 const App = () => {
     return (
@@ -48,6 +49,7 @@ const App = () => {
                         path="admin/add-new-problem/:problemId?"
                         element={<AddNewProblem />}
                     />
+                    <Route path="admin/users" element={<AdminUsers />} />
                 </Route>
             </Routes>
         </Router>

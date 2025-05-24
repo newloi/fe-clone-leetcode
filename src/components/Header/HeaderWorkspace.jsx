@@ -59,6 +59,7 @@ const HeaderWorkspace = ({
                             isClose={isCloseUserBox}
                             setIsClose={setIsCloseUserBox}
                         />
+
                         <span
                             onClick={() => {
                                 setIsCloseUserBox((pre) => !pre);

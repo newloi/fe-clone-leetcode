@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "react-toastify";
 import debounce from "lodash.debounce";
+import PulseLoader from "react-spinners/PulseLoader";
 
 import "./Submissions.css";
 import apiUrl from "../../config/api";
@@ -30,6 +31,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
+                            "Cache-Control": "no-cache",
                             Authorization: `Bearer ${token}`,
                         },
                     }
@@ -69,7 +71,7 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
 
         if (problemId) getSubmissions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page]);
+    }, [page, newResultId]);
 
     const handleSelectResult = (id) => {
         setResultId(id);
@@ -170,9 +172,13 @@ const Submissions = ({ problemId, setResultId, setTabResult, newResultId }) => {
                                 </div>
                             );
                         })}
-                        {isLoading && (
-                            <p className="loading-results">Loading...</p>
-                        )}
+                        <div className="scroll-loader">
+                            <PulseLoader
+                                color="#ffffff99"
+                                loading={isLoading}
+                                size={10}
+                            />
+                        </div>
                     </div>
                 </>
             ) : (

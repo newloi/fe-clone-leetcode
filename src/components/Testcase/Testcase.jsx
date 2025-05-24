@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
+import PulseLoader from "react-spinners/PuffLoader";
+
 import "./Testcase.css";
 
-const Testcase = ({ examples }) => {
+const Testcase = ({ examples, isLoading }) => {
     const inputs = useMemo(() => {
         return examples?.map((example) => {
             const input = {};
@@ -21,6 +23,9 @@ const Testcase = ({ examples }) => {
 
     return (
         <div className="code-editor-container scrollable">
+            <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
+                <PulseLoader color="#ffffff99" loading={isLoading} size={10} />
+            </div>
             <div className="testcase-container">
                 <div className="tab-cases">
                     {examples?.map((example, index) => {

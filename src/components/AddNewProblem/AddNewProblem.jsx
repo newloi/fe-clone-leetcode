@@ -633,6 +633,7 @@ const AddNewProblem = () => {
                                     </select>
                                     <input
                                         type="file"
+                                        accept=".py,.js,.java,.cpp,.c"
                                         onChange={(e) => {
                                             setTemplate(e.target.files[0]);
                                         }}

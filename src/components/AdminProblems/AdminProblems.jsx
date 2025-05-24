@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import PulseLoader from "react-spinners/PulseLoader";
 
 import "./AdminProblems.css";
 import apiUrl from "@/config/api";
@@ -16,30 +17,87 @@ const AdminProblems = () => {
     const [isShowWarning, setIsShowWarning] = useState(false);
     const [problemSelected, setProblemSelected] = useState({});
     const [count, setCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
+    // useEffect(() => {
+    //     const token = sessionStorage.getItem("accessToken");
+    //     fetch(`${apiUrl}/v1/problems?page=${page}&limit=20`, {
+    //         method: "GET",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "Cache-Control": "no-cache",
+    //             ...(token && { Authorization: `Bearer ${token}` }),
+    //         },
+    //     })
+    //         .then((res) => res.json())
+    //         .then((res) => {
+    //             setMaxPage(res.maxPage);
+    //             setProblems(res.data);
+    //         })
+    //         .catch((error) => console.error("problems api error: ", error));
+    // }, [page, count]);
+
+    const fetchProblems = async () => {
+        setIsLoading(true);
+        const sendRequest = async (token) => {
+            return await fetch(`${apiUrl}/v1/problems?page=${page}&limit=20`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-cache",
+                    ...(token && { Authorization: `Bearer ${token}` }),
+                },
+            });
+        };
+
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            let res = await sendRequest(accessToken);
+
+            if (res.status === 401) {
+                const refreshed = await refreshAccessToken();
+                if (!refreshed) {
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        { autoClose: 3000 }
+                    );
+                    navigate("/sign-in");
+                    return;
+                }
+
+                accessToken = sessionStorage.getItem("accessToken");
+                res = await sendRequest(accessToken);
+            }
+
+            if (res.status === 200) {
+                const data = await res.json();
+                setMaxPage(data.maxPage);
+                setProblems(data.data);
+            } else {
+                toast.error("Unexpected error. Please try again.", {
+                    autoClose: 3000,
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching problems:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const token = sessionStorage.getItem("accessToken");
-        fetch(`${apiUrl}/v1/problems?page=${page}&limit=20`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Cache-Control": "no-cache",
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                setMaxPage(res.maxPage);
-                setProblems(res.data);
-            })
-            .catch((error) => console.error("home api error: ", error));
+        if (!isLoading) {
+            fetchProblems();
+        }
     }, [page, count]);
 
     useEffect(() => {
-        if (problems.length === 0 && page > 1) {
-            setPage((pre) => pre - 1);
+        if (problems?.length === 0 && page > 1) {
+            setPage((pre) => {
+                return pre - 1;
+            });
         }
     }, [problems]);
 
@@ -123,6 +181,14 @@ const AdminProblems = () => {
                     >
                         <i className="fa-solid fa-plus" /> Add new problem
                     </button>
+                </div>
+
+                <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
+                    <PulseLoader
+                        color="#ffffff99"
+                        loading={isLoading}
+                        size={10}
+                    />
                 </div>
                 <div className="admin-problems scrollable">
                     {problems?.map((problem, index) => {

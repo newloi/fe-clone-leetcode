@@ -8,13 +8,13 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import HashLoader from "react-spinners/HashLoader";
 
 import HeaderWorkspace from "../../components/Header/HeaderWorkspace";
 import CodeEditor from "../../components/CodeEditor/CodeEditor";
 import Problem from "../../components/Problem/Problem";
 import Testcase from "../../components/Testcase/Testcase";
 import Solutions from "../../components/Solutions/Solutions";
-import Sidebar from "../../components/SideBar/Sidebar";
 import Result from "../../components/Result/Result";
 import Submissions from "../../components/Submissions/Submissions";
 import refreshAccessToken from "../../api/refreshAccessToken";
@@ -52,6 +52,8 @@ const WorkSpace = ({ problemId, problemIndex }) => {
     const [solutionId, setSolutionId] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
+    const [isLoading, setIsLoading] = useState(false);
+    const [isFetchingData, setIsFetchingData] = useState(false);
 
     const [decode, setDecode] = useState(null);
 
@@ -64,6 +66,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
     }, []);
 
     useEffect(() => {
+        setIsFetchingData(true);
         fetch(`${apiUrl}/v1/problems/${problemId}`)
             .then((res) => res.json())
             .then((data) => {
@@ -72,6 +75,9 @@ const WorkSpace = ({ problemId, problemIndex }) => {
             })
             .catch((error) => {
                 console.error(error);
+            })
+            .finally(() => {
+                setIsFetchingData(false);
             });
     }, []);
 
@@ -84,6 +90,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
     };
 
     const handleSubmitCode = async () => {
+        setIsLoading(true);
         const csrfToken = sessionStorage.getItem("csrfToken");
 
         const sendRequest = async (token) => {
@@ -163,11 +170,20 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                 });
         } catch (error) {
             console.error("submit error: ", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div>
+            <div
+                className={`dark-overlay overlay overall-overlay ${
+                    isLoading ? "" : "hidden"
+                }`}
+            >
+                <HashLoader color="#36d7b7" loading={isLoading} size={35} />
+            </div>
             <div className="workspace-container">
                 <div className="header-workspace">
                     <HeaderWorkspace
@@ -248,7 +264,10 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 tab === "description" ? "" : "hidden"
                             }`}
                         >
-                            <Problem problem={data} />
+                            <Problem
+                                problem={data}
+                                isLoading={isFetchingData}
+                            />
                         </div>
                         <div
                             className={`container-tab ${
@@ -349,6 +368,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 <div className="container-tab">
                                     <Testcase
                                         examples={data?.description?.examples}
+                                        isLoading={isFetchingData}
                                     />
                                 </div>
                             </div>
