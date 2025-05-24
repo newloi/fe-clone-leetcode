@@ -71,28 +71,42 @@ const Problem = ({ problem }) => {
                         )}
                     </div>
                     <br />
-                    <div className="constraints">
+                    <div className="constraints text">
                         {problem?.description?.constraints.length !== 0 && (
                             <strong>Constraints:</strong>
                         )}
-                        <ul>
-                            {problem?.description?.constraints?.map(
-                                (constraint, index) => {
-                                    return (
-                                        <li key={index}>
-                                            <code>{constraint}</code>
-                                        </li>
-                                    );
-                                }
-                            )}
-                        </ul>
+
+                        {problem?.description?.constraints?.map(
+                            (constraint, index) => {
+                                return (
+                                    <ReactMarkdown
+                                        key={index}
+                                        remarkPlugins={[remarkGfm]}
+                                        rehypePlugins={[
+                                            rehypeRaw,
+                                            rehypeHighlight,
+                                        ]}
+                                    >
+                                        {constraint}
+                                    </ReactMarkdown>
+                                );
+                            }
+                        )}
                     </div>
-                    <br />
+
                     {problem?.description?.extra && (
-                        <div className="follow-up">
-                            <strong>Follow up: </strong>{" "}
-                            {problem?.description?.extra}
-                        </div>
+                        <>
+                            <br />
+                            <br />
+                            <div className="follow-up text">
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                                >
+                                    {`**Follow up:** ${problem?.description?.extra}`}
+                                </ReactMarkdown>
+                            </div>
+                        </>
                     )}
                     <br />
                     <br />

@@ -226,6 +226,12 @@ const Home = () => {
                                 <Link
                                     key={index}
                                     to={`/problem/${problem._id}/${index}`}
+                                    onClick={() => {
+                                        sessionStorage.setItem(
+                                            "pageSidebar",
+                                            parseInt(index / 10) + 1
+                                        );
+                                    }}
                                 >
                                     <div className={"problem-card"}>
                                         <i

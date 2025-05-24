@@ -71,6 +71,7 @@ const UserBox = ({ isClose, setIsClose }) => {
 
         sessionStorage.removeItem("accessToken");
         sessionStorage.removeItem("lastVisit");
+        sessionStorage.removeItem("pageSidebar");
         navigate("/sign-in");
     };
 

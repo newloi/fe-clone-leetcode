@@ -9,6 +9,7 @@
     padding-left: 16px;
     color: #a8a8a8;
     border-left: 2px solid #454545;
+    font-size: 15px;
 }
 
 .title-problem h1 {
@@ -39,11 +40,12 @@
     font-weight: 700;
 }
 
-.constraints ul {
-    list-style-position: inside;
+li {
+    list-style-position: outside;
+    margin-left: 15px;
 }
 
-.constraints ul li code {
+/* .constraints ul li code {
     background-color: #3c3c3c;
     padding: 2px;
     border-radius: 3px;
@@ -54,7 +56,7 @@
 
 .constraints ul li {
     margin: 10px;
-}
+} */
 
 .easy-tag {
     color: #3fc37d !important;
@@ -75,5 +77,19 @@
     border-radius: 5px;
     border: 0.1px solid #ffffff24;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-    padding: 1px 4px;
+    padding: 2px;
+    font-size: 13.5px;
+}
+
+.text p {
+    line-height: 1.5;
+}
+
+.constraints ul {
+    height: 30px;
+    /* margin-bottom: 10px; */
+}
+
+sup {
+    font-size: 10px;
 }
