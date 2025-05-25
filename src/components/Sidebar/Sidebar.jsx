@@ -3,7 +3,7 @@ import {
     useState,
     // useCallback
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import PulseLoader from "react-spinners/PulseLoader";
 // import debounce from "lodash.debounce";
@@ -21,18 +21,23 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     const [maxPage, setMaxPage] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
-        const handleBeforeUnload = () => {
-            sessionStorage.setItem("pageSidebar", page.toString());
-        };
+        sessionStorage.setItem("pageSidebar", page.toString());
+    }, [location.pathname]);
 
-        window.addEventListener("beforeunload", handleBeforeUnload);
+    // useEffect(() => {
+    //     const handleBeforeUnload = () => {
+    //         sessionStorage.setItem("pageSidebar", page.toString());
+    //     };
 
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [page]);
+    //     window.addEventListener("beforeunload", handleBeforeUnload);
+
+    //     return () => {
+    //         window.removeEventListener("beforeunload", handleBeforeUnload);
+    //     };
+    // }, [page]);
 
     useEffect(() => {
         const fetchProblems = async () => {

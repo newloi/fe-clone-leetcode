@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import HashLoader from "react-spinners/HashLoader";
 
@@ -8,6 +8,7 @@ import "./UserBox.css";
 import apiUrl from "@/config/api";
 import refreshAccessToken from "@/api/refreshAccessToken";
 import resendEmail from "@/api/resendEmail";
+import Holder from "../Holder/Holder";
 
 const UserBox = ({ isClose, setIsClose }) => {
     const [decode, setDecode] = useState(null);
@@ -26,6 +27,7 @@ const UserBox = ({ isClose, setIsClose }) => {
     const [userProfile, setUserProfile] = useState();
     const [avatar, setAvatar] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const getProfile = async () => {
@@ -144,74 +146,128 @@ const UserBox = ({ isClose, setIsClose }) => {
             >
                 <HashLoader color="#36d7b7" loading={isLoading} size={35} />
             </div>
-            <div className={`user-box ${isClose ? "hidden" : ""}`}>
-                <div className="user-infor">
-                    {userProfile?.avatar ? (
-                        <div className="avatar-frame medium-avatar">
-                            <img src={userProfile.avatar} />
-                        </div>
-                    ) : (
-                        <i className="fa-regular fa-circle-user big-icon" />
-                    )}
-                    <span>{userProfile?.name || "Username"}</span>
-                </div>
-                <div className="user-actions">
-                    {!decode?.isVerified && (
-                        <span
-                            onClick={() => {
-                                resendEmail(decode.email);
-                                navigate(
-                                    `/sign-up/verify-email/${decode.email}`
-                                );
-                            }}
-                        >
-                            <i className="fa-solid fa-user-check" /> Verify
-                            Email
-                        </span>
-                    )}
-                    <span
-                        onClick={() => {
-                            setIsCloseSettingBox((prev) => !prev);
-                        }}
-                    >
-                        <i className="fa-solid fa-gear" /> Settings
-                    </span>
-                    <span onClick={handleLogOut}>
-                        <i className="fa-solid fa-arrow-right-from-bracket" />{" "}
-                        Sign Out
-                    </span>
-                </div>
-            </div>
             <div
-                className={`user-box setting-box ${
-                    isCloseSettingBox ? "hidden" : ""
+                className={`user-box ${isClose ? "hidden" : ""} ${
+                    isCloseSettingBox ? "" : "setting-box"
                 }`}
             >
-                <span>Change your information</span>
-                <div>
-                    Avatar:{" "}
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                            setAvatar(e.target.files[0]);
-                        }}
-                    />
-                </div>
-                <div>
-                    Username:{" "}
-                    <input
-                        type="text"
-                        value={userProfile?.name}
-                        onChange={(e) => {
-                            setUserProfile((pre) => ({
-                                ...pre,
-                                name: e.target.value,
-                            }));
-                        }}
-                    />
-                </div>
-                <button onClick={handleUpdateProfile}>Update</button>
+                {isCloseSettingBox ? (
+                    <>
+                        <div className="user-infor">
+                            {userProfile?.avatar ? (
+                                <div className="avatar-frame medium-avatar">
+                                    <img src={userProfile.avatar} />
+                                </div>
+                            ) : (
+                                <i className="fa-regular fa-circle-user big-icon" />
+                            )}
+                            <span>{userProfile?.name || "Username"}</span>
+                        </div>
+                        <div className="user-actions">
+                            {!decode?.isVerified && (
+                                <span
+                                    onClick={() => {
+                                        resendEmail(decode.email);
+                                        sessionStorage.setItem(
+                                            "lastVisit",
+                                            location.pathname
+                                        );
+                                        navigate(
+                                            `/sign-up/verify-email/${decode.email}`
+                                        );
+                                    }}
+                                >
+                                    <i className="fa-solid fa-user-check" />{" "}
+                                    Verify Email
+                                </span>
+                            )}
+                            <span
+                                onClick={() => {
+                                    setIsCloseSettingBox((prev) => !prev);
+                                }}
+                            >
+                                <i className="fa-solid fa-gear" /> Settings
+                            </span>
+                            <span onClick={handleLogOut}>
+                                <i className="fa-solid fa-arrow-right-from-bracket" />{" "}
+                                Sign Out
+                            </span>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div
+                            className="back-btn"
+                            onClick={() => {
+                                setIsCloseSettingBox(true);
+                            }}
+                        >
+                            <i className="fa-solid fa-arrow-left" /> Back
+                        </div>
+                        {decode.isVerified ? (
+                            <>
+                                <span>Change your information</span>
+                                <div className="display-row">
+                                    Avatar:{" "}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            setAvatar(e.target.files[0]);
+                                        }}
+                                    />
+                                </div>
+                                <div className="display-row">
+                                    Username:{" "}
+                                    <input
+                                        type="text"
+                                        value={userProfile?.name}
+                                        placeholder="Type your new username"
+                                        onChange={(e) => {
+                                            setUserProfile((pre) => ({
+                                                ...pre,
+                                                name: e.target.value,
+                                            }));
+                                        }}
+                                    />
+                                </div>
+                                <button onClick={handleUpdateProfile}>
+                                    Update
+                                </button>
+                                <div className="user-actions">
+                                    <span
+                                        onClick={() => {
+                                            sessionStorage.setItem(
+                                                "lastVisit",
+                                                location.pathname
+                                            );
+                                            navigate(
+                                                `/forgot-password/change-password/${decode.email}`
+                                            );
+                                        }}
+                                    >
+                                        <i className="fa-solid fa-key" /> Change
+                                        your password
+                                    </span>
+                                </div>
+                            </>
+                        ) : (
+                            <Holder
+                                actionText={"Verify now"}
+                                action={() => {
+                                    resendEmail(decode.email);
+                                    sessionStorage.setItem(
+                                        "lastVisit",
+                                        location.pathname
+                                    );
+                                    navigate(
+                                        `/sign-up/verify-email/${decode.email}`
+                                    );
+                                }}
+                            />
+                        )}
+                    </>
+                )}
             </div>
         </>
     );

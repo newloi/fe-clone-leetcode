@@ -302,6 +302,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                     />
                                 ) : (
                                     <Holder
+                                        text="View your Submission records here"
                                         actionText={"Verify now"}
                                         action={() => {
                                             resendEmail(decode.email);
@@ -317,6 +318,7 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 )
                             ) : (
                                 <Holder
+                                    text="View your Submission records here"
                                     actionText={"Register or Sign In"}
                                     action={() => {
                                         sessionStorage.setItem(
