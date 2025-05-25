@@ -335,7 +335,10 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 tab === "result" ? "" : "hidden"
                             }`}
                         >
-                            <Result resultId={resultId} />
+                            <Result
+                                resultId={resultId}
+                                setResultId={setResultId}
+                            />
                         </div>
                     </div>
                     <div className="right-side">
