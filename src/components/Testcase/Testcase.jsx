@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import PulseLoader from "react-spinners/PuffLoader";
+import PulseLoader from "react-spinners/PulseLoader";
 
 import "./Testcase.css";
 
@@ -23,53 +23,65 @@ const Testcase = ({ examples, isLoading }) => {
 
     return (
         <div className="code-editor-container scrollable">
-            <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
-                <PulseLoader color="#ffffff99" loading={isLoading} size={10} />
+            <div
+                className={`page-loader ${
+                    isLoading || !examples ? "" : "hidden"
+                }`}
+            >
+                <PulseLoader
+                    color="#ffffff99"
+                    loading={isLoading || !examples}
+                    size={10}
+                />
             </div>
-            <div className="testcase-container">
-                <div className="tab-cases">
-                    {examples?.map((example, index) => {
-                        return (
-                            <div key={index}>
-                                <button
+            {examples && (
+                <div className="testcase-container">
+                    <div className="tab-cases">
+                        {examples?.map((example, index) => {
+                            return (
+                                <div key={index}>
+                                    <button
+                                        key={index}
+                                        className={
+                                            testCase === index + 1
+                                                ? "active-testcase"
+                                                : ""
+                                        }
+                                        onClick={() =>
+                                            handleChangeTestCase(index)
+                                        }
+                                    >
+                                        Case {index + 1}
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="body-testcase">
+                        {inputs?.map((input, index) => {
+                            return (
+                                <div
                                     key={index}
                                     className={
-                                        testCase === index + 1
-                                            ? "active-testcase"
-                                            : ""
+                                        testCase === index + 1 ? "" : "hidden"
                                     }
-                                    onClick={() => handleChangeTestCase(index)}
                                 >
-                                    Case {index + 1}
-                                </button>
-                            </div>
-                        );
-                    })}
+                                    {Object.entries(input).map(
+                                        ([key, value], index) => {
+                                            return (
+                                                <div key={index}>
+                                                    <p>{key} = </p>
+                                                    <pre>{value}</pre>
+                                                </div>
+                                            );
+                                        }
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
-                <div className="body-testcase">
-                    {inputs?.map((input, index) => {
-                        return (
-                            <div
-                                key={index}
-                                className={
-                                    testCase === index + 1 ? "" : "hidden"
-                                }
-                            >
-                                {Object.entries(input).map(
-                                    ([key, value], index) => {
-                                        return (
-                                            <div key={index}>
-                                                <p>{key} = </p>
-                                                <pre>{value}</pre>
-                                            </div>
-                                        );
-                                    }
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+            )}
         </div>
     );
 };

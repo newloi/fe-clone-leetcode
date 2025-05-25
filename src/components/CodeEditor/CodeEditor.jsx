@@ -1,5 +1,7 @@
 import Editor from "@monaco-editor/react";
 import { Link, useLocation } from "react-router-dom";
+import PulseLoader from "react-spinners/PulseLoader";
+import { useState } from "react";
 
 import "./CodeEditor.css";
 import { useEffect } from "react";
@@ -13,9 +15,11 @@ const CodeEditor = ({
     setLanguage,
     language,
 }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
             try {
                 const res = await fetch(
@@ -25,6 +29,8 @@ const CodeEditor = ({
                 setCode(data.function);
             } catch (error) {
                 console.error("error get function declaration: ", error);
+            } finally {
+                setIsLoading(false);
             }
         };
         if (language) fetchData();
@@ -36,6 +42,17 @@ const CodeEditor = ({
 
     return (
         <div className="code-editor-container" style={{ padding: 0 }}>
+            <div
+                className={`page-loader ${
+                    isLoading || !problemId ? "" : "hidden"
+                }`}
+            >
+                <PulseLoader
+                    color="#ffffff99"
+                    loading={isLoading || !problemId}
+                    size={10}
+                />
+            </div>
             <div className="language-selected-container">
                 <select
                     className="language-selected"
@@ -74,15 +91,17 @@ const CodeEditor = ({
                     to run or submit
                 </div>
             )}
-            <Editor
-                height="100%"
-                language={language}
-                value={code}
-                onChange={(newCode) => {
-                    setCode(newCode);
-                }}
-                theme="vs-dark"
-            />
+            {problemId && (
+                <Editor
+                    height="100%"
+                    language={language}
+                    value={code}
+                    onChange={(newCode) => {
+                        setCode(newCode);
+                    }}
+                    theme="vs-dark"
+                />
+            )}
         </div>
     );
 };

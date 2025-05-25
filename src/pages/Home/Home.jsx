@@ -13,7 +13,7 @@ import Dialog from "@/components/Dialog/Dialog";
 import refreshAccessToken from "@/api/refreshAccessToken";
 
 const Home = () => {
-    const [problems, setProblems] = useState([]);
+    const [problems, setProblems] = useState();
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState();
     const [searchQuery, setSearchQuery] = useState("");
@@ -176,6 +176,7 @@ const Home = () => {
     return (
         <div className="container-home">
             <HeaderHome />
+
             {isShowBanner && (
                 <Dialog
                     message="Please verify your email to unlock more features!"
@@ -211,13 +212,12 @@ const Home = () => {
                         )}
                     </div>
                 </div>
-
                 {/* <div className="footer-home mobile-footer">
-                    <Footer page={page} setPage={setPage} maxPage={maxPage} />
-                </div> */}
+                        <Footer page={page} setPage={setPage} maxPage={maxPage} />
+                    </div> */}
 
                 <div className="problems problems-home">
-                    {isSearching && problems.length === 0 ? (
+                    {isSearching && problems?.length === 0 ? (
                         <div className="no-results">
                             <p>No problems found matching "{searchQuery}"</p>
                         </div>
@@ -280,11 +280,12 @@ const Home = () => {
                 <div className="scroll-loader">
                     <PulseLoader
                         color="#ffffff99"
-                        loading={isLoading}
+                        loading={isLoading || !problems}
                         size={10}
                     />
                 </div>
             </div>
+
             {/* <div className="footer-home desktop-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />
             </div> */}

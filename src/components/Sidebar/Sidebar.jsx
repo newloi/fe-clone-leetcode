@@ -14,7 +14,7 @@ import refreshAccessToken from "@/api/refreshAccessToken";
 import Footer from "../Footer/Footer";
 
 const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
-    const [problems, setProblems] = useState([]);
+    const [problems, setProblems] = useState(null);
     const [page, setPage] = useState(
         Number(sessionStorage.getItem("pageSidebar")) || 1
     );
@@ -115,7 +115,7 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     }, [newResultId, page]);
 
     useEffect(() => {
-        const size = problems.length;
+        const size = problems?.length;
 
         if (size > 0) {
             const currProblemIndex =
@@ -159,58 +159,74 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />{" "}
             </div>
 
-            <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
-                <PulseLoader color="#ffffff99" loading={isLoading} size={10} />
+            <div
+                className={`page-loader ${
+                    isLoading || !problems ? "" : "hidden"
+                }`}
+            >
+                <PulseLoader
+                    color="#ffffff99"
+                    loading={isLoading || !problems}
+                    size={10}
+                />
             </div>
 
-            <div
-                className="problems scrollable"
-                // onScroll={handleScroll}
-            >
-                {problems?.map((problem, index) => {
-                    return (
-                        <div
-                            key={index}
-                            className={`problem-card ${
-                                selectedProblemIndex === index ? "selected" : ""
-                            }`}
-                            onClick={() => {
-                                navigate(`/problem/${problem._id}/${index}`);
-                                toggleSidebar();
-                            }}
-                        >
-                            <i
-                                className={
-                                    problem.status === "SOLVED"
-                                        ? "fa-regular fa-circle-check solved-icon"
-                                        : problem.status === "ATTEMPTED"
-                                        ? "fa-solid fa-circle-half-stroke attempted-icon"
-                                        : "fa-regular fa-circle unsolved-icon"
-                                }
-                            />
-                            <div className="problem">
-                                <p>{problem.title}</p>
-                                <div className="tags">
-                                    {problem.tags.map((tag, index) => {
-                                        return <span key={index}>{tag}</span>;
-                                    })}
-                                </div>
-                            </div>
-                            <span
-                                className={`small-tag ${
-                                    problem.difficulty === "EASY"
-                                        ? "easy-tag"
-                                        : problem.difficulty === "MEDIUM"
-                                        ? "medium-tag"
-                                        : "hard-tag"
+            {problems && (
+                <div
+                    className="problems scrollable"
+                    // onScroll={handleScroll}
+                >
+                    {problems?.map((problem, index) => {
+                        return (
+                            <div
+                                key={index}
+                                className={`problem-card ${
+                                    selectedProblemIndex === index
+                                        ? "selected"
+                                        : ""
                                 }`}
+                                onClick={() => {
+                                    navigate(
+                                        `/problem/${problem._id}/${index}`
+                                    );
+                                    toggleSidebar();
+                                }}
                             >
-                                {problem.difficulty}
-                            </span>
-                        </div>
-                    );
-                })}
-            </div>
+                                <i
+                                    className={
+                                        problem.status === "SOLVED"
+                                            ? "fa-regular fa-circle-check solved-icon"
+                                            : problem.status === "ATTEMPTED"
+                                            ? "fa-solid fa-circle-half-stroke attempted-icon"
+                                            : "fa-regular fa-circle unsolved-icon"
+                                    }
+                                />
+                                <div className="problem">
+                                    <p>{problem.title}</p>
+                                    <div className="tags">
+                                        {problem.tags.map((tag, index) => {
+                                            return (
+                                                <span key={index}>{tag}</span>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                                <span
+                                    className={`small-tag ${
+                                        problem.difficulty === "EASY"
+                                            ? "easy-tag"
+                                            : problem.difficulty === "MEDIUM"
+                                            ? "medium-tag"
+                                            : "hard-tag"
+                                    }`}
+                                >
+                                    {problem.difficulty}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
 
             <div className="desktop-footer">
                 <Footer page={page} setPage={setPage} maxPage={maxPage} />
