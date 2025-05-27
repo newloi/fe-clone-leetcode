@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import "./HeaderWorkspace.css";
 import UserBox from "../UserBox/UserBox";
@@ -39,7 +40,15 @@ const HeaderWorkspace = ({
                 </button>
             </div>
             <div className="group-middle-btn">
-                <button className="action-btn middle-btn run-header-btn">
+                <button
+                    className="action-btn middle-btn run-header-btn"
+                    onClick={() => {
+                        toast(
+                            "Feature under development. Please come back later.",
+                            { close: 3000 }
+                        );
+                    }}
+                >
                     <i className="fa-solid fa-play middle-icon" /> Run
                 </button>
                 <button
