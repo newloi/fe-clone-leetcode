@@ -96,6 +96,7 @@
     /* justify-content: center; */
     align-items: center;
     /* padding-left: 10px; */
+
 }
 
 .admin-searchbar div {
@@ -129,7 +130,7 @@
 }
 
 .admin-searchbar div:focus-within {
-    box-shadow: 0 0 8px rgb(145, 141, 141);
+    box-shadow: 0 0 3px 3px #ffffff3a;
 }
 
 .admin-searchbar div i {

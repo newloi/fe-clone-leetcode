@@ -10,7 +10,7 @@ import refreshAccessToken from "@/api/refreshAccessToken";
 import resendEmail from "@/api/resendEmail";
 import Holder from "../Holder/Holder";
 
-const UserBox = ({ isClose, setIsClose }) => {
+const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
     const [decode, setDecode] = useState(null);
     const [isCloseSettingBox, setIsCloseSettingBox] = useState(true);
     const [count, setCount] = useState(1);
@@ -25,7 +25,7 @@ const UserBox = ({ isClose, setIsClose }) => {
     }, []);
 
     const [userProfile, setUserProfile] = useState();
-    const [avatar, setAvatar] = useState(null);
+    const [newProfile, setNewProfile] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -60,8 +60,20 @@ const UserBox = ({ isClose, setIsClose }) => {
                     accessToken = sessionStorage.getItem("accessToken");
                     res = await sendRequest(accessToken);
                 }
-                const data = await res.json();
-                setUserProfile(data);
+                if (res.status === 200) {
+                    const data = await res.json();
+                    setUserProfile(data);
+                    setAvatarHome(data.avatar);
+                    setNewProfile((prev) => ({
+                        ...prev,
+                        name: data.name,
+                        previewAvatar: data.avatar,
+                    }));
+                } else {
+                    toast.error("Unexpected error. Please try again.", {
+                        autoClose: 3000,
+                    });
+                }
             } catch (error) {
                 console.error("get profile error: ", error);
             }
@@ -75,8 +87,8 @@ const UserBox = ({ isClose, setIsClose }) => {
         setIsLoading(true);
         const updateRequest = async (token) => {
             const formData = new FormData();
-            formData.append("name", userProfile.name);
-            formData.append("file", avatar);
+            formData.append("name", newProfile.name);
+            formData.append("file", newProfile.avatar);
 
             return await fetch(`${apiUrl}/v1/users/${userProfile._id}`, {
                 method: "PATCH",
@@ -108,7 +120,8 @@ const UserBox = ({ isClose, setIsClose }) => {
 
             if (res.status === 200) {
                 setCount((prev) => prev + 1);
-                toast.success("Update successful", { autoClose: 3000 });
+                setIsCloseSettingBox(true);
+                toast.success("Update successful", { autoClose: 2000 });
             }
         } catch (error) {
             console.error("get profile error: ", error);
@@ -128,6 +141,26 @@ const UserBox = ({ isClose, setIsClose }) => {
         sessionStorage.removeItem("pageSidebar");
         sessionStorage.removeItem("pageAdmin");
         navigate("/sign-in");
+    };
+
+    const handleChangeName = (e) => {
+        setNewProfile((prev) => ({ ...prev, name: e.target.value }));
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewProfile((prev) => ({
+                    ...prev,
+                    previewAvatar: reader.result,
+                    avatar: file,
+                }));
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     return (
@@ -206,30 +239,42 @@ const UserBox = ({ isClose, setIsClose }) => {
                         </div>
                         {decode.isVerified ? (
                             <>
-                                <span>Change your information</span>
-                                <div className="display-row">
-                                    Avatar:{" "}
+                                <div className="user-infor">
                                     <input
                                         type="file"
                                         accept="image/*"
-                                        onChange={(e) => {
-                                            setAvatar(e.target.files[0]);
-                                        }}
+                                        id="update-avatar"
+                                        className="hidden"
+                                        onChange={handleImageChange}
                                     />
-                                </div>
-                                <div className="display-row">
-                                    Username:{" "}
-                                    <input
-                                        type="text"
-                                        value={userProfile?.name}
-                                        placeholder="Type your new username"
-                                        onChange={(e) => {
-                                            setUserProfile((pre) => ({
-                                                ...pre,
-                                                name: e.target.value,
-                                            }));
-                                        }}
-                                    />
+                                    <label htmlFor="update-avatar">
+                                        <div className="avatar-frame-square">
+                                            <div className="avatar-overlay">
+                                                <i className="fa-solid fa-camera" />
+                                            </div>
+                                            {userProfile?.avatar ? (
+                                                <img
+                                                    src={
+                                                        newProfile.previewAvatar
+                                                    }
+                                                />
+                                            ) : (
+                                                <i className="fa-solid fa-user very-big-icon" />
+                                            )}
+                                        </div>
+                                    </label>
+                                    <div>
+                                        <div className="edit-field">
+                                            <input
+                                                type="text"
+                                                value={newProfile.name}
+                                                onChange={handleChangeName}
+                                                placeholder="New username"
+                                            />
+                                            <i class="fa-solid fa-pen" />
+                                        </div>
+                                        <p className="fs-12">{decode.email}</p>
+                                    </div>
                                 </div>
                                 <button onClick={handleUpdateProfile}>
                                     Update

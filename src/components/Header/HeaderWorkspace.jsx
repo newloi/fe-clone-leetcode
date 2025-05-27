@@ -12,6 +12,7 @@ const HeaderWorkspace = ({
     handleSubmitCode,
 }) => {
     const [isCloseUserBox, setIsCloseUserBox] = useState(true);
+    const [avatar, setAvatar] = useState(null);
     const location = useLocation();
 
     return (
@@ -50,14 +51,15 @@ const HeaderWorkspace = ({
                 </button>
             </div>
             <div className="group-right-header">
-                <button className="action-btn no-background-btn">
+                {/* <button className="action-btn no-background-btn">
                     <i className="fa-solid fa-gear medium-icon" />
-                </button>
+                </button> */}
                 {sessionStorage.getItem("accessToken") ? (
                     <div>
                         <UserBox
                             isClose={isCloseUserBox}
                             setIsClose={setIsCloseUserBox}
+                            setAvatarHome={setAvatar}
                         />
 
                         <span
@@ -65,7 +67,19 @@ const HeaderWorkspace = ({
                                 setIsCloseUserBox((pre) => !pre);
                             }}
                         >
-                            <i className="fa-regular fa-circle-user big-icon" />
+                            {avatar ? (
+                                <div
+                                    className="avatar-frame medium-avatar"
+                                    style={{
+                                        width: 40,
+                                        height: 40,
+                                    }}
+                                >
+                                    <img src={avatar} />
+                                </div>
+                            ) : (
+                                <i className="fa-regular fa-circle-user big-icon" />
+                            )}
                         </span>
                     </div>
                 ) : (

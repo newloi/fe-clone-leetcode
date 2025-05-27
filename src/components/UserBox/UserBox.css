@@ -91,10 +91,36 @@
     width: 100px;
 }
 
-.setting-box div input[type="text"] {
-    background-color: inherit;
+.edit-field {
+    display: flex;
+    flex-direction: row;
+    background-color: #1c1c1c;
     color: #f5f5f5;
-    padding: 5px;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 5px;
+    align-items: center;
+    overflow: hidden;
+    padding: 0 10px;
+}
+
+.edit-field input {
+    padding: 5px 0;
+    background-color: inherit;
+    font-size: inherit;
+    flex: 1;
+    color: #fff;
+
+}
+
+.edit-field i {
+    font-size: 12px;
+}
+
+.edit-field:focus-within {
+    box-shadow: 0 0 3px 3px #ffffff24;
+    border-color: #000000ab;
 }
 
 .setting-box button {
@@ -113,6 +139,56 @@
 
 .user-box:not(.hidden) {
     animation: fadeIn 0.3s ease;
+}
+
+.avatar-frame-square {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    border: 1px solid #ffffff66;
+    overflow: hidden;
+}
+
+.avatar-frame-square img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #ffffff99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.avatar-overlay .fa-camera {
+    font-size: 20px;
+}
+
+.avatar-frame-square:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.very-big-icon {
+    font-size: 60px;
+}
+
+.fs-12 {
+    font-size: 12px;
 }
 
 @keyframes fadeIn {

@@ -17,13 +17,15 @@ const Dialog = ({
                 <span>{message}</span>
                 <div>
                     <button onClick={action}>{positiveBtnMessage}</button>
-                    <button
-                        onClick={() => {
-                            setIsShowDialog(false);
-                        }}
-                    >
-                        {negativeBtnMessage}
-                    </button>
+                    {negativeBtnMessage && (
+                        <button
+                            onClick={() => {
+                                setIsShowDialog(false);
+                            }}
+                        >
+                            {negativeBtnMessage}
+                        </button>
+                    )}
                 </div>
             </div>
         </>

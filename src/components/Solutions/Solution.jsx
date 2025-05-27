@@ -4,12 +4,16 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import "highlight.js/styles/vs2015.css";
 import { useEffect, useState } from "react";
+import PulseLoader from "react-spinners/PulseLoader";
+
 import apiUrl from "@/config/api";
 
 const Solution = ({ solutionId, setTab }) => {
     const [solution, setSolution] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        setIsLoading(true);
         fetch(`${apiUrl}/v1/discussions/${solutionId}`)
             .then((res) => res.json())
             .then((data) => {
@@ -17,6 +21,9 @@ const Solution = ({ solutionId, setTab }) => {
             })
             .catch((error) => {
                 console.error("solution error: ", error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }, [solutionId]);
 
@@ -35,6 +42,9 @@ const Solution = ({ solutionId, setTab }) => {
 
     return (
         <div className="solution-container">
+            <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
+                <PulseLoader color="#ffffff99" loading={isLoading} size={10} />
+            </div>
             <div className="header-solution">
                 <span
                     onClick={() => {

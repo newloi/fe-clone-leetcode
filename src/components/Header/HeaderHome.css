@@ -10,7 +10,7 @@
     z-index: 30;
 }
 
-.header-home img {
+.header-home>img {
     width: 30px;
     height: auto;
 }

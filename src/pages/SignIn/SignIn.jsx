@@ -112,7 +112,14 @@ const SignIn = () => {
 
     // sign in with github
     const handleSignInWithGithub = () => {
-        window.location.href = `${apiUrl}/v1/auth/github`;
+        setIsLoading(true);
+        try {
+            window.location.href = `${apiUrl}/v1/auth/github`;
+        } catch (e) {
+            console.error("log in github error: ", e);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -182,12 +189,12 @@ const SignIn = () => {
                     <div className="container-another">
                         <p className="tips">or you can sign in with</p>
                         <div className="another">
-                            <i className="fab fa-google" />
+                            {/* <i className="fab fa-google" /> */}
                             <i
                                 className="fab fa-github"
                                 onClick={handleSignInWithGithub}
                             />
-                            <i className="fab fa-facebook" />
+                            {/* <i className="fab fa-facebook" /> */}
                         </div>
                     </div>
                 </div>

@@ -31,8 +31,8 @@ const Result = ({ resultId, setResultId }) => {
     }, [resultId]);
 
     useEffect(() => {
-        setIsLoading(true);
         const getResult = async () => {
+            setIsLoading(true);
             const sendRequest = async (token) => {
                 return await fetch(`${apiUrl}/v1/submissions/${resultId}`, {
                     method: "GET",
@@ -94,8 +94,8 @@ const Result = ({ resultId, setResultId }) => {
     const status = result?.status;
 
     useEffect(() => {
-        setIsLoading(true);
         const getRanking = async () => {
+            setIsLoading(true);
             const sendRequest = async (token) => {
                 return await fetch(
                     `${apiUrl}/v1/problems/${result?.problem}/leaderboards?limit=10&language=${result?.language}`,
@@ -141,8 +141,8 @@ const Result = ({ resultId, setResultId }) => {
     }, [result]);
 
     useEffect(() => {
-        setIsLoading(true);
         const getProfile = async () => {
+            setIsLoading(true);
             const sendRequest = async (token) => {
                 return await fetch(`${apiUrl}/v1/users/${result.user}`, {
                     method: "GET",
@@ -182,7 +182,9 @@ const Result = ({ resultId, setResultId }) => {
             }
         };
 
-        getProfile();
+        if (user) {
+            getProfile();
+        }
     }, [result]);
 
     const codeMarkdown = `\`\`\`${result?.language}
@@ -191,108 +193,114 @@ ${result?.code}
 
     return (
         <div ref={resultRef} className="code-editor-container scrollable">
-            <div
-                className={`page-loader ${
-                    isLoading || !result || !ranking || !user ? "" : "hidden"
-                }`}
-            >
-                <PulseLoader
-                    color="#ffffff99"
-                    loading={isLoading || !result || !ranking || !user}
-                    size={10}
-                />
+            <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
+                <PulseLoader color="#ffffff99" loading={isLoading} size={10} />
             </div>
-            {result && (
-                <>
-                    <div className="header-result">
-                        <div className="status-result">
-                            <p
-                                className={
-                                    status === "ACCEPTED"
-                                        ? "accept-status"
-                                        : "error-status"
-                                }
-                            >
-                                {status === "ACCEPTED"
-                                    ? "Accepted"
-                                    : status === "WRONG_ANSWER"
-                                    ? "Wrong Answer"
-                                    : "Compile Error"}
-                            </p>
-                            <span className="user-result">
-                                {user?.avatar ? (
-                                    <div className="avatar-frame small-avatar">
-                                        <img src={user?.avatar} />
-                                    </div>
-                                ) : (
-                                    <i className="fa-regular fa-circle-user medium-icon" />
-                                )}{" "}
-                                <span>{user?.name}</span> submitted at{" "}
-                                {`${dateString} ${timeString}`}
-                            </span>
-                        </div>
-                        {status === "ACCEPTED" &&
-                            user._id ===
-                                jwtDecode(sessionStorage.getItem("accessToken"))
-                                    .sub && (
-                                <button className="create-solution">
-                                    <Link
-                                        to={`/post-solution/${resultId}`}
-                                        onClick={() => {
-                                            sessionStorage.setItem(
-                                                "lastVisit",
-                                                location.pathname
-                                            );
-                                        }}
-                                    >
-                                        <i className="fa-solid fa-pen-to-square" />{" "}
-                                        Solution
-                                    </Link>
-                                </button>
-                            )}
-                    </div>
-                    {status === "ACCEPTED" ? (
-                        <div className="output-accept">
-                            <p>
-                                <i className="fa-regular fa-clock"></i> Runtime
-                            </p>
-                            <span>{Math.round(result?.runtime)}</span> ms
-                        </div>
-                    ) : (
-                        <div className="output-error">
-                            <pre>{result?.error}</pre>
-                        </div>
-                    )}
-                    <div className="code-result">
-                        <div className="language">
-                            Code <span>|</span>{" "}
-                            {result?.language === "javascript"
-                                ? "JavaScript"
-                                : result?.language === "python"
-                                ? "Python"
-                                : result?.language === "cpp"
-                                ? "C++"
-                                : "Java"}
-                        </div>
-                        <div className="code-content">
-                            <ReactMarkdown
-                                remarkPlugins={[remarkGfm]}
-                                rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                            >
-                                {codeMarkdown}
-                            </ReactMarkdown>
-                        </div>
-                    </div>
-                    {status === "ACCEPTED" && (
-                        <div className="ranking-container">
-                            <div className="ranking-title">
-                                <i className="fa-solid fa-medal" /> Ranking
+
+            <div className="header-result">
+                <div className="status-result">
+                    <p
+                        className={
+                            status === "ACCEPTED"
+                                ? "accept-status"
+                                : "error-status"
+                        }
+                    >
+                        {status === "ACCEPTED"
+                            ? "Accepted"
+                            : status === "WRONG_ANSWER"
+                            ? "Wrong Answer"
+                            : "Compile Error"}
+                    </p>
+                    <span className="user-result">
+                        {user?.avatar ? (
+                            <div className="avatar-frame small-avatar">
+                                <img src={user?.avatar} />
                             </div>
-                            <div className="ranking">
-                                {ranking?.map((rank, index) => (
-                                    <div
-                                        key={index}
-                                        className={`ranking-card ${
+                        ) : (
+                            <i className="fa-regular fa-circle-user medium-icon" />
+                        )}{" "}
+                        <span>{user?.name}</span> submitted at{" "}
+                        {`${dateString} ${timeString}`}
+                    </span>
+                </div>
+                {status === "ACCEPTED" &&
+                    user?._id ===
+                        jwtDecode(sessionStorage.getItem("accessToken"))
+                            .sub && (
+                        <button className="create-solution">
+                            <Link
+                                to={`/post-solution/${resultId}`}
+                                onClick={() => {
+                                    sessionStorage.setItem(
+                                        "lastVisit",
+                                        location.pathname
+                                    );
+                                }}
+                            >
+                                <i className="fa-solid fa-pen-to-square" />{" "}
+                                Solution
+                            </Link>
+                        </button>
+                    )}
+            </div>
+            {status === "ACCEPTED" ? (
+                <div className="output-accept">
+                    <p>
+                        <i className="fa-regular fa-clock"></i> Runtime
+                    </p>
+                    <span>{Math.round(result?.runtime)}</span> ms
+                </div>
+            ) : (
+                <div className="output-error">
+                    <pre>{result?.error}</pre>
+                </div>
+            )}
+            <div className="code-result">
+                <div className="language">
+                    Code <span>|</span>{" "}
+                    {result?.language === "javascript"
+                        ? "JavaScript"
+                        : result?.language === "python"
+                        ? "Python"
+                        : result?.language === "cpp"
+                        ? "C++"
+                        : "Java"}
+                </div>
+                <div className="code-content">
+                    <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                    >
+                        {codeMarkdown}
+                    </ReactMarkdown>
+                </div>
+            </div>
+            {status === "ACCEPTED" && (
+                <div className="ranking-container">
+                    <div className="ranking-title">
+                        <i className="fa-solid fa-medal" /> Ranking
+                    </div>
+                    <div className="ranking">
+                        {ranking?.map((rank, index) => (
+                            <div
+                                key={index}
+                                className={`ranking-card ${
+                                    index === 0
+                                        ? "gold-medal"
+                                        : index === 1
+                                        ? "silver-medal"
+                                        : index === 2
+                                        ? "bronze-medal"
+                                        : "normal"
+                                }`}
+                                onClick={() => {
+                                    setResultId(rank?._id);
+                                }}
+                            >
+                                {index < 3 ? (
+                                    <i
+                                        className={`fa-solid fa-medal ${
                                             index === 0
                                                 ? "gold-medal"
                                                 : index === 1
@@ -301,60 +309,42 @@ ${result?.code}
                                                 ? "bronze-medal"
                                                 : "normal"
                                         }`}
-                                        onClick={() => {
-                                            setResultId(rank?._id);
-                                        }}
-                                    >
-                                        {index < 3 ? (
-                                            <i
-                                                className={`fa-solid fa-medal ${
-                                                    index === 0
-                                                        ? "gold-medal"
-                                                        : index === 1
-                                                        ? "silver-medal"
-                                                        : index === 2
-                                                        ? "bronze-medal"
-                                                        : "normal"
-                                                }`}
-                                            />
-                                        ) : (
-                                            <span className="rank-pos">
-                                                {index + 1}
-                                            </span>
-                                        )}
-                                        <div className="user-infor user-ranking">
-                                            {rank?.user.avatar ? (
-                                                <div className="avatar-frame medium-avatar">
-                                                    <img
-                                                        src={rank?.user.avatar}
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <i className="fa-regular fa-circle-user big-icon" />
-                                            )}
-                                            <span
-                                                className={` ${
-                                                    index === 0
-                                                        ? "gold-medal"
-                                                        : index === 1
-                                                        ? "silver-medal"
-                                                        : index === 2
-                                                        ? "bronze-medal"
-                                                        : "normal"
-                                                }`}
-                                            >
-                                                {rank?.user.name || "Username"}
-                                            </span>
+                                    />
+                                ) : (
+                                    <span className="rank-pos">
+                                        {index + 1}
+                                    </span>
+                                )}
+                                <div className="user-infor user-ranking">
+                                    {rank?.user.avatar ? (
+                                        <div className="avatar-frame medium-avatar">
+                                            <img src={rank?.user.avatar} />
                                         </div>
-                                        <span>{Math.round(rank?.runtime)}</span>{" "}
-                                        ms
-                                    </div>
-                                ))}
+                                    ) : (
+                                        <i className="fa-regular fa-circle-user big-icon" />
+                                    )}
+                                    <span
+                                        className={` ${
+                                            index === 0
+                                                ? "gold-medal"
+                                                : index === 1
+                                                ? "silver-medal"
+                                                : index === 2
+                                                ? "bronze-medal"
+                                                : "normal"
+                                        }`}
+                                    >
+                                        {rank?.user.name || "Username"}
+                                    </span>
+                                </div>
+                                <span>{Math.round(rank?.runtime)}</span> ms
                             </div>
-                        </div>
-                    )}
-                </>
+                        ))}
+                    </div>
+                </div>
             )}
+            {/* </>
+            )} */}
         </div>
     );
 };
