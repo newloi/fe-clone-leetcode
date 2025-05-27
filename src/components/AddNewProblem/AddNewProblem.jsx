@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import PulseLoader from "react-spinners/PulseLoader";
 
 import "./AddNewProblem.css";
 import Problem from "../Problem/Problem";
@@ -27,11 +28,13 @@ const AddNewProblem = () => {
     const [template, setTemplate] = useState(null);
     const [language, setLanguage] = useState("");
     const [count, setCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         if (problemId) {
+            setIsLoading(true);
             fetch(`${apiUrl}/v1/problems/${problemId}`, {
                 headers: {
                     "Cache-Control": "no-cache",
@@ -44,6 +47,9 @@ const AddNewProblem = () => {
                 })
                 .catch((error) => {
                     console.error(error);
+                })
+                .finally(() => {
+                    setIsLoading(false);
                 });
         }
     }, [problemId, count]);
@@ -360,6 +366,9 @@ const AddNewProblem = () => {
                     }}
                 />
             )}
+            <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
+                <PulseLoader color="#ffffff99" loading={isLoading} size={10} />
+            </div>
             <div className="add-problem-container">
                 <div>
                     <div className="create-problem scrollable">

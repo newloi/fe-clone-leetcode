@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import debounce from "lodash.debounce";
 import PulseLoader from "react-spinners/PulseLoader";
 
 import "./AdminProblems.css";
@@ -18,26 +19,10 @@ const AdminProblems = () => {
     const [problemSelected, setProblemSelected] = useState({});
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isSearching, setIsSearching] = useState(false);
 
     const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     const token = sessionStorage.getItem("accessToken");
-    //     fetch(`${apiUrl}/v1/problems?page=${page}&limit=20`, {
-    //         method: "GET",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Cache-Control": "no-cache",
-    //             ...(token && { Authorization: `Bearer ${token}` }),
-    //         },
-    //     })
-    //         .then((res) => res.json())
-    //         .then((res) => {
-    //             setMaxPage(res.maxPage);
-    //             setProblems(res.data);
-    //         })
-    //         .catch((error) => console.error("problems api error: ", error));
-    // }, [page, count]);
 
     const fetchProblems = async () => {
         setIsLoading(true);
@@ -157,6 +142,62 @@ const AdminProblems = () => {
         }
     };
 
+    useEffect(() => {
+        setPage(1);
+    }, [searchQuery]);
+
+    const debouncedSearch = useCallback(
+        debounce(async (query) => {
+            if (query.trim() === "") {
+                setIsSearching(false);
+                return;
+            }
+
+            try {
+                setIsSearching(true);
+                const token = sessionStorage.getItem("accessToken");
+                const response = await fetch(
+                    `${apiUrl}/v1/problems/search?term=${encodeURIComponent(
+                        query
+                    )}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            ...(token && { Authorization: `Bearer ${token}` }),
+                        },
+                    }
+                );
+                const data = await response.json();
+                setProblems(data.data);
+                setMaxPage(data.maxPage);
+            } catch (error) {
+                console.error("Error searching problems:", error);
+            }
+        }, 500),
+        []
+    );
+
+    const handleSearchChange = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+
+        if (query.trim() === "") {
+            debouncedSearch.cancel();
+            setIsSearching(false);
+            fetchProblems();
+        } else {
+            debouncedSearch(query);
+        }
+    };
+
+    const handleClearSearch = () => {
+        setSearchQuery("");
+        debouncedSearch.cancel();
+        setIsSearching(false);
+        fetchProblems();
+    };
+
     return (
         <>
             {isShowWarning && (
@@ -173,6 +214,21 @@ const AdminProblems = () => {
             )}
             <div className="admin-problems-container">
                 <div className="admin-group-btn">
+                    <div className="admin-searchbar">
+                        <i className="fa-solid fa-search search-icon"></i>
+                        <input
+                            type="text"
+                            placeholder="Search problems by title or tag..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                        />
+                        {searchQuery && (
+                            <i
+                                className="fa-solid xmark"
+                                onClick={handleClearSearch}
+                            ></i>
+                        )}
+                    </div>
                     <button
                         className="admin-add-btn"
                         onClick={() => {
@@ -191,54 +247,63 @@ const AdminProblems = () => {
                     />
                 </div>
                 <div className="admin-problems scrollable">
-                    {problems?.map((problem, index) => {
-                        return (
-                            <div
-                                className={`admin-problems-card ${
-                                    index % 2 === 0
-                                        ? "dark-background"
-                                        : "light-background"
-                                }`}
-                                key={index}
-                                onClick={() => {
-                                    navigate(
-                                        `/admin/add-new-problem/${problem._id}`
-                                    );
-                                }}
-                            >
-                                <div className="problem">
-                                    <p>{problem.title}</p>
-                                    <div className="tags">
-                                        <span
-                                            className={
-                                                problem?.difficulty === "EASY"
-                                                    ? "easy-tag"
-                                                    : problem?.difficulty ===
-                                                      "MEDIUM"
-                                                    ? "medium-tag"
-                                                    : "hard-tag"
-                                            }
-                                        >
-                                            {problem?.difficulty}
-                                        </span>
-                                        {problem.tags.map((tag, index) => {
-                                            return (
-                                                <span key={index}>{tag}</span>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                                <i
-                                    className="fa-solid fa-trash admin-delete-icon"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setProblemSelected(problem);
-                                        setIsShowWarning(true);
+                    {isSearching && problems?.length === 0 ? (
+                        <div className="no-results">
+                            <p>No problems found matching "{searchQuery}"</p>
+                        </div>
+                    ) : (
+                        problems?.map((problem, index) => {
+                            return (
+                                <div
+                                    className={`admin-problems-card ${
+                                        index % 2 === 0
+                                            ? "dark-background"
+                                            : "light-background"
+                                    }`}
+                                    key={index}
+                                    onClick={() => {
+                                        navigate(
+                                            `/admin/add-new-problem/${problem._id}`
+                                        );
                                     }}
-                                />
-                            </div>
-                        );
-                    })}
+                                >
+                                    <div className="problem">
+                                        <p>{problem.title}</p>
+                                        <div className="tags">
+                                            <span
+                                                className={
+                                                    problem?.difficulty ===
+                                                    "EASY"
+                                                        ? "easy-tag"
+                                                        : problem?.difficulty ===
+                                                          "MEDIUM"
+                                                        ? "medium-tag"
+                                                        : "hard-tag"
+                                                }
+                                            >
+                                                {problem?.difficulty}
+                                            </span>
+                                            {problem.tags.map((tag, index) => {
+                                                return (
+                                                    <span key={index}>
+                                                        {tag}
+                                                    </span>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                    <i
+                                        className="fa-solid fa-trash admin-delete-icon"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setProblemSelected(problem);
+                                            setIsShowWarning(true);
+                                        }}
+                                    />
+                                </div>
+                            );
+                        })
+                    )}
                 </div>
                 <Footer page={page} maxPage={maxPage} setPage={setPage} />
             </div>

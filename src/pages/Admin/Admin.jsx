@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
@@ -87,13 +87,6 @@ const Admin = () => {
                 </div>
                 <div className="admin-content">
                     <div className="admin-header">
-                        <div className="admin-searchbar">
-                            <div>
-                                <i className="fa-solid fa-magnifying-glass" />{" "}
-                                <input type="text" placeholder="Search..." />{" "}
-                                <i className="fa-solid fa-xmark" />
-                            </div>
-                        </div>
                         <div className="admin-infor">
                             <i className="fa-regular fa-circle-user" /> Admin
                         </div>

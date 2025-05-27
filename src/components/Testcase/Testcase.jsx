@@ -23,16 +23,8 @@ const Testcase = ({ examples, isLoading }) => {
 
     return (
         <div className="code-editor-container scrollable">
-            <div
-                className={`page-loader ${
-                    isLoading || !examples ? "" : "hidden"
-                }`}
-            >
-                <PulseLoader
-                    color="#ffffff99"
-                    loading={isLoading || !examples}
-                    size={10}
-                />
+            <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
+                <PulseLoader color="#ffffff99" loading={isLoading} size={10} />
             </div>
             {examples && (
                 <div className="testcase-container">
