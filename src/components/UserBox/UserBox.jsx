@@ -252,7 +252,7 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
                                             <div className="avatar-overlay">
                                                 <i className="fa-solid fa-camera" />
                                             </div>
-                                            {userProfile?.avatar ? (
+                                            {newProfile.previewAvatar ? (
                                                 <img
                                                     src={
                                                         newProfile.previewAvatar
