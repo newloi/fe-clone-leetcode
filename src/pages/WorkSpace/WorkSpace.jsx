@@ -54,7 +54,8 @@ const WorkSpace = ({ problemId, problemIndex }) => {
     const location = useLocation();
     const [isLoading, setIsLoading] = useState(false);
     const [isFetchingData, setIsFetchingData] = useState(false);
-
+    const [isMySolution, setIsMySolution] = useState(false);
+    const [count, setCount] = useState(1);
     const [decode, setDecode] = useState(null);
 
     useEffect(() => {
@@ -114,6 +115,13 @@ const WorkSpace = ({ problemId, problemIndex }) => {
             let accessToken = sessionStorage.getItem("accessToken");
             if (accessToken) {
                 if (decode.isVerified) {
+                    if (!code) {
+                        toast.warn(
+                            "Don't forget to write some code before submitting!",
+                            { close: 3000 }
+                        );
+                        return;
+                    }
                     let res = await sendRequest(accessToken);
 
                     if (res.status === 401) {
@@ -278,6 +286,9 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 problemId={problemId}
                                 setTabSolution={setTab}
                                 setSolutionId={setSolutionId}
+                                setIsMySolution={setIsMySolution}
+                                count={count}
+                                setCount={setCount}
                             />
                         </div>
                         <div
@@ -285,7 +296,12 @@ const WorkSpace = ({ problemId, problemIndex }) => {
                                 tab === "solution" ? "" : "hidden"
                             }`}
                         >
-                            <Solution solutionId={solutionId} setTab={setTab} />
+                            <Solution
+                                solutionId={solutionId}
+                                setTab={setTab}
+                                isMySolution={isMySolution}
+                                setCount={setCount}
+                            />
                         </div>
                         <div
                             className={`container-tab ${

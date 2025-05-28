@@ -144,7 +144,7 @@ const Result = ({ resultId, setResultId }) => {
         const getProfile = async () => {
             setIsLoading(true);
             const sendRequest = async (token) => {
-                return await fetch(`${apiUrl}/v1/users/${result.user}`, {
+                return await fetch(`${apiUrl}/v1/users/${result?.user}`, {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -182,7 +182,7 @@ const Result = ({ resultId, setResultId }) => {
             }
         };
 
-        if (user) {
+        if (result) {
             getProfile();
         }
     }, [result]);
@@ -225,12 +225,12 @@ ${result?.code}
                     </span>
                 </div>
                 {status === "ACCEPTED" &&
-                    user?._id ===
+                    result.user ===
                         jwtDecode(sessionStorage.getItem("accessToken"))
                             .sub && (
                         <button className="create-solution">
                             <Link
-                                to={`/post-solution/${resultId}`}
+                                to={`/post-solution/result/${resultId}/solution`}
                                 onClick={() => {
                                     sessionStorage.setItem(
                                         "lastVisit",

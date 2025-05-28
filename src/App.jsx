@@ -39,7 +39,7 @@ const App = () => {
                     />
                 </Route>
                 <Route
-                    path="/post-solution/:resultId"
+                    path="/post-solution/result/:resultId?/solution/:solutionId?"
                     element={<PostSolution />}
                 />
                 <Route path="*" element={<NotFound />} />

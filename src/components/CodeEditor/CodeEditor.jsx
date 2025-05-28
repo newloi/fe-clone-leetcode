@@ -16,11 +16,13 @@ const CodeEditor = ({
     language,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
+    // const [isWarning, setIsWarning] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
-        setIsLoading(true);
+        // if (!language && !code) setIsWarning(true);
         const fetchData = async () => {
+            setIsLoading(true);
             try {
                 const res = await fetch(
                     `${apiUrl}/v1/problems/${problemId}/functions?language=${language}`
@@ -42,16 +44,8 @@ const CodeEditor = ({
 
     return (
         <div className="code-editor-container" style={{ padding: 0 }}>
-            <div
-                className={`page-loader ${
-                    isLoading || !problemId ? "" : "hidden"
-                }`}
-            >
-                <PulseLoader
-                    color="#ffffff99"
-                    loading={isLoading || !problemId}
-                    size={10}
-                />
+            <div className={`page-loader ${isLoading ? "" : "hidden"}`}>
+                <PulseLoader color="#ffffff99" loading={isLoading} size={10} />
             </div>
             <div className="language-selected-container">
                 <select
@@ -89,6 +83,11 @@ const CodeEditor = ({
                         Login / Sign up
                     </Link>{" "}
                     to run or submit
+                </div>
+            )}
+            {!language && (
+                <div className="footer-editor">
+                    We're still working on this problem. Come back soon!
                 </div>
             )}
             {problemId && (

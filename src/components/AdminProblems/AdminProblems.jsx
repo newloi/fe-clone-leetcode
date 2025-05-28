@@ -87,6 +87,7 @@ const AdminProblems = () => {
     }, [problems]);
 
     const handleDeleteProblem = async (problemId) => {
+        setIsLoading(true);
         const deleteRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/problems/${problemId}`, {
                 method: "DELETE",
@@ -139,6 +140,8 @@ const AdminProblems = () => {
                 );
         } catch (error) {
             console.error("delete problem error: ", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -202,7 +205,7 @@ const AdminProblems = () => {
         <>
             {isShowWarning && (
                 <Dialog
-                    message={`Delete problem ${problemSelected.title}?`}
+                    message={`Delete problem "${problemSelected.title}"?`}
                     positiveBtnMessage="Delete"
                     negativeBtnMessage="No"
                     setIsShowDialog={setIsShowWarning}
