@@ -191,7 +191,7 @@ const Home = () => {
             )}
             <div className="body-home" onScroll={handleScroll}>
                 <div className="greeting">
-                    <h1>Welcome to LeetClone 🎉🎉🎉</h1>
+                    <h1>Welcome to LeetBase 🎉🎉🎉</h1>
                 </div>
 
                 <div className="search-container">
