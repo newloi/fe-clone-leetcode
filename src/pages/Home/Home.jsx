@@ -11,6 +11,8 @@ import apiUrl from "@/config/api";
 import resendEmail from "@/api/resendEmail";
 import Dialog from "@/components/Dialog/Dialog";
 import refreshAccessToken from "@/api/refreshAccessToken";
+import ChatBot from '@/components/ChatBot/ChatBot';
+import TodoList from '@/components/TodoList/TodoList';
 
 const Home = () => {
     const [problems, setProblems] = useState();
@@ -21,6 +23,8 @@ const Home = () => {
     const [isShowBanner, setIsShowBanner] = useState(false);
     const [decode, setDecode] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'problems');
+    const [todoRefreshKey, setTodoRefreshKey] = useState(0);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -173,9 +177,14 @@ const Home = () => {
         [page, maxPage]
     );
 
+    // Persist activeTab to localStorage
+    useEffect(() => {
+        localStorage.setItem('activeTab', activeTab);
+    }, [activeTab]);
+
     return (
         <div className="container-home">
-            <HeaderHome />
+            <HeaderHome activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {isShowBanner && (
                 <Dialog
@@ -216,67 +225,113 @@ const Home = () => {
                         <Footer page={page} setPage={setPage} maxPage={maxPage} />
                     </div> */}
 
-                <div className="problems problems-home">
-                    {isSearching && problems?.length === 0 ? (
-                        <div className="no-results">
-                            <p>No problems found matching "{searchQuery}"</p>
-                        </div>
-                    ) : (
-                        problems?.map((problem, index) => {
-                            return (
-                                <Link
-                                    key={index}
-                                    to={`/problem/${problem._id}/${index}`}
-                                    onClick={() => {
-                                        sessionStorage.setItem(
-                                            "pageSidebar",
-                                            parseInt(index / 10) + 1
-                                        );
-                                    }}
-                                >
-                                    <div className={"problem-card"}>
-                                        <i
-                                            className={
-                                                problem.status === "SOLVED"
-                                                    ? "fa-regular fa-circle-check solved-icon"
-                                                    : problem.status ===
-                                                      "ATTEMPTED"
-                                                    ? "fa-solid fa-circle-half-stroke attempted-icon"
-                                                    : "fa-regular fa-circle unsolved-icon"
-                                            }
-                                        />
-                                        <div className="problem">
-                                            <p>{problem.title}</p>
-                                            <div className="tags">
-                                                {problem.tags.map(
-                                                    (tag, index) => {
-                                                        return (
-                                                            <span key={index}>
-                                                                {tag}
-                                                            </span>
-                                                        );
-                                                    }
-                                                )}
+                {activeTab === 'problems' ? (
+                    <div className="problems problems-home">
+                        {isSearching && problems?.length === 0 ? (
+                            <div className="no-results">
+                                <p>No problems found matching "{searchQuery}"</p>
+                            </div>
+                        ) : (
+                            problems?.map((problem, index) => {
+                                return (
+                                    <div className="problem-card" key={index}>
+                                        <Link
+                                            to={`/problem/${problem._id}/${index}`}
+                                            onClick={() => {
+                                                sessionStorage.setItem(
+                                                    "pageSidebar",
+                                                    parseInt(index / 10) + 1
+                                                );
+                                            }}
+                                            className="problem-link"
+                                        >
+                                            <i
+                                                className={
+                                                    problem.status === "SOLVED"
+                                                        ? "fa-regular fa-circle-check solved-icon"
+                                                        : problem.status ===
+                                                            "ATTEMPTED"
+                                                            ? "fa-solid fa-circle-half-stroke attempted-icon"
+                                                            : "fa-regular fa-circle unsolved-icon"
+                                                }
+                                            />
+                                            <div className="problem">
+                                                <p>{problem.title}</p>
+                                                <div className="tags">
+                                                    {problem.tags.map(
+                                                        (tag, index) => {
+                                                            return (
+                                                                <span key={index}>
+                                                                    {tag}
+                                                                </span>
+                                                            );
+                                                        }
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <span
-                                            className={`small-tag ${
-                                                problem.difficulty === "EASY"
+                                            <span
+                                                className={`small-tag ${problem.difficulty === "EASY"
                                                     ? "easy-tag"
                                                     : problem.difficulty ===
-                                                      "MEDIUM"
-                                                    ? "medium-tag"
-                                                    : "hard-tag"
-                                            }`}
-                                        >
-                                            {problem.difficulty}
-                                        </span>
+                                                        "MEDIUM"
+                                                        ? "medium-tag"
+                                                        : "hard-tag"
+                                                    }`}
+                                            >
+                                                {problem.difficulty}
+                                            </span>
+                                        </Link>
+                                        {sessionStorage.getItem("accessToken") && (
+                                            <button
+                                                className="add-to-todo-btn"
+                                                onClick={async (e) => {
+                                                    e.preventDefault();
+                                                    // Gọi API thêm vào todo list
+                                                    const sendRequest = async (token) => {
+                                                        return await fetch(`${apiUrl}/v1/users/todos`, {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                'Content-Type': 'application/json',
+                                                                'Authorization': `Bearer ${token}`,
+                                                                'x-csrf-token': sessionStorage.getItem("csrfToken"),
+                                                                'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                                                            },
+                                                            body: JSON.stringify({ problems: [problem._id] }),
+                                                        });
+                                                    };
+                                                    try {
+                                                        let accessToken = sessionStorage.getItem("accessToken");
+                                                        let res = await sendRequest(accessToken);
+                                                        if (res.status === 401) {
+                                                            const refreshed = await refreshAccessToken();
+                                                            if (!refreshed) {
+                                                                toast.error("Your session has expired. Please log in again.", { autoClose: 3000 });
+                                                                navigate("/sign-in");
+                                                                return;
+                                                            }
+                                                            accessToken = sessionStorage.getItem("accessToken");
+                                                            res = await sendRequest(accessToken);
+                                                        }
+                                                        if (res.status === 201) {
+                                                            toast.success("Added to todo list");
+                                                            setTodoRefreshKey(prev => prev + 1);
+                                                        }
+                                                    } catch (error) {
+                                                        toast.error("Failed to add to todo list");
+                                                    }
+                                                }}
+                                            >
+                                                <i className="fa-solid fa-plus"></i> Add to Todo
+                                            </button>
+                                        )}
                                     </div>
-                                </Link>
-                            );
-                        })
-                    )}
-                </div>
+                                );
+                            })
+                        )}
+                    </div>
+                ) : (
+                    <TodoList triggerRefreshKey={todoRefreshKey + '-' + activeTab} onChange={() => setTodoRefreshKey(prev => prev + 1)} />
+                )}
                 <div className="scroll-loader">
                     <PulseLoader
                         color="#ffffff99"
@@ -285,10 +340,7 @@ const Home = () => {
                     />
                 </div>
             </div>
-
-            {/* <div className="footer-home desktop-footer">
-                <Footer page={page} setPage={setPage} maxPage={maxPage} />
-            </div> */}
+            <ChatBot />
         </div>
     );
 };

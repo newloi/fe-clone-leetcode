@@ -5,12 +5,27 @@ import logo from "/logo-dark.png";
 import "./HeaderHome.css";
 import UserBox from "../UserBox/UserBox";
 
-const HeaderHome = () => {
+const HeaderHome = ({ activeTab, setActiveTab }) => {
     const [avatar, setAvatar] = useState(null);
     const [isCloseUserBox, setIsCloseUserBox] = useState(true);
     return (
         <div className="header-container header-home">
             <img src={logo} alt="LeetClone" />
+            <div style={{ flex: 1 }} />
+            <div className="tabs-header-home">
+                <button
+                    className={activeTab === 'problems' ? 'tab-header-home active' : 'tab-header-home'}
+                    onClick={() => setActiveTab('problems')}
+                >
+                    Problems
+                </button>
+                <button
+                    className={activeTab === 'todo' ? 'tab-header-home active' : 'tab-header-home'}
+                    onClick={() => setActiveTab('todo')}
+                >
+                    Todo List
+                </button>
+            </div>
             {sessionStorage.getItem("accessToken") ? (
                 <div>
                     <UserBox

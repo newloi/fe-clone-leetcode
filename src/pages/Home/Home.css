@@ -43,8 +43,107 @@
 }
 
 .problems-home {
-    width: 50%;
+    width: 100%;
+    max-width: 800px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.problem-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #23272f;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.10);
+    padding: 18px 24px;
+    transition: box-shadow 0.2s, background 0.2s;
+    margin-bottom: 0;
+}
+
+.problem-card:hover {
+    background: #232a36;
+    box-shadow: 0 4px 18px 0 rgba(77, 159, 255, 0.13);
+}
+
+.problem-link {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex: 1;
+    text-decoration: none;
+    color: #fff;
+}
+
+.problem {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.problem p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.tags {
+    display: flex;
+    gap: 8px;
+}
+
+.tags span {
+    background: #232f4d;
+    color: #4d9fff;
+    border-radius: 4px;
+    padding: 2px 10px;
+    font-size: 0.95rem;
+}
+
+.small-tag {
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 2px 10px;
+    margin-left: 10px;
+}
+
+.easy-tag {
+    background: #e6ffed;
+    color: #389e0d;
+}
+
+.medium-tag {
+    background: #fffbe6;
+    color: #d48806;
+}
+
+.hard-tag {
+    background: #fff1f0;
+    color: #cf1322;
+}
+
+.add-to-todo-btn {
+    background: linear-gradient(90deg, #4d9fff 0%, #1a73e8 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px 0 rgba(77, 159, 255, 0.10);
+    margin-left: 18px;
+}
+
+.add-to-todo-btn:hover {
+    background: #1a73e8;
 }
 
 .footer-home {
@@ -236,5 +335,25 @@
     .search-box {
         width: 95%;
         /* Match the problems list width */
+    }
+}
+
+@media (max-width: 900px) {
+    .problems-home {
+        max-width: 98vw;
+        padding: 0 4px;
+    }
+
+    .problem-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px 10px;
+    }
+
+    .add-to-todo-btn {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
     }
 }
