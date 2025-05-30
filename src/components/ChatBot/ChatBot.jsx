@@ -107,7 +107,7 @@ const ChatBot = () => {
                 </div>
             ) : (
                 <button className="chatbot-toggle" onClick={toggleChat}>
-                    Chat
+                    Help
                 </button>
             )}
         </div>
