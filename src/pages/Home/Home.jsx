@@ -313,18 +313,16 @@ const Home = () => {
                 accessToken = sessionStorage.getItem("accessToken");
                 res = await sendRequest(accessToken);
             }
-            if (res.status === 200) {
+            if (res.ok) {
                 toast.success("Removed from todo list", { autoClose: 1500 });
-                // Cập nhật state todoList ngay lập tức bằng cách lọc bỏ item vừa xóa
-                setTodoList((prev) =>
+                setTodoList(prev =>
                     prev.filter(
-                        (todo) =>
-                            (todo.problem?._id ||
-                                todo.problemId ||
-                                todo._id) !== problemId
+                        todo => (todo.problem?._id || todo.problemId || todo._id) !== problemId
                     )
                 );
-                // setTodoRefreshKey(prev => prev + 1); // Không cần key nữa
+            } else {
+                const text = await res.text();
+                toast.error(`Failed to remove: ${text}`);
             }
         } catch {
             toast.error("Failed to remove from todo list");
@@ -413,9 +411,9 @@ const Home = () => {
                                                     problem.status === "SOLVED"
                                                         ? "fa-regular fa-circle-check solved-icon"
                                                         : problem.status ===
-                                                          "ATTEMPTED"
-                                                        ? "fa-solid fa-circle-half-stroke attempted-icon"
-                                                        : "fa-regular fa-circle unsolved-icon"
+                                                            "ATTEMPTED"
+                                                            ? "fa-solid fa-circle-half-stroke attempted-icon"
+                                                            : "fa-regular fa-circle unsolved-icon"
                                                 }
                                             />
                                             <div className="problem">
@@ -435,15 +433,14 @@ const Home = () => {
                                                 </div>
                                             </div>
                                             <span
-                                                className={`small-tag ${
-                                                    problem.difficulty ===
+                                                className={`small-tag ${problem.difficulty ===
                                                     "EASY"
-                                                        ? "easy-tag"
-                                                        : problem.difficulty ===
-                                                          "MEDIUM"
+                                                    ? "easy-tag"
+                                                    : problem.difficulty ===
+                                                        "MEDIUM"
                                                         ? "medium-tag"
                                                         : "hard-tag"
-                                                }`}
+                                                    }`}
                                             >
                                                 {problem.difficulty}
                                             </span>
@@ -451,37 +448,36 @@ const Home = () => {
                                         {sessionStorage.getItem(
                                             "accessToken"
                                         ) && (
-                                            <button
-                                                className={`star-todo-btn${
-                                                    isInTodo ? " starred" : ""
-                                                }`}
-                                                title={
-                                                    isInTodo
-                                                        ? "Remove from Todo"
-                                                        : "Add to Todo"
-                                                }
-                                                onClick={async (e) => {
-                                                    e.preventDefault();
-                                                    if (isInTodo) {
-                                                        await removeFromTodo(
-                                                            problem._id
-                                                        );
-                                                    } else {
-                                                        await addToTodo(
-                                                            problem._id
-                                                        );
-                                                    }
-                                                }}
-                                            >
-                                                <i
-                                                    className={
+                                                <button
+                                                    className={`star-todo-btn${isInTodo ? " starred" : ""
+                                                        }`}
+                                                    title={
                                                         isInTodo
-                                                            ? "fa-solid fa-star"
-                                                            : "fa-regular fa-star"
+                                                            ? "Remove from Todo"
+                                                            : "Add to Todo"
                                                     }
-                                                ></i>
-                                            </button>
-                                        )}
+                                                    onClick={async (e) => {
+                                                        e.preventDefault();
+                                                        if (isInTodo) {
+                                                            await removeFromTodo(
+                                                                problem._id
+                                                            );
+                                                        } else {
+                                                            await addToTodo(
+                                                                problem._id
+                                                            );
+                                                        }
+                                                    }}
+                                                >
+                                                    <i
+                                                        className={
+                                                            isInTodo
+                                                                ? "fa-solid fa-star"
+                                                                : "fa-regular fa-star"
+                                                        }
+                                                    ></i>
+                                                </button>
+                                            )}
                                     </div>
                                 );
                             })
