@@ -43,14 +43,17 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
         const fetchProblems = async () => {
             setIsLoading(true);
             const sendRequest = async (token) => {
-                return await fetch(`${apiUrl}/v1/problems?page=${page}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Cache-Control": "no-cache",
-                        ...(token && { Authorization: `Bearer ${token}` }),
-                    },
-                });
+                return await fetch(
+                    `${apiUrl}/v1/problems?page=${page}&limit=30`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Cache-Control": "no-cache",
+                            ...(token && { Authorization: `Bearer ${token}` }),
+                        },
+                    }
+                );
             };
 
             try {
