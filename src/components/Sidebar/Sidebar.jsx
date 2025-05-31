@@ -33,27 +33,33 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
             setIsLoading(true);
             const sendRequest = async (token) => {
                 if (activeTab === "todo") {
-                    return await fetch(`${apiUrl}/v1/users/todos`, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Cache-Control": "no-cache",
-                            Authorization: `Bearer ${token}`,
-                            "x-service-token":
-                                "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
-                        },
-                    });
-                } else {
-                    return await fetch(`${apiUrl}/v1/problems?page=${page}`, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Cache-Control": "no-cache",
-                            ...(token && {
+                    return await fetch(
+                        `${apiUrl}/v1/users/todos?page=1&limit=50`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Cache-Control": "no-cache",
                                 Authorization: `Bearer ${token}`,
-                            }),
-                        },
-                    });
+                                "x-service-token":
+                                    "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
+                            },
+                        }
+                    );
+                } else {
+                    return await fetch(
+                        `${apiUrl}/v1/problems?page=${page}&limit=10`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Cache-Control": "no-cache",
+                                ...(token && {
+                                    Authorization: `Bearer ${token}`,
+                                }),
+                            },
+                        }
+                    );
                 }
             };
 
@@ -139,6 +145,15 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     return (
         <div className="container-sidebar">
             <div className="header-sidebar">
+                <span
+                    className="back-sidebar"
+                    onClick={() => {
+                        sessionStorage.setItem("pageSidebar", 1);
+                        navigate("/");
+                    }}
+                >
+                    <i className="fa-solid fa-chevron-left header-icon" /> Home
+                </span>
                 <span>
                     {activeTab === "todo" ? "Todo List" : "List Of Problems"}
                 </span>

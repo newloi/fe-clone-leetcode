@@ -221,7 +221,6 @@ const Home = () => {
             }
             if (res.status === 200) {
                 const data = await res.json();
-                console.log(data);
 
                 setTodoList(Array.isArray(data) ? data : data.data || []);
             }
@@ -274,7 +273,7 @@ const Home = () => {
                 res = await sendRequest(accessToken);
             }
             if (res.status === 201) {
-                toast.success("Added to todo list");
+                toast.success("Added to todo list", { autoClose: 500 });
                 // Cập nhật state todoList ngay lập tức sau khi add
                 // Có thể fetch lại hoặc tự thêm vào state nếu API trả về đủ thông tin
                 fetchTodos(); // Fetch lại toàn bộ danh sách sau khi add để đảm bảo đồng bộ
@@ -313,16 +312,11 @@ const Home = () => {
                 accessToken = sessionStorage.getItem("accessToken");
                 res = await sendRequest(accessToken);
             }
-            if (res.status === 200) {
-                toast.success("Removed from todo list", { autoClose: 1500 });
+            if (res.status === 204) {
+                toast.success("Removed from todo list", { autoClose: 500 });
                 // Cập nhật state todoList ngay lập tức bằng cách lọc bỏ item vừa xóa
                 setTodoList((prev) =>
-                    prev.filter(
-                        (todo) =>
-                            (todo.problem?._id ||
-                                todo.problemId ||
-                                todo._id) !== problemId
-                    )
+                    prev.filter((todo) => todo._id !== problemId)
                 );
                 // setTodoRefreshKey(prev => prev + 1); // Không cần key nữa
             }

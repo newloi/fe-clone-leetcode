@@ -207,8 +207,6 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
                                 <button
                                     className="todo-remove-btn"
                                     onClick={() => {
-                                        console.log(todo);
-
                                         removeFromTodo(todo._id);
                                     }}
                                     disabled={removingId === todo._id}
