@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import { useNavigate, Link } from 'react-router-dom';
-import './TodoList.css';
-import apiUrl from '@/config/api';
-import refreshAccessToken from '@/api/refreshAccessToken';
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { useNavigate, Link } from "react-router-dom";
+import "./TodoList.css";
+import apiUrl from "@/config/api";
+import refreshAccessToken from "@/api/refreshAccessToken";
 
 const TodoList = ({ triggerRefreshKey, onChange }) => {
     const [todos, setTodos] = useState([]);
@@ -15,12 +15,13 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
         setLoading(true);
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/users/todos`, {
-                method: 'GET',
+                method: "GET",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache',
-                    'Authorization': `Bearer ${token}`,
-                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-cache",
+                    Authorization: `Bearer ${token}`,
+                    "x-service-token":
+                        "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
                 },
             });
         };
@@ -32,9 +33,12 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
             if (res.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
-                    toast.error("Your session has expired. Please log in again.", {
-                        autoClose: 3000
-                    });
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        {
+                            autoClose: 3000,
+                        }
+                    );
                     navigate("/sign-in");
                     return;
                 }
@@ -58,12 +62,13 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
     const addToTodo = async (problemId) => {
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/users/todos`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    'x-csrf-token': sessionStorage.getItem("csrfToken"),
-                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "x-csrf-token": sessionStorage.getItem("csrfToken"),
+                    "x-service-token":
+                        "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
                 },
                 body: JSON.stringify({ problems: [problemId] }),
             });
@@ -76,9 +81,12 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
             if (res.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
-                    toast.error("Your session has expired. Please log in again.", {
-                        autoClose: 3000
-                    });
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        {
+                            autoClose: 3000,
+                        }
+                    );
                     navigate("/sign-in");
                     return;
                 }
@@ -102,12 +110,13 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
         setRemovingId(problemId);
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/users/todos/${problemId}`, {
-                method: 'DELETE',
+                method: "DELETE",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    'x-csrf-token': sessionStorage.getItem("csrfToken"),
-                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "x-csrf-token": sessionStorage.getItem("csrfToken"),
+                    "x-service-token":
+                        "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
                 },
             });
         };
@@ -119,9 +128,12 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
             if (res.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
-                    toast.error("Your session has expired. Please log in again.", {
-                        autoClose: 3000
-                    });
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        {
+                            autoClose: 3000,
+                        }
+                    );
                     setRemovingId(null);
                     navigate("/sign-in");
                     return;
@@ -133,7 +145,14 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
 
             if (res.status === 200) {
                 toast.success("Removed from todo list", { autoClose: 1500 });
-                setTodos(prevTodos => prevTodos.filter(todo => (todo.problem?._id || todo.problemId || todo._id) !== problemId));
+                setTodos((prevTodos) =>
+                    prevTodos.filter(
+                        (todo) =>
+                            (todo.problem?._id ||
+                                todo.problemId ||
+                                todo._id) !== problemId
+                    )
+                );
                 if (onChange) onChange();
             }
         } catch (error) {
@@ -157,28 +176,54 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
             <h2>My Todo List</h2>
             {todos.length === 0 ? (
                 <div className="todo-list-empty">
-                    Your todo list is empty. Add problems you want to solve later!
+                    Your todo list is empty. Add problems you want to solve
+                    later!
                 </div>
             ) : (
                 <div className="todo-list">
                     {todos.map((todo, idx) => (
                         <div key={todo._id} className="todo-item">
                             <Link
-                                to={`/problem/${todo.problem?._id || todo.problemId || todo._id}/${idx}`}
+                                to={`/problem/${
+                                    todo.problem?._id ||
+                                    todo.problemId ||
+                                    todo._id
+                                }/${idx}`}
                                 className="todo-link"
+                                onClick={() => {
+                                    sessionStorage.setItem(
+                                        "pageSidebar",
+                                        parseInt(idx / 10) + 1
+                                    );
+                                }}
                             >
                                 <div className="todo-info">
-                                    <span className="todo-title">{todo.problem?.title || todo.title}</span>
-                                    <span className={`todo-difficulty ${todo.problem?.difficulty.toLowerCase()}-tag`}>{todo.problem?.difficulty || todo.difficulty}</span>
+                                    <span className="todo-title">
+                                        {todo.problem?.title || todo.title}
+                                    </span>
+                                    <span
+                                        className={`todo-difficulty ${todo.problem?.difficulty.toLowerCase()}-tag`}
+                                    >
+                                        {todo.problem?.difficulty ||
+                                            todo.difficulty}
+                                    </span>
                                 </div>
                             </Link>
                             <div className="todo-actions">
                                 <button
                                     className="todo-remove-btn"
-                                    onClick={() => removeFromTodo(todo.problem?._id || todo.problemId)}
-                                    disabled={removingId === (todo.problem?._id || todo.problemId)}
+                                    onClick={() =>
+                                        removeFromTodo(
+                                            todo.problem?._id || todo.problemId
+                                        )
+                                    }
+                                    disabled={
+                                        removingId ===
+                                        (todo.problem?._id || todo.problemId)
+                                    }
                                 >
-                                    {removingId === (todo.problem?._id || todo.problemId) ? (
+                                    {removingId ===
+                                    (todo.problem?._id || todo.problemId) ? (
                                         <i className="fa fa-spinner fa-spin"></i>
                                     ) : (
                                         <i className="fa-solid fa-trash"></i>
@@ -193,4 +238,4 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
     );
 };
 
-export default TodoList; 
+export default TodoList;
