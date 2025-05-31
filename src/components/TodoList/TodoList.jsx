@@ -145,15 +145,10 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
                 res = await sendRequest(accessToken);
             }
 
-            if (res.status === 200) {
+            if (res.status === 204) {
                 toast.success("Removed from todo list", { autoClose: 1500 });
                 setTodos((prevTodos) =>
-                    prevTodos.filter(
-                        (todo) =>
-                            (todo.problem?._id ||
-                                todo.problemId ||
-                                todo._id) !== problemId
-                    )
+                    prevTodos.filter((todo) => todo._id !== problemId)
                 );
                 if (onChange) onChange();
             }
@@ -186,13 +181,9 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
             ) : (
                 <div className="todo-list">
                     {todos.map((todo, idx) => (
-                        <div key={todo._id} className="todo-item">
+                        <div key={idx} className="todo-item">
                             <Link
-                                to={`/problem/${
-                                    todo.problem?._id ||
-                                    todo.problemId ||
-                                    todo._id
-                                }/${idx}`}
+                                to={`/problem/${todo._id}/${idx}`}
                                 className="todo-link"
                                 onClick={() => {
                                     sessionStorage.setItem(
@@ -203,31 +194,26 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
                             >
                                 <div className="todo-info">
                                     <span className="todo-title">
-                                        {todo.problem?.title || todo.title}
+                                        {todo.title}
                                     </span>
                                     <span
-                                        className={`todo-difficulty ${todo.problem?.difficulty.toLowerCase()}-tag`}
+                                        className={`todo-difficulty ${todo.difficulty.toLowerCase()}-tag`}
                                     >
-                                        {todo.problem?.difficulty ||
-                                            todo.difficulty}
+                                        {todo.difficulty}
                                     </span>
                                 </div>
                             </Link>
                             <div className="todo-actions">
                                 <button
                                     className="todo-remove-btn"
-                                    onClick={() =>
-                                        removeFromTodo(
-                                            todo.problem?._id || todo.problemId
-                                        )
-                                    }
-                                    disabled={
-                                        removingId ===
-                                        (todo.problem?._id || todo.problemId)
-                                    }
+                                    onClick={() => {
+                                        console.log(todo);
+
+                                        removeFromTodo(todo._id);
+                                    }}
+                                    disabled={removingId === todo._id}
                                 >
-                                    {removingId ===
-                                    (todo.problem?._id || todo.problemId) ? (
+                                    {removingId === todo._id ? (
                                         <i className="fa fa-spinner fa-spin"></i>
                                     ) : (
                                         <i className="fa-solid fa-trash"></i>

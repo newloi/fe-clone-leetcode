@@ -185,6 +185,7 @@ const Home = () => {
 
     // Persist activeTab to localStorage
     useEffect(() => {
+        fetchTodos();
         sessionStorage.setItem("activeTab", activeTab);
     }, [activeTab]);
 
