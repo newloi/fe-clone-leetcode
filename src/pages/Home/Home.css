@@ -48,11 +48,12 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 5px;
 }
 
 .problem-card {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     border-radius: 12px;
@@ -67,7 +68,9 @@
 }
 
 .problem-link {
+
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 18px;
     flex: 1;
@@ -82,9 +85,20 @@
 }
 
 .problem p {
-    font-size: 1.1rem;
+    font-size: inherit;
     font-weight: 500;
     margin: 0;
+}
+
+.holder-todo-list {
+    width: 100%;
+    max-width: 800px;
+    margin: 50px auto;
+
+}
+
+.holder-todo-list .holder-container {
+    background-color: inherit;
 }
 
 /* 
@@ -288,7 +302,6 @@
 .star-todo-btn {
     background: none;
     border: none;
-    color: #bfcfff;
     font-size: 1.5rem;
     cursor: pointer;
     margin-left: 18px;
@@ -296,6 +309,10 @@
     transition: color 0.2s, opacity 0.2s;
     display: flex;
     align-items: center;
+}
+
+.star-todo-btn i {
+    color: #ffffff24
 }
 
 .problem-card:hover .star-todo-btn,
@@ -337,6 +354,9 @@
     .search-input {
         font-size: 14px;
     }
+
+
+
 }
 
 @media (max-width: 480px) {
@@ -360,6 +380,18 @@
     .search-box {
         width: 95%;
         /* Match the problems list width */
+    }
+
+    .problems-home .tags {
+        display: none;
+    }
+
+    .star-todo-btn {
+        opacity: 1;
+    }
+
+    .problems-home .problem-card {
+        padding-bottom: 20px;
     }
 }
 

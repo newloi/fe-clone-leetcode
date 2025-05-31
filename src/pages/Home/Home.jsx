@@ -11,8 +11,9 @@ import apiUrl from "@/config/api";
 import resendEmail from "@/api/resendEmail";
 import Dialog from "@/components/Dialog/Dialog";
 import refreshAccessToken from "@/api/refreshAccessToken";
-import ChatBot from '@/components/ChatBot/ChatBot';
-import TodoList from '@/components/TodoList/TodoList';
+import ChatBot from "@/components/ChatBot/ChatBot";
+import TodoList from "@/components/TodoList/TodoList";
+import Holder from "@/components/Holder/Holder";
 
 const Home = () => {
     const [problems, setProblems] = useState();
@@ -23,7 +24,9 @@ const Home = () => {
     const [isShowBanner, setIsShowBanner] = useState(false);
     const [decode, setDecode] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'problems');
+    const [activeTab, setActiveTab] = useState(
+        () => localStorage.getItem("activeTab") || "problems"
+    );
     const [todoRefreshKey, setTodoRefreshKey] = useState(0);
     const [todoList, setTodoList] = useState([]);
 
@@ -180,19 +183,20 @@ const Home = () => {
 
     // Persist activeTab to localStorage
     useEffect(() => {
-        localStorage.setItem('activeTab', activeTab);
+        localStorage.setItem("activeTab", activeTab);
     }, [activeTab]);
 
     // Fetch todo list
     const fetchTodos = async () => {
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/users/todos`, {
-                method: 'GET',
+                method: "GET",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache',
-                    'Authorization': `Bearer ${token}`,
-                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-cache",
+                    Authorization: `Bearer ${token}`,
+                    "x-service-token":
+                        "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
                 },
             });
         };
@@ -220,7 +224,7 @@ const Home = () => {
     // Fetch todos when component mounts or todoRefreshKey changes (if active tab is todo)
     useEffect(() => {
         if (sessionStorage.getItem("accessToken")) {
-            if (activeTab === 'todo') {
+            if (activeTab === "todo") {
                 fetchTodos();
             }
         } else {
@@ -233,12 +237,13 @@ const Home = () => {
     const addToTodo = async (problemId) => {
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/users/todos`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    'x-csrf-token': sessionStorage.getItem("csrfToken"),
-                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "x-csrf-token": sessionStorage.getItem("csrfToken"),
+                    "x-service-token":
+                        "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
                 },
                 body: JSON.stringify({ problems: [problemId] }),
             });
@@ -249,7 +254,10 @@ const Home = () => {
             if (res.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
-                    toast.error("Your session has expired. Please log in again.", { autoClose: 3000 });
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        { autoClose: 3000 }
+                    );
                     navigate("/sign-in");
                     return;
                 }
@@ -270,12 +278,13 @@ const Home = () => {
     const removeFromTodo = async (problemId) => {
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/users/todos/${problemId}`, {
-                method: 'DELETE',
+                method: "DELETE",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    'x-csrf-token': sessionStorage.getItem("csrfToken"),
-                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "x-csrf-token": sessionStorage.getItem("csrfToken"),
+                    "x-service-token":
+                        "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
                 },
             });
         };
@@ -285,7 +294,10 @@ const Home = () => {
             if (res.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
-                    toast.error("Your session has expired. Please log in again.", { autoClose: 3000 });
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        { autoClose: 3000 }
+                    );
                     navigate("/sign-in");
                     return;
                 }
@@ -295,7 +307,14 @@ const Home = () => {
             if (res.status === 200) {
                 toast.success("Removed from todo list", { autoClose: 1500 });
                 // Cập nhật state todoList ngay lập tức bằng cách lọc bỏ item vừa xóa
-                setTodoList(prev => prev.filter(todo => (todo.problem?._id || todo.problemId || todo._id) !== problemId));
+                setTodoList((prev) =>
+                    prev.filter(
+                        (todo) =>
+                            (todo.problem?._id ||
+                                todo.problemId ||
+                                todo._id) !== problemId
+                    )
+                );
                 // setTodoRefreshKey(prev => prev + 1); // Không cần key nữa
             }
         } catch (error) {
@@ -346,20 +365,28 @@ const Home = () => {
                         <Footer page={page} setPage={setPage} maxPage={maxPage} />
                     </div> */}
 
-                {activeTab === 'problems' ? (
+                {activeTab === "problems" ? (
                     <div className="problems problems-home">
                         {isSearching && problems?.length === 0 ? (
                             <div className="no-results">
-                                <p>No problems found matching "{searchQuery}"</p>
+                                <p>
+                                    No problems found matching "{searchQuery}"
+                                </p>
                             </div>
                         ) : (
                             problems?.map((problem, index) => {
                                 // Check if in todo
                                 const isInTodo = todoList.some(
-                                    (todo) => (todo.problem?._id || todo.problemId || todo._id) === problem._id
+                                    (todo) =>
+                                        (todo.problem?._id ||
+                                            todo.problemId ||
+                                            todo._id) === problem._id
                                 );
                                 return (
-                                    <div className="problem-card" key={problem._id}>
+                                    <div
+                                        className="problem-card"
+                                        key={problem._id}
+                                    >
                                         <Link
                                             to={`/problem/${problem._id}/${index}`}
                                             onClick={() => {
@@ -375,9 +402,9 @@ const Home = () => {
                                                     problem.status === "SOLVED"
                                                         ? "fa-regular fa-circle-check solved-icon"
                                                         : problem.status ===
-                                                            "ATTEMPTED"
-                                                            ? "fa-solid fa-circle-half-stroke attempted-icon"
-                                                            : "fa-regular fa-circle unsolved-icon"
+                                                          "ATTEMPTED"
+                                                        ? "fa-solid fa-circle-half-stroke attempted-icon"
+                                                        : "fa-regular fa-circle unsolved-icon"
                                                 }
                                             />
                                             <div className="problem">
@@ -386,7 +413,9 @@ const Home = () => {
                                                     {problem.tags.map(
                                                         (tag, index) => {
                                                             return (
-                                                                <span key={index}>
+                                                                <span
+                                                                    key={index}
+                                                                >
                                                                     {tag}
                                                                 </span>
                                                             );
@@ -395,31 +424,51 @@ const Home = () => {
                                                 </div>
                                             </div>
                                             <span
-                                                className={`small-tag ${problem.difficulty === "EASY"
-                                                    ? "easy-tag"
-                                                    : problem.difficulty ===
-                                                        "MEDIUM"
+                                                className={`small-tag ${
+                                                    problem.difficulty ===
+                                                    "EASY"
+                                                        ? "easy-tag"
+                                                        : problem.difficulty ===
+                                                          "MEDIUM"
                                                         ? "medium-tag"
                                                         : "hard-tag"
-                                                    }`}
+                                                }`}
                                             >
                                                 {problem.difficulty}
                                             </span>
                                         </Link>
-                                        {sessionStorage.getItem("accessToken") && (
+                                        {sessionStorage.getItem(
+                                            "accessToken"
+                                        ) && (
                                             <button
-                                                className={`star-todo-btn${isInTodo ? ' starred' : ''}`}
-                                                title={isInTodo ? 'Remove from Todo' : 'Add to Todo'}
+                                                className={`star-todo-btn${
+                                                    isInTodo ? " starred" : ""
+                                                }`}
+                                                title={
+                                                    isInTodo
+                                                        ? "Remove from Todo"
+                                                        : "Add to Todo"
+                                                }
                                                 onClick={async (e) => {
                                                     e.preventDefault();
                                                     if (isInTodo) {
-                                                        await removeFromTodo(problem._id);
+                                                        await removeFromTodo(
+                                                            problem._id
+                                                        );
                                                     } else {
-                                                        await addToTodo(problem._id);
+                                                        await addToTodo(
+                                                            problem._id
+                                                        );
                                                     }
                                                 }}
                                             >
-                                                <i className={isInTodo ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
+                                                <i
+                                                    className={
+                                                        isInTodo
+                                                            ? "fa-solid fa-star"
+                                                            : "fa-regular fa-star"
+                                                    }
+                                                ></i>
                                             </button>
                                         )}
                                     </div>
@@ -427,19 +476,41 @@ const Home = () => {
                             })
                         )}
                     </div>
-                ) : (
-                    sessionStorage.getItem("accessToken") ? (
-                        <TodoList
-                            todos={todoList}
-                            onRemove={removeFromTodo}
-                        />
+                ) : sessionStorage.getItem("accessToken") ? (
+                    decode.isVerified ? (
+                        <TodoList todos={todoList} onRemove={removeFromTodo} />
                     ) : (
-                        <div className="todo-login-prompt">
-                            <h2>Please Log In to View Your Todo List</h2>
-                            <p>Log in to add and manage your problems.</p>
-                            <Link to="/sign-in">Sign In</Link>
+                        <div className="holder-todo-list">
+                            <Holder
+                                text="View your Submission records here"
+                                actionText={"Verify now"}
+                                action={() => {
+                                    resendEmail(decode.email);
+                                    sessionStorage.setItem(
+                                        "lastVisit",
+                                        location.pathname
+                                    );
+                                    navigate(
+                                        `/sign-up/verify-email/${decode.email}`
+                                    );
+                                }}
+                            />
                         </div>
                     )
+                ) : (
+                    <div className="holder-todo-list">
+                        <Holder
+                            text="View your Todo List here"
+                            actionText={"Register or Sign In"}
+                            action={() => {
+                                sessionStorage.setItem(
+                                    "lastVisit",
+                                    location.pathname
+                                );
+                                navigate("/sign-in");
+                            }}
+                        />
+                    </div>
                 )}
                 <div className="scroll-loader">
                     <PulseLoader

@@ -33,37 +33,37 @@
 
 .tabs-header-home {
     display: flex;
-    gap: 18px;
+    gap: 4px;
     align-items: center;
     margin-right: 18px;
-    background: #01040b;
+    background: #000;
     border-radius: 8px;
-    padding: 2px 8px;
+    /* padding: 2px 8px; */
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.18);
 }
 
 .tab-header-home {
     background: none;
     border: none;
-    color: #bfcfff;
+    color: #f5f5f5b7;
     font-size: 16px;
     font-weight: 500;
     padding: 7px 22px 7px 22px;
     cursor: pointer;
-    border-radius: 6px 6px 0 0;
-    border-bottom: 2px solid transparent;
+    border-radius: 6px;
+    /* border-bottom: 2px solid transparent; */
     transition: all 0.2s;
     letter-spacing: 0.5px;
 }
 
 .tab-header-home.active {
     color: #fff;
-    background: #23272f;
-    border-bottom: 2px solid #4d9fff;
-    box-shadow: 0 2px 8px 0 rgba(77, 159, 255, 0.10);
+    background: hsl(0deg 0% 15.69%);
+    /* border-bottom: 2px solid #ffffff24; */
+    box-shadow: 0 0 2px 2px #ffffff24;
 }
 
 .tab-header-home:hover:not(.active) {
-    background: #232a36;
+    background: #ffffff24;
     color: #fff;
 }
