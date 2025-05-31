@@ -25,6 +25,7 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'problems');
     const [todoRefreshKey, setTodoRefreshKey] = useState(0);
+    const [todoList, setTodoList] = useState([]);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -182,6 +183,111 @@ const Home = () => {
         localStorage.setItem('activeTab', activeTab);
     }, [activeTab]);
 
+    // Fetch todo list
+    const fetchTodos = async () => {
+        const sendRequest = async (token) => {
+            return await fetch(`${apiUrl}/v1/users/todos`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache',
+                    'Authorization': `Bearer ${token}`,
+                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                },
+            });
+        };
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            let res = await sendRequest(accessToken);
+            if (res.status === 401) {
+                const refreshed = await refreshAccessToken();
+                if (!refreshed) {
+                    navigate("/sign-in");
+                    return;
+                }
+                accessToken = sessionStorage.getItem("accessToken");
+                res = await sendRequest(accessToken);
+            }
+            if (res.status === 200) {
+                const data = await res.json();
+                setTodoList(Array.isArray(data) ? data : data.data || []);
+            }
+        } catch (error) {
+            // silent
+        }
+    };
+    useEffect(() => {
+        if (sessionStorage.getItem("accessToken")) fetchTodos();
+    }, [todoRefreshKey]);
+
+    // Add/remove todo logic
+    const addToTodo = async (problemId) => {
+        const sendRequest = async (token) => {
+            return await fetch(`${apiUrl}/v1/users/todos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'x-csrf-token': sessionStorage.getItem("csrfToken"),
+                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                },
+                body: JSON.stringify({ problems: [problemId] }),
+            });
+        };
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            let res = await sendRequest(accessToken);
+            if (res.status === 401) {
+                const refreshed = await refreshAccessToken();
+                if (!refreshed) {
+                    navigate("/sign-in");
+                    return;
+                }
+                accessToken = sessionStorage.getItem("accessToken");
+                res = await sendRequest(accessToken);
+            }
+            if (res.status === 201) {
+                toast.success("Added to todo list");
+                setTodoRefreshKey(prev => prev + 1);
+            }
+        } catch (error) {
+            toast.error("Failed to add to todo list");
+        }
+    };
+    const removeFromTodo = async (problemId) => {
+        const sendRequest = async (token) => {
+            return await fetch(`${apiUrl}/v1/users/todos/${problemId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'x-csrf-token': sessionStorage.getItem("csrfToken"),
+                    'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
+                },
+            });
+        };
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            let res = await sendRequest(accessToken);
+            if (res.status === 401) {
+                const refreshed = await refreshAccessToken();
+                if (!refreshed) {
+                    navigate("/sign-in");
+                    return;
+                }
+                accessToken = sessionStorage.getItem("accessToken");
+                res = await sendRequest(accessToken);
+            }
+            if (res.status === 200) {
+                toast.success("Removed from todo list", { autoClose: 1500 });
+                setTodoList(prev => prev.filter(todo => (todo.problem?._id || todo.problemId || todo._id) !== problemId));
+                setTodoRefreshKey(prev => prev + 1);
+            }
+        } catch (error) {
+            toast.error("Failed to remove from todo list");
+        }
+    };
+
     return (
         <div className="container-home">
             <HeaderHome activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -233,6 +339,10 @@ const Home = () => {
                             </div>
                         ) : (
                             problems?.map((problem, index) => {
+                                // Check if in todo
+                                const isInTodo = todoList.some(
+                                    (todo) => (todo.problem?._id || todo.problemId || todo._id) === problem._id
+                                );
                                 return (
                                     <div className="problem-card" key={index}>
                                         <Link
@@ -283,45 +393,18 @@ const Home = () => {
                                         </Link>
                                         {sessionStorage.getItem("accessToken") && (
                                             <button
-                                                className="add-to-todo-btn"
+                                                className={`star-todo-btn${isInTodo ? ' starred' : ''}`}
+                                                title={isInTodo ? 'Remove from Todo' : 'Add to Todo'}
                                                 onClick={async (e) => {
                                                     e.preventDefault();
-                                                    // Gọi API thêm vào todo list
-                                                    const sendRequest = async (token) => {
-                                                        return await fetch(`${apiUrl}/v1/users/todos`, {
-                                                            method: 'POST',
-                                                            headers: {
-                                                                'Content-Type': 'application/json',
-                                                                'Authorization': `Bearer ${token}`,
-                                                                'x-csrf-token': sessionStorage.getItem("csrfToken"),
-                                                                'x-service-token': 'fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0'
-                                                            },
-                                                            body: JSON.stringify({ problems: [problem._id] }),
-                                                        });
-                                                    };
-                                                    try {
-                                                        let accessToken = sessionStorage.getItem("accessToken");
-                                                        let res = await sendRequest(accessToken);
-                                                        if (res.status === 401) {
-                                                            const refreshed = await refreshAccessToken();
-                                                            if (!refreshed) {
-                                                                toast.error("Your session has expired. Please log in again.", { autoClose: 3000 });
-                                                                navigate("/sign-in");
-                                                                return;
-                                                            }
-                                                            accessToken = sessionStorage.getItem("accessToken");
-                                                            res = await sendRequest(accessToken);
-                                                        }
-                                                        if (res.status === 201) {
-                                                            toast.success("Added to todo list");
-                                                            setTodoRefreshKey(prev => prev + 1);
-                                                        }
-                                                    } catch (error) {
-                                                        toast.error("Failed to add to todo list");
+                                                    if (isInTodo) {
+                                                        await removeFromTodo(problem._id);
+                                                    } else {
+                                                        await addToTodo(problem._id);
                                                     }
                                                 }}
                                             >
-                                                <i className="fa-solid fa-plus"></i> Add to Todo
+                                                <i className={isInTodo ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
                                             </button>
                                         )}
                                     </div>

@@ -55,9 +55,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #23272f;
+    background: #181b22;
     border-radius: 12px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.10);
     padding: 18px 24px;
     transition: box-shadow 0.2s, background 0.2s;
     margin-bottom: 0;
@@ -96,7 +95,7 @@
 
 .tags span {
     background: #232f4d;
-    color: #4d9fff;
+    color: #bfcfff;
     border-radius: 4px;
     padding: 2px 10px;
     font-size: 0.95rem;
@@ -108,21 +107,19 @@
     border-radius: 4px;
     padding: 2px 10px;
     margin-left: 10px;
+    color: #bfcfff;
 }
 
 .easy-tag {
-    background: #e6ffed;
-    color: #389e0d;
+    color: #6ee7b7;
 }
 
 .medium-tag {
-    background: #fffbe6;
-    color: #d48806;
+    color: #ffe066;
 }
 
 .hard-tag {
-    background: #fff1f0;
-    color: #cf1322;
+    color: #ff6b6b;
 }
 
 .add-to-todo-btn {
@@ -286,6 +283,34 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
+}
+
+.star-todo-btn {
+    background: none;
+    border: none;
+    color: #bfcfff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-left: 18px;
+    opacity: 0;
+    transition: color 0.2s, opacity 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.problem-card:hover .star-todo-btn,
+.star-todo-btn.starred {
+    opacity: 1;
+}
+
+.star-todo-btn.starred {
+    color: #ffd700;
+    text-shadow: 0 0 8px #ffd70099;
+}
+
+.star-todo-btn:hover {
+    color: #ffe066;
+    text-shadow: 0 0 8px #ffe06699;
 }
 
 @media (max-width: 768px) {

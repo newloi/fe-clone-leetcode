@@ -36,10 +36,10 @@
     gap: 18px;
     align-items: center;
     margin-right: 18px;
-    background: rgba(255, 255, 255, 0.03);
+    background: #01040b;
     border-radius: 8px;
     padding: 2px 8px;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.18);
 }
 
 .tab-header-home {
@@ -58,12 +58,12 @@
 
 .tab-header-home.active {
     color: #fff;
-    background: linear-gradient(90deg, #4d9fff 0%, #1a73e8 100%);
-    border-bottom: 2px solid #fff;
+    background: #23272f;
+    border-bottom: 2px solid #4d9fff;
     box-shadow: 0 2px 8px 0 rgba(77, 159, 255, 0.10);
 }
 
 .tab-header-home:hover:not(.active) {
-    background: rgba(77, 159, 255, 0.08);
+    background: #232a36;
     color: #fff;
 }

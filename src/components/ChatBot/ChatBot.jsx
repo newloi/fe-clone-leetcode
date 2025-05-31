@@ -106,8 +106,8 @@ const ChatBot = () => {
                     </div>
                 </div>
             ) : (
-                <button className="chatbot-toggle" onClick={toggleChat}>
-                    Help
+                <button className="chatbot-toggle" onClick={toggleChat} title="Help">
+                    <i className="fa-solid fa-question-circle"></i>
                 </button>
             )}
         </div>
