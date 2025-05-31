@@ -1,7 +1,7 @@
 .todo-list-container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 40px auto 0 auto;
-    background: #181b22;
+    background: #1a1a1a;
     border-radius: 14px;
     box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18);
     padding: 32px 24px 24px 24px;
@@ -34,22 +34,34 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
+    padding: 0;
+    margin: 0;
 }
 
 .todo-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background: #23272f;
-    border-radius: 8px;
-    padding: 18px 20px;
-    box-shadow: 0 2px 8px 0 rgba(77, 159, 255, 0.06);
+    justify-content: space-between;
+    background: #181b22;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.18);
+    padding: 18px 24px;
     transition: box-shadow 0.2s, background 0.2s;
+    margin-bottom: 0;
 }
 
 .todo-item:hover {
     background: #232a36;
-    box-shadow: 0 4px 16px 0 rgba(77, 159, 255, 0.13);
+    box-shadow: 0 4px 18px 0 rgba(77, 159, 255, 0.13);
+}
+
+.todo-link {
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 18px;
 }
 
 .todo-info {
@@ -67,7 +79,6 @@
 .todo-difficulty {
     font-size: 0.95rem;
     font-weight: 400;
-    color: #bfcfff;
     border-radius: 4px;
     padding: 2px 10px;
     margin-top: 2px;
@@ -77,6 +88,7 @@
 .todo-actions {
     display: flex;
     gap: 12px;
+    align-items: center;
 }
 
 .todo-solve-btn {
@@ -97,41 +109,92 @@
 }
 
 .todo-remove-btn {
-    background: #ff4d4f;
-    color: #fff;
+    background: none;
+    color: #ff4d4f;
     border: none;
-    border-radius: 5px;
-    padding: 7px 18px;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px 0 rgba(255, 77, 79, 0.10);
+    transition: color 0.2s;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    padding: 0;
+    box-shadow: none;
 }
 
 .todo-remove-btn:hover {
-    background: #d9363e;
+    color: #d9363e;
+    background: #ffffff1a;
 }
 
 /* Responsive design */
-@media (max-width: 700px) {
+@media (max-width: 900px) {
     .todo-list-container {
         max-width: 98vw;
         padding: 16px 4px 12px 4px;
     }
 
+    .todo-list {
+        gap: 10px;
+    }
+
+    .todo-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 10px;
+    }
+
+    .todo-link {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding-right: 10px;
+    }
+
+    .todo-difficulty {
+        margin-top: 0;
+    }
+
+    .todo-actions {
+        width: auto;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .todo-remove-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
     .todo-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
-        padding: 14px 10px;
+        padding: 10px;
+    }
+
+    .todo-link {
+        width: 100%;
+        padding-right: 0;
+        gap: 6px;
     }
 
     .todo-actions {
         width: 100%;
         justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .todo-remove-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
     }
 }

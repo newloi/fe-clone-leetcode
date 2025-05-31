@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './TodoList.css';
 import apiUrl from '@/config/api';
 import refreshAccessToken from '@/api/refreshAccessToken';
@@ -163,28 +163,25 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
                 <div className="todo-list">
                     {todos.map((todo, idx) => (
                         <div key={todo._id} className="todo-item">
-                            <div className="todo-info">
-                                <span className="todo-title">{todo.problem?.title || todo.title}</span>
-                                <span className="todo-difficulty">{todo.problem?.difficulty || todo.difficulty}</span>
-                            </div>
+                            <Link
+                                to={`/problem/${todo.problem?._id || todo.problemId || todo._id}/${idx}`}
+                                className="todo-link"
+                            >
+                                <div className="todo-info">
+                                    <span className="todo-title">{todo.problem?.title || todo.title}</span>
+                                    <span className={`todo-difficulty ${todo.problem?.difficulty.toLowerCase()}-tag`}>{todo.problem?.difficulty || todo.difficulty}</span>
+                                </div>
+                            </Link>
                             <div className="todo-actions">
-                                <button
-                                    className="todo-solve-btn"
-                                    onClick={() => navigate(`/problem/${todo.problem?._id || todo.problemId || todo._id}/${idx}`)}
-                                >
-                                    Solve
-                                </button>
                                 <button
                                     className="todo-remove-btn"
                                     onClick={() => removeFromTodo(todo.problem?._id || todo.problemId)}
                                     disabled={removingId === (todo.problem?._id || todo.problemId)}
                                 >
                                     {removingId === (todo.problem?._id || todo.problemId) ? (
-                                        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-                                            <i className="fa fa-spinner fa-spin"></i> Removing...
-                                        </span>
+                                        <i className="fa fa-spinner fa-spin"></i>
                                     ) : (
-                                        <><i className="fa-solid fa-trash"></i> Remove</>
+                                        <i className="fa-solid fa-trash"></i>
                                     )}
                                 </button>
                             </div>
