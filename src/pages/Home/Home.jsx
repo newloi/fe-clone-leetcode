@@ -25,9 +25,10 @@ const Home = () => {
     const [decode, setDecode] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState(
-        () => localStorage.getItem("activeTab") || "problems"
+        () => sessionStorage.getItem("activeTab") || "problems"
     );
-    const [todoRefreshKey, setTodoRefreshKey] = useState(0);
+    const [maxPageTodo, setMaxPageTodo] = useState();
+    // const [todoRefreshKey, setTodoRefreshKey] = useState(0);
     const [todoList, setTodoList] = useState([]);
 
     const navigate = useNavigate();
@@ -57,6 +58,7 @@ const Home = () => {
 
     const fetchProblems = async () => {
         setIsLoading(true);
+        fetchTodos();
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/problems?page=${page}`, {
                 method: "GET",
@@ -183,13 +185,13 @@ const Home = () => {
 
     // Persist activeTab to localStorage
     useEffect(() => {
-        localStorage.setItem("activeTab", activeTab);
+        sessionStorage.setItem("activeTab", activeTab);
     }, [activeTab]);
 
     // Fetch todo list
     const fetchTodos = async () => {
         const sendRequest = async (token) => {
-            return await fetch(`${apiUrl}/v1/users/todos`, {
+            return await fetch(`${apiUrl}/v1/users/todos?page=1&limit=50`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -219,9 +221,11 @@ const Home = () => {
             }
             if (res.status === 200) {
                 const data = await res.json();
+                console.log(data);
+
                 setTodoList(Array.isArray(data) ? data : data.data || []);
             }
-        } catch (error) {
+        } catch {
             // silent
         }
     };
@@ -236,7 +240,7 @@ const Home = () => {
             // Clear todo list state if user logs out or is not logged in
             setTodoList([]);
         }
-    }, [activeTab, todoRefreshKey]); // Depend on activeTab and todoRefreshKey
+    }, [activeTab]); // Depend on activeTab and todoRefreshKey
 
     // Add/remove todo logic moved from TodoList
     const addToTodo = async (problemId) => {
@@ -276,7 +280,7 @@ const Home = () => {
                 fetchTodos(); // Fetch lại toàn bộ danh sách sau khi add để đảm bảo đồng bộ
                 // setTodoRefreshKey(prev => prev + 1); // Không cần key nữa
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to add to todo list");
         }
     };
@@ -322,7 +326,7 @@ const Home = () => {
                 );
                 // setTodoRefreshKey(prev => prev + 1); // Không cần key nữa
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to remove from todo list");
         }
     };

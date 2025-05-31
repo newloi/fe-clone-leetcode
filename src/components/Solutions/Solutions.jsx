@@ -218,7 +218,7 @@ const Solutions = ({
                         )}
                     </span>
                 )}
-                {solutions.length !== 0 ? (
+                {solutions?.length !== 0 ? (
                     <div
                         className="body-solutions scrollable"
                         onScroll={handleScroll}

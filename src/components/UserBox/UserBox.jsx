@@ -140,6 +140,7 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
         sessionStorage.removeItem("lastVisit");
         sessionStorage.removeItem("pageSidebar");
         sessionStorage.removeItem("pageAdmin");
+        sessionStorage.removeItem("activeTab");
         navigate("/sign-in");
     };
 

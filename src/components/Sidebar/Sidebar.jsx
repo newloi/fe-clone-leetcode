@@ -22,38 +22,39 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const activeTab = sessionStorage.getItem("activeTab");
 
     useEffect(() => {
         sessionStorage.setItem("pageSidebar", page.toString());
     }, [location.pathname]);
 
-    // useEffect(() => {
-    //     const handleBeforeUnload = () => {
-    //         sessionStorage.setItem("pageSidebar", page.toString());
-    //     };
-
-    //     window.addEventListener("beforeunload", handleBeforeUnload);
-
-    //     return () => {
-    //         window.removeEventListener("beforeunload", handleBeforeUnload);
-    //     };
-    // }, [page]);
-
     useEffect(() => {
         const fetchProblems = async () => {
             setIsLoading(true);
             const sendRequest = async (token) => {
-                return await fetch(
-                    `${apiUrl}/v1/problems?page=${page}&limit=30`,
-                    {
+                if (activeTab === "todo") {
+                    return await fetch(`${apiUrl}/v1/users/todos`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
                             "Cache-Control": "no-cache",
-                            ...(token && { Authorization: `Bearer ${token}` }),
+                            Authorization: `Bearer ${token}`,
+                            "x-service-token":
+                                "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
                         },
-                    }
-                );
+                    });
+                } else {
+                    return await fetch(`${apiUrl}/v1/problems?page=${page}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Cache-Control": "no-cache",
+                            ...(token && {
+                                Authorization: `Bearer ${token}`,
+                            }),
+                        },
+                    });
+                }
             };
 
             try {
@@ -77,23 +78,8 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
 
                 if (res.status === 200) {
                     const data = await res.json();
+
                     setMaxPage(data.maxPage);
-                    // if (page === 1) {
-                    //     setProblems(() => {
-                    //         sessionStorage.setItem(
-                    //             "problems",
-                    //             JSON.stringify(data.data)
-                    //         );
-                    //         return data.data;
-                    //     });
-                    // } else
-                    //     setProblems((prev) => {
-                    //         // sessionStorage.setItem(
-                    //         //     "problems",
-                    //         //     JSON.stringify([...prev, ...data.data])
-                    //         // );
-                    //         return [...prev, ...data.data];
-                    //     });
                     setProblems(data.data);
                 } else {
                     toast.error("Unexpected error. Please try again.", {
@@ -153,7 +139,9 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
     return (
         <div className="container-sidebar">
             <div className="header-sidebar">
-                <span>List Of Problems</span>
+                <span>
+                    {activeTab === "todo" ? "Todo List" : "List Of Problems"}
+                </span>
                 <button onClick={toggleSidebar}>
                     <i className="fa-solid fa-xmark" />
                 </button>
@@ -207,7 +195,7 @@ const Sidebar = ({ toggleSidebar, selectedProblemIndex, newResultId }) => {
                                 <div className="problem">
                                     <p>{problem.title}</p>
                                     <div className="tags">
-                                        {problem.tags.map((tag, index) => {
+                                        {problem?.tags?.map((tag, index) => {
                                             return (
                                                 <span key={index}>{tag}</span>
                                             );
