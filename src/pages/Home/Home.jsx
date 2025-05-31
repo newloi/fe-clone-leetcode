@@ -318,7 +318,9 @@ const Home = () => {
                 setTodoList((prev) =>
                     prev.filter((todo) => todo._id !== problemId)
                 );
-                // setTodoRefreshKey(prev => prev + 1); // Không cần key nữa
+            } else {
+                const text = await res.text();
+                toast.error(`Failed to remove: ${text}`);
             }
         } catch {
             toast.error("Failed to remove from todo list");

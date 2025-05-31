@@ -13,6 +13,7 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
     const [removingId, setRemovingId] = useState(null);
     const navigate = useNavigate();
 
+    // 1. Fetch toàn bộ todos
     const fetchTodos = async () => {
         setLoading(true);
         const sendRequest = async (token) => {
@@ -44,14 +45,20 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
                     navigate("/sign-in");
                     return;
                 }
-
                 accessToken = sessionStorage.getItem("accessToken");
                 res = await sendRequest(accessToken);
             }
 
-            if (res.status === 200) {
+            if (res.ok) {
                 const data = await res.json();
-                setTodos(Array.isArray(data) ? data : data.data || []);
+                // Giả sử API trả về { data: [ ...todos ] }
+                const arr = Array.isArray(data) ? data : data.data || [];
+                setTodos(arr);
+            } else {
+                // Nếu server trả lỗi (non-401), vẫn báo lên toast mà không crash
+                const errorText = await res.text();
+                console.error("Fetch todos failed:", errorText);
+                toast.error("Failed to load todo list");
             }
         } catch (error) {
             console.error("Error fetching todos:", error);
@@ -76,9 +83,9 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
     //         });
     //     };
 
-    //     try {
-    //         let accessToken = sessionStorage.getItem("accessToken");
-    //         let res = await sendRequest(accessToken);
+        try {
+            let accessToken = sessionStorage.getItem("accessToken");
+            let res = await sendRequest(accessToken);
 
     //         if (res.status === 401) {
     //             const refreshed = await refreshAccessToken();
@@ -97,17 +104,21 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
     //             res = await sendRequest(accessToken);
     //         }
 
-    //         if (res.status === 201) {
-    //             toast.success("Added to todo list");
-    //             fetchTodos();
-    //             if (onChange) onChange();
-    //         }
-    //     } catch (error) {
-    //         console.error("Error adding to todo:", error);
-    //         toast.error("Failed to add to todo list");
-    //     }
-    // };
+            if (res.ok) {
+                toast.success("Added to todo list");
+                fetchTodos();
+                if (onChange) onChange();
+            } else {
+                const errText = await res.text();
+                toast.error(`Failed to add: ${errText}`);
+            }
+        } catch (error) {
+            console.error("Error adding to todo:", error);
+            toast.error("Failed to add to todo list");
+        }
+    };
 
+    // 3. Xóa problem khỏi todo
     const removeFromTodo = async (problemId) => {
         setRemovingId(problemId);
         const sendRequest = async (token) => {
@@ -140,17 +151,20 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
                     navigate("/sign-in");
                     return;
                 }
-
                 accessToken = sessionStorage.getItem("accessToken");
                 res = await sendRequest(accessToken);
             }
 
             if (res.status === 204) {
                 toast.success("Removed from todo list", { autoClose: 1500 });
-                setTodos((prevTodos) =>
-                    prevTodos.filter((todo) => todo._id !== problemId)
-                );
+
+                // 3.2: Nếu parent cần biết đã thay đổi, gọi onChange()
                 if (onChange) onChange();
+            } else {
+                // Nếu server không trả ok (200/204), ta vẫn log và báo lỗi
+                const errText = await res.text();
+                console.error("Remove todo failed:", errText);
+                toast.error(`Failed to remove: ${errText}`);
             }
         } catch (error) {
             console.error("Error removing from todo:", error);
@@ -165,9 +179,7 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
     }, [triggerRefreshKey]);
 
     if (loading) {
-        <div className={`page-loader ${loading ? "" : "hidden"}`}>
-            <PulseLoader color="#ffffff99" loading={loading} size={10} />
-        </div>;
+        return <div className="todo-list-loading">Loading...</div>;
     }
 
     return (
