@@ -381,3 +381,41 @@
         margin-left: 0;
     }
 }
+
+.todo-login-prompt {
+    max-width: 800px;
+    margin: 40px auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.18);
+    padding: 32px;
+    text-align: center;
+    color: #fff;
+}
+
+.todo-login-prompt h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.todo-login-prompt p {
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    color: #fff;
+}
+
+.todo-login-prompt a {
+    display: inline-block;
+    background: linear-gradient(90deg, #313131 0%, #313131 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.todo-login-prompt a:hover {
+    background: #666a6f;
+}

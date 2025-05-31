@@ -413,7 +413,15 @@ const Home = () => {
                         )}
                     </div>
                 ) : (
-                    <TodoList triggerRefreshKey={todoRefreshKey + '-' + activeTab} onChange={() => setTodoRefreshKey(prev => prev + 1)} />
+                    sessionStorage.getItem("accessToken") ? (
+                        <TodoList triggerRefreshKey={todoRefreshKey + '-' + activeTab} onChange={() => setTodoRefreshKey(prev => prev + 1)} />
+                    ) : (
+                        <div className="todo-login-prompt">
+                            <h2>Please Log In to View Your Todo List</h2>
+                            <p>Log in to add and manage your problems.</p>
+                            <Link to="/sign-in">Sign In</Link>
+                        </div>
+                    )
                 )}
                 <div className="scroll-loader">
                     <PulseLoader
