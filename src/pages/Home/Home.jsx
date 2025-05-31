@@ -57,7 +57,6 @@ const Home = () => {
 
     const fetchProblems = async () => {
         setIsLoading(true);
-        fetchTodos();
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/problems?page=${page}`, {
                 method: "GET",
@@ -184,7 +183,9 @@ const Home = () => {
 
     // Persist activeTab to localStorage
     useEffect(() => {
-        fetchTodos();
+        if (sessionStorage.getItem("accessToken")) {
+            fetchTodos();
+        }
         sessionStorage.setItem("activeTab", activeTab);
     }, [activeTab]);
 
@@ -230,16 +231,16 @@ const Home = () => {
     };
 
     // Fetch todos when component mounts or todoRefreshKey changes (if active tab is todo)
-    useEffect(() => {
-        if (sessionStorage.getItem("accessToken")) {
-            if (activeTab === "todo") {
-                fetchTodos();
-            }
-        } else {
-            // Clear todo list state if user logs out or is not logged in
-            setTodoList([]);
-        }
-    }, [activeTab]); // Depend on activeTab and todoRefreshKey
+    // useEffect(() => {
+    //     if (sessionStorage.getItem("accessToken")) {
+    //         if (activeTab === "todo") {
+    //             fetchTodos();
+    //         }
+    //     } else {
+    //         // Clear todo list state if user logs out or is not logged in
+    //         setTodoList([]);
+    //     }
+    // }, [activeTab]); // Depend on activeTab and todoRefreshKey
 
     // Add/remove todo logic moved from TodoList
     const addToTodo = async (problemId) => {
@@ -483,7 +484,7 @@ const Home = () => {
                     </div>
                 ) : sessionStorage.getItem("accessToken") ? (
                     decode?.isVerified ? (
-                        <TodoList todos={todoList} onRemove={removeFromTodo} />
+                        <TodoList todos={todoList} setTodos={setTodoList} />
                     ) : (
                         <div className="holder-todo-list">
                             <Holder
