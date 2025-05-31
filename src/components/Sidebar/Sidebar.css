@@ -38,7 +38,7 @@
     flex: 1;
 }
 
-.problem-card {
+.container-sidebar .problem-card {
     display: flex;
     flex-direction: row;
     align-items: first baseline;
@@ -49,11 +49,11 @@
     cursor: pointer;
 }
 
-.problem-card:hover {
+.container-sidebar .problem-card:hover {
     background-color: #413f3f52;
 }
 
-.problem-card.selected {
+.container-sidebar .problem-card.selected {
     background-color: #413f3f91;
 }
 

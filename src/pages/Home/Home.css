@@ -48,27 +48,27 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 15px;
 }
 
-.problem-card {
+.problems-home .problem-card {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    border-radius: 12px;
-    padding: 18px 24px;
+    border-radius: 10px;
+    padding: 0 24px;
     transition: box-shadow 0.2s, background 0.2s;
     margin-bottom: 0;
+    border: 1px solid #ffffff1f;
 }
 
-.problem-card:hover {
+.problems-home .problem-card:hover {
     background: #232a36;
     box-shadow: 0 4px 18px 0 rgba(77, 159, 255, 0.13);
 }
 
 .problem-link {
-
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -78,14 +78,19 @@
     color: #fff;
 }
 
-.problem {
+.problem-link i {
+    font-size: 18px;
+}
+
+.problems-home .problem {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    padding-top: 15px;
 }
 
-.problem p {
-    font-size: inherit;
+.problems-home .problem p {
+    font-size: 16px;
     font-weight: 500;
     margin: 0;
 }
@@ -392,7 +397,17 @@
 
     .problems-home .problem-card {
         padding-bottom: 20px;
+        padding-top: 20px;
     }
+
+    .problems-home .problem {
+        padding-top: 0px;
+    }
+
+    .problem-link i {
+        font-size: 16px;
+    }
+
 }
 
 @media (max-width: 900px) {

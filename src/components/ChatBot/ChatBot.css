@@ -140,6 +140,11 @@
 
 /* Responsive cho tablet và mobile */
 @media (max-width: 768px) {
+    .chatbot-container {
+        right: 0;
+        width: 100%;
+    }
+
     .chatbot-window {
         max-width: 90%;
         height: 450px;
@@ -147,6 +152,11 @@
 }
 
 @media (max-width: 480px) {
+    .chatbot-container {
+        right: 0;
+        width: 100%;
+    }
+
     .chatbot-window {
         max-width: 100%;
         height: 400px;

@@ -27,7 +27,6 @@ const Home = () => {
     const [activeTab, setActiveTab] = useState(
         () => sessionStorage.getItem("activeTab") || "problems"
     );
-    const [maxPageTodo, setMaxPageTodo] = useState();
     // const [todoRefreshKey, setTodoRefreshKey] = useState(0);
     const [todoList, setTodoList] = useState([]);
 
