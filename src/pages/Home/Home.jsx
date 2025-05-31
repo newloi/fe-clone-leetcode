@@ -216,11 +216,20 @@ const Home = () => {
             // silent
         }
     };
-    useEffect(() => {
-        if (sessionStorage.getItem("accessToken")) fetchTodos();
-    }, [todoRefreshKey]);
 
-    // Add/remove todo logic
+    // Fetch todos when component mounts or todoRefreshKey changes (if active tab is todo)
+    useEffect(() => {
+        if (sessionStorage.getItem("accessToken")) {
+            if (activeTab === 'todo') {
+                fetchTodos();
+            }
+        } else {
+            // Clear todo list state if user logs out or is not logged in
+            setTodoList([]);
+        }
+    }, [activeTab, todoRefreshKey]); // Depend on activeTab and todoRefreshKey
+
+    // Add/remove todo logic moved from TodoList
     const addToTodo = async (problemId) => {
         const sendRequest = async (token) => {
             return await fetch(`${apiUrl}/v1/users/todos`, {
@@ -240,6 +249,7 @@ const Home = () => {
             if (res.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
+                    toast.error("Your session has expired. Please log in again.", { autoClose: 3000 });
                     navigate("/sign-in");
                     return;
                 }
@@ -248,7 +258,10 @@ const Home = () => {
             }
             if (res.status === 201) {
                 toast.success("Added to todo list");
-                setTodoRefreshKey(prev => prev + 1);
+                // Cập nhật state todoList ngay lập tức sau khi add
+                // Có thể fetch lại hoặc tự thêm vào state nếu API trả về đủ thông tin
+                fetchTodos(); // Fetch lại toàn bộ danh sách sau khi add để đảm bảo đồng bộ
+                // setTodoRefreshKey(prev => prev + 1); // Không cần key nữa
             }
         } catch (error) {
             toast.error("Failed to add to todo list");
@@ -272,6 +285,7 @@ const Home = () => {
             if (res.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
+                    toast.error("Your session has expired. Please log in again.", { autoClose: 3000 });
                     navigate("/sign-in");
                     return;
                 }
@@ -280,8 +294,9 @@ const Home = () => {
             }
             if (res.status === 200) {
                 toast.success("Removed from todo list", { autoClose: 1500 });
+                // Cập nhật state todoList ngay lập tức bằng cách lọc bỏ item vừa xóa
                 setTodoList(prev => prev.filter(todo => (todo.problem?._id || todo.problemId || todo._id) !== problemId));
-                setTodoRefreshKey(prev => prev + 1);
+                // setTodoRefreshKey(prev => prev + 1); // Không cần key nữa
             }
         } catch (error) {
             toast.error("Failed to remove from todo list");
@@ -344,7 +359,7 @@ const Home = () => {
                                     (todo) => (todo.problem?._id || todo.problemId || todo._id) === problem._id
                                 );
                                 return (
-                                    <div className="problem-card" key={index}>
+                                    <div className="problem-card" key={problem._id}>
                                         <Link
                                             to={`/problem/${problem._id}/${index}`}
                                             onClick={() => {
@@ -414,7 +429,10 @@ const Home = () => {
                     </div>
                 ) : (
                     sessionStorage.getItem("accessToken") ? (
-                        <TodoList triggerRefreshKey={todoRefreshKey + '-' + activeTab} onChange={() => setTodoRefreshKey(prev => prev + 1)} />
+                        <TodoList
+                            todos={todoList}
+                            onRemove={removeFromTodo}
+                        />
                     ) : (
                         <div className="todo-login-prompt">
                             <h2>Please Log In to View Your Todo List</h2>
