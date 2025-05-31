@@ -55,7 +55,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #181b22;
     border-radius: 12px;
     padding: 18px 24px;
     transition: box-shadow 0.2s, background 0.2s;
@@ -94,11 +93,11 @@
 }
 
 .tags span {
-    background: #232f4d;
-    color: #bfcfff;
-    border-radius: 4px;
+    background: #353639;
+    color: #ffffff;
+    border-radius: 10px;
     padding: 2px 10px;
-    font-size: 0.95rem;
+    font-size: 0.75rem;
 }
 
 .small-tag {
