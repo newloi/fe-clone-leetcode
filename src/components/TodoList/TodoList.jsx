@@ -133,7 +133,7 @@ const TodoList = ({ triggerRefreshKey, onChange }) => {
 
             if (res.status === 200) {
                 toast.success("Removed from todo list", { autoClose: 1500 });
-                fetchTodos();
+                setTodos(prevTodos => prevTodos.filter(todo => (todo.problem?._id || todo.problemId || todo._id) !== problemId));
                 if (onChange) onChange();
             }
         } catch (error) {

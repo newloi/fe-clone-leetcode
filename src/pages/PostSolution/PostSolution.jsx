@@ -134,14 +134,13 @@ ${result.code}
                 .then((res) => res.json())
                 .then((data) => {
                     data.tags.unshift(
-                        `${
-                            result.language === "javascript"
-                                ? "JavaScript"
-                                : result.language === "python"
+                        `${result.language === "javascript"
+                            ? "JavaScript"
+                            : result.language === "python"
                                 ? "Python"
                                 : result.language === "cpp"
-                                ? "C++"
-                                : "Java"
+                                    ? "C++"
+                                    : "Java"
                         }`
                     );
                     setTags(data.tags);
@@ -236,9 +235,8 @@ ${result.code}
     return (
         <>
             <div
-                className={`dark-overlay overlay overall-overlay ${
-                    isLoading ? "" : "hidden"
-                }`}
+                className={`dark-overlay overlay overall-overlay ${isLoading ? "" : "hidden"
+                    }`}
             >
                 <HashLoader color="#36d7b7" loading={isLoading} size={35} />
             </div>
@@ -260,10 +258,9 @@ ${result.code}
                                 <button
                                     onClick={() => {
                                         navigate(
-                                            `${
-                                                sessionStorage.getItem(
-                                                    "lastVisit"
-                                                ) || -1
+                                            `${sessionStorage.getItem(
+                                                "lastVisit"
+                                            ) || -1
                                             }`
                                         );
                                     }}
