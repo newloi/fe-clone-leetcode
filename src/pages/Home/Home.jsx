@@ -477,7 +477,7 @@ const Home = () => {
                         )}
                     </div>
                 ) : sessionStorage.getItem("accessToken") ? (
-                    decode.isVerified ? (
+                    decode?.isVerified ? (
                         <TodoList todos={todoList} onRemove={removeFromTodo} />
                     ) : (
                         <div className="holder-todo-list">
