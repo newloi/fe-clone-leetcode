@@ -206,9 +206,14 @@ const Home = () => {
             if (res.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (!refreshed) {
+                    toast.error(
+                        "Your session has expired. Please log in again.",
+                        { autoClose: 3000 }
+                    );
                     navigate("/sign-in");
                     return;
                 }
+
                 accessToken = sessionStorage.getItem("accessToken");
                 res = await sendRequest(accessToken);
             }
@@ -343,24 +348,26 @@ const Home = () => {
                     <h1>Welcome to LeetBase 🎉🎉🎉</h1>
                 </div>
 
-                <div className="search-container">
-                    <div className="search-box">
-                        <i className="fa-solid fa-search search-icon"></i>
-                        <input
-                            type="text"
-                            placeholder="Search problems by title or tag..."
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            className="search-input"
-                        />
-                        {searchQuery && (
-                            <i
-                                className="fa-solid fa-times clear-icon"
-                                onClick={handleClearSearch}
-                            ></i>
-                        )}
+                {activeTab === "problems" && (
+                    <div className="search-container">
+                        <div className="search-box">
+                            <i className="fa-solid fa-search search-icon"></i>
+                            <input
+                                type="text"
+                                placeholder="Search problems by title or tag..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                className="search-input"
+                            />
+                            {searchQuery && (
+                                <i
+                                    className="fa-solid fa-times clear-icon"
+                                    onClick={handleClearSearch}
+                                ></i>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
                 {/* <div className="footer-home mobile-footer">
                         <Footer page={page} setPage={setPage} maxPage={maxPage} />
                     </div> */}
