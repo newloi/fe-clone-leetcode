@@ -51,14 +51,13 @@ const ChatBot = () => {
         try {
             const accessToken = sessionStorage.getItem("accessToken");
             const csrfToken = sessionStorage.getItem("csrfToken");
-            const res = await fetch(import.meta.env.VITE_API_CHATBOT, {
+            const res = await fetch(`${import.meta.env.VITE_API_CHATBOT}/chat/ask`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`,
                     "x-csrf-token": csrfToken,
-                    "x-service-token":
-                        "fabc5c5ea0f6b4157b3bc8e23073add1e12024f4e089e5242c8d9950506b450e011b15487096787a0bd60d566fe7fd201269d1dee4ad46989d20b00f18abbbc0",
+                    "x-service-token": import.meta.env.VITE_SERVICE_TOKEN,
                 },
                 body: JSON.stringify(body),
             });
