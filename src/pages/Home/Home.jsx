@@ -488,7 +488,7 @@ const Home = () => {
                     ) : (
                         <div className="holder-todo-list">
                             <Holder
-                                text="View your Submission records here"
+                                text="View your Todo List here"
                                 actionText={"Verify now"}
                                 action={() => {
                                     resendEmail(decode.email);
