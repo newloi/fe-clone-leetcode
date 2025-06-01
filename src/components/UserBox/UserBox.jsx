@@ -84,7 +84,7 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
     }, [decode, count]);
 
     const handleUpdateProfile = async () => {
-        setIsLoading(true);
+        // setIsLoading(true);
         const updateRequest = async (token) => {
             const formData = new FormData();
             formData.append("name", newProfile.name);
@@ -93,6 +93,7 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
             return await fetch(`${apiUrl}/v1/users/${userProfile._id}`, {
                 method: "PATCH",
                 headers: {
+                    "Cache-Control": "no-cache",
                     Authorization: `Bearer ${token}`,
                 },
                 body: formData,
@@ -125,9 +126,10 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
             }
         } catch (error) {
             console.error("get profile error: ", error);
-        } finally {
-            setIsLoading(false);
         }
+        // finally {
+        //     setIsLoading(false);
+        // }
     };
 
     const handleLogOut = () => {
