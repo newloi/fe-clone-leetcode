@@ -84,7 +84,7 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
     }, [decode, count]);
 
     const handleUpdateProfile = async () => {
-        // setIsLoading(true);
+        setIsLoading(true);
         const updateRequest = async (token) => {
             const formData = new FormData();
             formData.append("name", newProfile.name);
@@ -126,10 +126,9 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
             }
         } catch (error) {
             console.error("get profile error: ", error);
+        } finally {
+            setIsLoading(false);
         }
-        // finally {
-        //     setIsLoading(false);
-        // }
     };
 
     const handleLogOut = () => {
@@ -175,13 +174,6 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
                     setIsClose(true);
                 }}
             />
-            <div
-                className={`dark-overlay overlay overall-overlay ${
-                    isLoading ? "" : "hidden"
-                }`}
-            >
-                <HashLoader color="#36d7b7" loading={isLoading} size={35} />
-            </div>
             <div
                 className={`user-box ${isClose ? "hidden" : ""} ${
                     isCloseSettingBox ? "" : "setting-box"
@@ -274,12 +266,15 @@ const UserBox = ({ isClose, setIsClose, setAvatarHome }) => {
                                                 onChange={handleChangeName}
                                                 placeholder="New username"
                                             />
-                                            <i class="fa-solid fa-pen" />
+                                            <i className="fa-solid fa-pen" />
                                         </div>
                                         <p className="fs-12">{decode.email}</p>
                                     </div>
                                 </div>
-                                <button onClick={handleUpdateProfile}>
+                                <button
+                                    onClick={handleUpdateProfile}
+                                    disabled={isLoading}
+                                >
                                     Update
                                 </button>
                                 <div className="user-actions">
